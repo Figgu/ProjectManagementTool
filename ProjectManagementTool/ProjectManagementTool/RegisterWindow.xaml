@@ -1,0 +1,40 @@
+﻿<Window x:Class="ProjectManagementTool.RegisterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectManagementTool"
+        mc:Ignorable="d"
+        Title="Register" Height="350" Width="525" ResizeMode="NoResize" Background="Gray">
+    <Grid>
+        <Label Content="Register" Margin="180,32,204.4,0" VerticalAlignment="Top" FontSize="30"/>
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="200" />
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" Content="Username:"></Label>
+            <TextBox x:Name="txtUsername" Grid.Row="0" Grid.Column="1" Background="DarkGray" VerticalContentAlignment="Center"></TextBox>
+
+            <Label Grid.Row="1" Grid.Column="0" Content="E-Mail:"></Label>
+            <TextBox x:Name="txtEMail" Grid.Row="1" Grid.Column="1" Background="DarkGray" VerticalContentAlignment="Center"></TextBox>
+
+            <Label Grid.Row="2" Grid.Column="0" Content="Password:"></Label>
+            <PasswordBox x:Name="txtPassword" Grid.Row="2" Grid.Column="1" Background="DarkGray" VerticalContentAlignment="Center"></PasswordBox>
+
+            <Label Grid.Row="3" Grid.Column="0" Content="Confirm Password:"></Label>
+            <PasswordBox x:Name="txtConfirmPassword" Grid.Row="3" Grid.Column="1" Background="DarkGray" VerticalContentAlignment="Center"></PasswordBox>
+        </Grid>
+        <Button x:Name="btnRegister" Content="Register" HorizontalAlignment="Left" Margin="212,217,0,0" VerticalAlignment="Top" Width="75" Click="btnRegister_Click"/>
+        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="338,217,0,0" VerticalAlignment="Top" Width="75" Click="btnCancel_Click"/>
+        <Label x:Name="label" Content="Fill in the information" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="187,71,0,0" Width="100" FontSize="9.333"/>
+    </Grid>
+</Window>
