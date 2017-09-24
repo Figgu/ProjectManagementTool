@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.VisualBasic;
+using ProjectManagementTool.classes;
 
 namespace ProjectManagementTool
 {
@@ -26,11 +27,18 @@ namespace ProjectManagementTool
             InitializeComponent();
         }
 
-        //TODO Check textboxes
+        //opens main if checkcredentials returns a person
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            Main main = new Main(txtUsername.Text, txtPassword.Password);
-            main.Show();
+            if(CheckCredentials(txtUsername.Text, txtPassword.Password) != null)
+            {
+                Main main = new Main();
+                main.Show();
+            }
+            else
+            {
+                MessageBox.Show("invalid username/password");
+            }
         }
 
         //Opens register window
@@ -45,6 +53,18 @@ namespace ProjectManagementTool
         {
             ForgotPasswordWindow forgot = new ForgotPasswordWindow();
             forgot.Show(); 
+        }
+
+        //checks if the login data is valid via the kontext method
+        private User CheckCredentials(String username, String password)
+        {
+            User retVal = null;
+            Kontext ktx = new Kontext();
+            if (!username.Equals("") && !password.Equals(""))
+            {
+                retVal = ktx.GetPerson(username, password);
+            }
+            return retVal;
         }
     }
 }

@@ -24,8 +24,8 @@ namespace ProjectManagementTool
             InitializeComponent();
         }
 
-        //Send details to email
-        private void btnGetDetails_Click(object sender, RoutedEventArgs e)
+        //TODO Sends email
+        private void BtnSendEmail_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }

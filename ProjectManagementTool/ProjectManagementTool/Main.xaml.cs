@@ -19,10 +19,9 @@ namespace ProjectManagementTool
     /// </summary>
     public partial class Main : Window
     {
-        public Main(string username, string password)
+        public Main()
         {
             InitializeComponent();
-            MessageBox.Show("Username: " + username + "\nPassword: " + password);
         }
     }
 }

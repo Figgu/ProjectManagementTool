@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectManagementTool.classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,16 +26,33 @@ namespace ProjectManagementTool
         }
 
         //This method just goes back to the login screen
-        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        //TODO Register user and check on textboxes
-        private void btnRegister_Click(object sender, RoutedEventArgs e)
+        //TODO Register user and check on textboxes [check if user already exists]
+        private void BtnRegister_Click(object sender, RoutedEventArgs e)
         {
-            
-            this.Close();
+            Kontext ktx = new Kontext();
+            if (txtPassword.Password.Equals(txtConfirmPassword.Password))
+            {
+                if (txtPassword.Password.Equals("") || txtConfirmPassword.Password.Equals("")||txtUsername.Text.Equals("")||
+                    txtEMail.Text.Equals(""))
+                {
+                    MessageBox.Show("A field can not be left empty");
+                }
+                else
+                {
+                    ktx.AddPerson(txtUsername.Text, txtPassword.Password, txtEMail.Text);
+                    MessageBox.Show("Succesfully registered!");
+                    this.Close();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Password not identical.");
+            }
         }
     }
 }

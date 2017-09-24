@@ -55,6 +55,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="classes\Group.cs" />
+    <Compile Include="classes\Issue.cs" />
+    <Compile Include="classes\Kontext.cs" />
+    <Compile Include="classes\User.cs" />
+    <Compile Include="classes\Project.cs" />
+    <Compile Include="classes\Sprint.cs" />
     <Compile Include="ForgotPasswordWindow.xaml.cs">
       <DependentUpon>ForgotPasswordWindow.xaml</DependentUpon>
     </Compile>
