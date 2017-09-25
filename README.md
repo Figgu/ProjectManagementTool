@@ -5,4 +5,4 @@ You are able to manage
 - projects which consist of:
  - Sprints
  - Issues
-![Alt text](https://github.com/Figgu/ProjectManagementTool/blob/master/LogModell.PNG "Logisches Modell")
+![Picture not loading](https://github.com/Figgu/ProjectManagementTool/blob/master/LogModell.PNG "Logisches Modell")
