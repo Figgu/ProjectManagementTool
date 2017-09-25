@@ -1,5 +1,5 @@
 # ProjectManagementTool
-A tool used to manage programming projects who are developed with scrum.
+A tool used to manage  group projects which are developed via scrum.
 You are able to manage
 - users or groups of users
 - projects which consist of:
