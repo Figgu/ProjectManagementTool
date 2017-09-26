@@ -22,6 +22,22 @@ namespace ProjectManagementTool
         public Main()
         {
             InitializeComponent();
+
+            generateListItems(20);      //Generates 20 test items in the list for demonstration
+        }
+
+        private void generateListItems(int numberOfItems)
+        {
+            for (int i=0; i<numberOfItems; i++)
+            {
+                ListBoxItem item = new ListBoxItem();
+                item.Content = "Item " + i;
+                item.FontSize = 30;
+                item.Height = 50;
+               
+
+                projectList.Items.Add(item);
+            }
         }
     }
 }

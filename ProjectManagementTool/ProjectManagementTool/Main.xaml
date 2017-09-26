@@ -5,8 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectManagementTool"
         mc:Ignorable="d"
-        Title="Main" Height="Auto" Width="Auto" WindowState="Maximized" ResizeMode="NoResize" Background="Gray">
+        Title="Main" Height="350" Width="525" WindowState="Maximized" Background="Gray">
     <Grid>
-        
+        <Grid VerticalAlignment="Top" Height="75" Width="Auto" Background="DarkGray" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="75" />
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+
+
+            <Image Grid.Column="0" Source="./assets/images/logo.png" Margin="5"></Image>
+
+            <Label Grid.Column="1" Content="Project Management Tool V1" FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center"></Label>
+            <Label Grid.Column="2" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="Black" Margin="5">
+                <Hyperlink Foreground="Black">Profile Name</Hyperlink>
+            </Label>
+        </Grid>
+
+        <Grid Margin="10, 95, 10, 10">
+            <ListBox x:Name="projectList" Background="DarkGray">
+            </ListBox>
+        </Grid>
     </Grid>
 </Window>

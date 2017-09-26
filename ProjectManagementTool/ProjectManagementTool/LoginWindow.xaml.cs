@@ -34,6 +34,7 @@ namespace ProjectManagementTool
             {
                 Main main = new Main();
                 main.Show();
+                this.Close();
             }
             else
             {
