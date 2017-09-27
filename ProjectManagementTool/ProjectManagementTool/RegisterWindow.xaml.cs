@@ -44,7 +44,7 @@ namespace ProjectManagementTool
                 }
                 else
                 {
-                    ktx.AddPerson(txtUsername.Text, txtPassword.Password, txtEMail.Text);
+                    ktx.insertUser(new User(txtUsername.Text, txtPassword.Password, txtEMail.Text));
                     MessageBox.Show("Succesfully registered!");
                     this.Close();
                 }

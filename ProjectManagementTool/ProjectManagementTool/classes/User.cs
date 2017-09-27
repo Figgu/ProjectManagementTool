@@ -53,6 +53,14 @@ namespace ProjectManagementTool.classes
             this.Email = email;
         }
 
+        public User(int id, String username, String password, String email)
+        {
+            this.id = id;
+            this.Username = username;
+            this.Password = password;
+            this.Email = email;
+        }
+
         private List<Group> groups;
 
         public List<Group> Groups

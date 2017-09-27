@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.VisualBasic;
 using ProjectManagementTool.classes;
+using System.Data;
 
 namespace ProjectManagementTool
 {
@@ -22,14 +23,21 @@ namespace ProjectManagementTool
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Kontext db;
+
         public MainWindow()
         {
             InitializeComponent();
+            db = new Kontext();
+            //Just for testing the connection :)
+            User user = db.selectUser(1);
+            Console.WriteLine("output:" + user.Username);        
         }
 
         //opens main if checkcredentials returns a person
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
+            MessageBox.Show(txtPassword.Password);
             if(CheckCredentials(txtUsername.Text, txtPassword.Password) != null)
             {
                 Main main = new Main();
@@ -63,7 +71,7 @@ namespace ProjectManagementTool
             Kontext ktx = new Kontext();
             if (!username.Equals("") && !password.Equals(""))
             {
-                retVal = ktx.GetPerson(username, password);
+                retVal = ktx.selectUser(username, password);
             }
             return retVal;
         }
