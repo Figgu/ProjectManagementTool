@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ProjectManagementTool.classes
 {
     //TODO profile picture, Load methods for projects & groups
-    class User
+    public class User
     {
         private string username;
 

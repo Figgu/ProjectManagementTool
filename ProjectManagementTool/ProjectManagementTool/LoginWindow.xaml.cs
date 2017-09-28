@@ -23,31 +23,37 @@ namespace ProjectManagementTool
     /// </summary>
     public partial class MainWindow : Window
     {
-        private Kontext db;
+        private Kontext ktx;
 
         public MainWindow()
         {
             InitializeComponent();
-            db = new Kontext();
-            //Just for testing the connection :)
-            User user = db.selectUser(1);
-            Console.WriteLine("output:" + user.Username);        
+            ktx = new Kontext();
+  
         }
 
         //opens main if checkcredentials returns a person
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(txtPassword.Password);
-            if(CheckCredentials(txtUsername.Text, txtPassword.Password) != null)
+            try
             {
-                Main main = new Main();
-                main.Show();
-                this.Close();
+                User user = CheckCredentials(txtUsername.Text, txtPassword.Password);
+                if (user != null)
+                {
+                    Main main = new Main(user);
+                    main.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("invalid username/password");
+                }
             }
-            else
+            catch (Exception)
             {
-                MessageBox.Show("invalid username/password");
+                MessageBox.Show("Username or password not correct!");
             }
+
         }
 
         //Opens register window
@@ -68,7 +74,6 @@ namespace ProjectManagementTool
         private User CheckCredentials(String username, String password)
         {
             User retVal = null;
-            Kontext ktx = new Kontext();
             if (!username.Equals("") && !password.Equals(""))
             {
                 retVal = ktx.selectUser(username, password);

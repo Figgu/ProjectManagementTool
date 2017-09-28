@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace ProjectManagementTool.classes
 {
     //TODO loading methods
-    class Group
+    public class Group
     {
         private int id;
 

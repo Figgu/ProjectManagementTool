@@ -44,14 +44,35 @@ namespace ProjectManagementTool
                 }
                 else
                 {
-                    ktx.insertUser(new User(txtUsername.Text, txtPassword.Password, txtEMail.Text));
-                    MessageBox.Show("Succesfully registered!");
-                    this.Close();
+                    if (IsValidEmail(txtEMail.Text))
+                    {
+                        ktx.insertUser(new User(txtUsername.Text, txtPassword.Password, txtEMail.Text));
+                        MessageBox.Show("Succesfully registered!");
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("E-Mail Adress is not valid!");
+                    }
                 }
             }
             else
             {
                 MessageBox.Show("Password not identical.");
+            }
+        }
+
+        //Check the format of the email adress
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
             }
         }
     }

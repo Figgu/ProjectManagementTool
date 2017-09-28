@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ProjectManagementTool.classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,11 +20,16 @@ namespace ProjectManagementTool
     /// </summary>
     public partial class Main : Window
     {
-        public Main()
+        private Kontext ktx = new Kontext();
+        private User currentUser;
+
+        public Main(User user)
         {
             InitializeComponent();
+            this.currentUser = user;
+            loadGUI();
 
-            generateListItems(20);      //Generates 20 test items in the list for demonstration
+            generateListItems(20);
         }
 
         private void generateListItems(int numberOfItems)
@@ -38,6 +44,12 @@ namespace ProjectManagementTool
 
                 projectList.Items.Add(item);
             }
+        }
+
+        private void loadGUI()
+        {
+            lblProfile.Inlines.Clear();
+            lblProfile.Inlines.Add(currentUser.Username);
         }
     }
 }

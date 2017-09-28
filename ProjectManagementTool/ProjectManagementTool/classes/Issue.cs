@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManagementTool.classes
 {
-    class Issue
+    public class Issue
     {
         private int id;
 
@@ -32,6 +32,6 @@ namespace ProjectManagementTool.classes
             set { description = value; }
         }
 
-        //status
+        private IssueStatus status;
     }
 }

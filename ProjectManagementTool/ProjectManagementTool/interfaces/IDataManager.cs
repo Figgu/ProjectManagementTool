@@ -17,9 +17,10 @@ namespace ProjectManagementTool.interfaces
         }
 
         User selectUser(int id);
+        User selectUser(string email);
+        User selectUser(string username, string password);
         void insertUser(User user);
         void updateUser(User user);
         DataTable selectAllUsers();
-        User selectUser(string username, string password);
     }
 }
