@@ -6,3 +6,5 @@ You are able to manage
  - Sprints
  - Issues
 ![Picture not loading](https://github.com/Figgu/ProjectManagementTool/blob/master/LogModell.PNG "Logisches Modell")
+
+For more details: https://github.com/Figgu/ProjectManagementTool/wiki
