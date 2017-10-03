@@ -7,5 +7,5 @@ You are able to manage
  - Issues
 ![Picture not loading](https://github.com/Figgu/ProjectManagementTool/blob/master/LogModell.PNG "Logisches Modell")
 
-For more details: https://github.com/Figgu/ProjectManagementTool/wiki
+For more details: https://github.com/Figgu/ProjectManagementTool/wiki<br/>
 For progress of sprints download Sprints.xls: https://github.com/Figgu/ProjectManagementTool/raw/master/Sprints.xlsx
