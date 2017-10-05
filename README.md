@@ -8,5 +8,6 @@ You are able to manage
 
 ![Picture not loading](https://github.com/Figgu/ProjectManagementTool/blob/master/LogModellV3.PNG "Logisches Modell")
 
-For more details: https://github.com/Figgu/ProjectManagementTool/wiki<br/>
+Download the er-diagram: https://github.com/Figgu/ProjectManagementTool/raw/master/LogModellV3.PNG<br/>
+For more details concerning the idea and the technologies: https://github.com/Figgu/ProjectManagementTool/wiki<br/>
 For progress of sprints download Sprints.xls: https://github.com/Figgu/ProjectManagementTool/raw/master/Sprints.xlsx
