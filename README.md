@@ -5,7 +5,8 @@ You are able to manage
 - projects which consist of:
  - Sprints
  - Issues
-![Picture not loading](https://github.com/Figgu/ProjectManagementTool/blob/master/LogModellV2.PNG "Logisches Modell")
+
+![Picture not loading](https://github.com/Figgu/ProjectManagementTool/blob/master/LogModellV3.PNG "Logisches Modell")
 
 For more details: https://github.com/Figgu/ProjectManagementTool/wiki<br/>
 For progress of sprints download Sprints.xls: https://github.com/Figgu/ProjectManagementTool/raw/master/Sprints.xlsx
