@@ -42,7 +42,7 @@ namespace ProjectManagementTool.classes
             using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
             {
                 conn.Open();
-                commandText = "INSERT INTO User03(UserID, Name, Password, Email) VALUES (seq_user.nextval, ?, ?, ?)";
+                commandText = "INSERT INTO User03(Name, Password, Email) VALUES (?, ?, ?)";
                 cmd = new OleDbCommand(commandText, conn);
                 cmd.Parameters.AddWithValue("?", user.Username);
                 cmd.Parameters.AddWithValue("?", user.Password);
