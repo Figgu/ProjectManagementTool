@@ -1,7 +1,7 @@
 package com.projectmanagementtoolapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -33,10 +33,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void getAllViews() {
-        txtUsername = (AutoCompleteTextView) findViewById(R.id.txtUsername);
-        txtPassword = (EditText) findViewById(R.id.txtPassword);
-        txtRegister = (TextView) findViewById(R.id.txtRegister);
-        txtForogtPw = (TextView) findViewById(R.id.txtForogtPw);
+        txtUsername = (AutoCompleteTextView) findViewById(R.id.txtUsernameLogin);
+        txtPassword = (EditText) findViewById(R.id.txtPasswordLogin);
+        txtRegister = (TextView) findViewById(R.id.txtRegisterLogin);
+        txtForogtPw = (TextView) findViewById(R.id.txtForogtPwLogin);
         btnLogin = (Button) findViewById(R.id.btnLogin);
         mRoot = (RelativeLayout) findViewById(R.id.layoutLogin);
     }
@@ -50,13 +50,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View view) {
         try {
-            if (view.equals(btnLogin)) {
-                checkInput();
-
+            if (view == btnLogin) {
+                doLogin();
             } else if(view == txtForogtPw) {
-                Toast.makeText(this, "Forgot pw works", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, ForgotPasswordActivity.class);
+                startActivity(intent);
             } else if(view == txtRegister) {
-                Toast.makeText(this, "register works", Toast.LENGTH_SHORT);
+                Intent intent = new Intent(this, RegisterActivity.class);
+                startActivity(intent);
             }
         } catch (Exception ex) {
             Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_SHORT);
@@ -64,7 +65,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     //Check the given account details
-    private void checkInput() {
+    private void doLogin() {
         boolean usernameOK = true;
         boolean passwordOK = true;
 
@@ -79,7 +80,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if (usernameOK && passwordOK) {
-            Snackbar.make(mRoot, "Everything ok", Snackbar.LENGTH_SHORT).show();
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
     }
 }
