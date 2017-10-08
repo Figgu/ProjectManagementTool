@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.projectmanagementtoolapp.activities.MainActivity">
+    tools:context="com.projectmanagementtoolapp.activities.MainActivity"
+    android:id="@+id/layoutMain">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -23,13 +24,13 @@
     <include layout="@layout/content_main" />
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+        android:id="@+id/fabMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
         android:src="@drawable/add"
-        app:backgroundTint="@android:color/holo_blue_dark"
+        app:backgroundTint="?attr/colorPrimary"
         app:srcCompat="@android:drawable/ic_dialog_email" />
 
 </android.support.design.widget.CoordinatorLayout>
