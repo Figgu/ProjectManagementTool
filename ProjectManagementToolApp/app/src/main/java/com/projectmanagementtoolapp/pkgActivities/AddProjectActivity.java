@@ -1,4 +1,4 @@
-package com.projectmanagementtoolapp.activities;
+package com.projectmanagementtoolapp.pkgActivities;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,7 +36,6 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
         setTitle("Add new project");
         getAllViews();
         initEventhandlers();
-        contributorsList.setScrollContainer(false);
     }
 
     private void getAllViews() {

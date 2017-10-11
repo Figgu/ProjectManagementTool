@@ -1,7 +1,11 @@
-package com.projectmanagementtoolapp.activities;
+package com.projectmanagementtoolapp.pkgActivities;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -12,24 +16,40 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projectmanagementtoolapp.R;
+import com.projectmanagementtoolapp.pkgData.Database;
+import com.projectmanagementtoolapp.pkgTasks.OpenConnectionTask;
+import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
+import com.projectmanagementtoolapp.pkgData.User;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //GUI elements
     private AutoCompleteTextView txtUsername;
     private EditText txtPassword;
     private TextView txtRegister;
     private TextView txtForogtPw;
     private Button btnLogin;
     private RelativeLayout mRoot;
+    private ProgressDialog pd;
+
+    //Non gui elements
+    private Database db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        db = Database.getInstance();
         setTitle("Login");
         getAllViews();
         initEventHandlers();
+
+        OpenConnectionTask openConnectionTask = new OpenConnectionTask();
+        openConnectionTask.execute();
+
+        SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(this);
+        selectAllUsersTask.execute();
     }
 
     private void getAllViews() {
@@ -66,6 +86,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
     //Check the given account details
     private void doLogin() {
+        User user = null;
         boolean usernameOK = true;
         boolean passwordOK = true;
 
@@ -80,8 +101,21 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if (usernameOK && passwordOK) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            user = db.getUserByUsername(txtUsername.getText().toString());
+            System.out.println(user);
+
+            if (user != null) {
+                if (user.getUsername().equals(txtUsername.getText().toString()) && user.getPassword().equals(txtPassword.getText().toString())) {
+                    db.setCurrentUser(user);
+                    Intent intent = new Intent(this, MainActivity.class);
+                    startActivity(intent);
+                } else {
+                    Snackbar.make(mRoot, "Password wrong", Snackbar.LENGTH_LONG).show();
+                }
+            } else {
+                Snackbar.make(mRoot, "Username not correct", Snackbar.LENGTH_LONG).show();
+            }
+
         }
     }
 }
