@@ -56,13 +56,6 @@ namespace ProjectManagementTool.classes
             set { users = value; }
         }
 
-        private List<Group> groups;
-
-        public List<Group> Groups
-        {
-            get { return groups; }
-            set { groups = value; }
-        }
 
         private List<Sprint> sprints;
 
