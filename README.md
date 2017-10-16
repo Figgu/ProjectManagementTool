@@ -1,7 +1,7 @@
 # ProjectManagementTool
 A tool used to manage  group projects which are developed via scrum.
 You are able to manage
-- users or groups of users
+- users
 - projects which consist of:
  - Sprints
  - Issues
