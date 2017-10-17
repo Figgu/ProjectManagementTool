@@ -53,7 +53,7 @@ public class Database {
         while(rs.next()) {
             User user = new User();
             user.setUserID(rs.getInt("userID"));
-            user.setUsername(rs.getString("name"));
+            user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
             user.setEmail(rs.getString("email"));
 
@@ -67,7 +67,18 @@ public class Database {
 
     //Only called by the async task
     public void insertUser(String username, String password, String email) throws ClassNotFoundException, SQLException {
-        PreparedStatement statement = conn.prepareStatement("insert into user03 (name, password, email) values (?, ?, ?)");
+        PreparedStatement statement = conn.prepareStatement("insert into user03 (username, password, email) values (?, ?, ?)");
+        statement.setString(1, username);
+        statement.setString(2, password);
+        statement.setString(3, email);
+        statement.executeQuery();
+        statement.close();
+    }
+
+    //Only called by the async task
+    //TODO CORRECT INSERT
+    public void insertProjct(String username, String password, String email) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("insert into user03 (username, password, email) values (?, ?, ?)");
         statement.setString(1, username);
         statement.setString(2, password);
         statement.setString(3, email);

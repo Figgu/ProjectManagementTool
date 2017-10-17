@@ -115,7 +115,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             } else {
                 Snackbar.make(mRoot, "Username not correct", Snackbar.LENGTH_LONG).show();
             }
-
         }
     }
 }

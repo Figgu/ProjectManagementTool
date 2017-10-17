@@ -5,4 +5,8 @@ package com.projectmanagementtoolapp.pkgData;
  */
 
 public enum IssueStatus {
+    TODO,
+    INPROCESS,
+    INREVIEW,
+    DONE
 }

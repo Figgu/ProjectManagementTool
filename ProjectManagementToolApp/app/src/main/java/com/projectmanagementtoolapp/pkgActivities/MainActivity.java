@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity
         String[] mobileArray = {"Android","IPhone","WindowsMobile","Blackberry",
                 "WebOS","Ubuntu","Windows7","Max OS X"};
 
-        ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.listview, mobileArray);
+        ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, mobileArray);
         projectsList.setAdapter(adapter);
     }
 

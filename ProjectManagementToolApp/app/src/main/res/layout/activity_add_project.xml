@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".pkgActivities.AddProjectActivity">
+    tools:context=".pkgActivities.AddProjectActivity"
+    android:id="@+id/layoutAddProject">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -66,10 +67,10 @@
                         android:id="@+id/contributorsList"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_below="@+id/txtContributorName">
+                        android:layout_below="@+id/txtContributorName"
+                        android:dividerHeight="1sp">
                     </ListView>
                 </LinearLayout>
-
 
                 <EditText
                     android:id="@+id/txtProjectStart"
