@@ -77,12 +77,22 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void onResume()
+    {  // After a pause OR at startup
+        super.onResume();
+        //Refresh your stuff here
+
+    }
+
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
         if (id == R.id.nav_showProfile) {
+            Intent intent = new Intent(this, ShowProfileActivity.class);
+            startActivity(intent);
 
         } else if (id == R.id.nav_logout) {
 

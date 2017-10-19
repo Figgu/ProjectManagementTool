@@ -25,6 +25,7 @@
         </activity>
         <activity android:name=".pkgActivities.RegisterActivity" />
         <activity android:name=".pkgActivities.ForgotPasswordActivity" />
+        <activity android:name=".pkgActivities.ShowProfileActivity" />
         <activity
             android:name=".pkgActivities.MainActivity"
             android:label="@string/title_activity_main"

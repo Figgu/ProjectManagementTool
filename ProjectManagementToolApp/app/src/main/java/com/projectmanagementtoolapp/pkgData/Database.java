@@ -56,7 +56,6 @@ public class Database {
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
             user.setEmail(rs.getString("email"));
-
             users.add(user);
         }
 
@@ -71,6 +70,16 @@ public class Database {
         statement.setString(1, username);
         statement.setString(2, password);
         statement.setString(3, email);
+        statement.executeQuery();
+        statement.close();
+    }
+
+    public void changeUser(String username, String password, String email, String oldusername) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("update user03 set username = ?, password = ?, email = ? where username = ? ");
+        statement.setString(1, username);
+        statement.setString(2, password);
+        statement.setString(3, email);
+        statement.setString(4, oldusername);
         statement.executeQuery();
         statement.close();
     }
