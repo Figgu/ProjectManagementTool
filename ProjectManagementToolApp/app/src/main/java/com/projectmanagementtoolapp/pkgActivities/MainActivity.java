@@ -95,7 +95,9 @@ public class MainActivity extends AppCompatActivity
             startActivity(intent);
 
         } else if (id == R.id.nav_logout) {
-
+            db.setCurrentUser(null);
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
         }
 
         drawer.closeDrawer(GravityCompat.START);

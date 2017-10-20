@@ -3,6 +3,9 @@ package com.projectmanagementtoolapp.pkgData;
 import android.content.Intent;
 import android.widget.Toast;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -74,13 +77,13 @@ public class Database {
         statement.close();
     }
 
-    public void changeUser(String username, String password, String email, String oldusername) throws ClassNotFoundException, SQLException {
-        PreparedStatement statement = conn.prepareStatement("update user03 set username = ?, password = ?, email = ? where username = ? ");
+    public void changeUser(String username, String password, String email, String Userid) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("update user03 set username = ?, password = ?, email = ? where userid = ? ");
         statement.setString(1, username);
         statement.setString(2, password);
         statement.setString(3, email);
-        statement.setString(4, oldusername);
-        statement.executeQuery();
+        statement.setInt(4, Integer.parseInt(Userid));
+        statement.executeUpdate();
         statement.close();
     }
 
@@ -92,6 +95,7 @@ public class Database {
         statement.setString(2, password);
         statement.setString(3, email);
         statement.executeQuery();
+        conn.commit();;
         statement.close();
     }
 
@@ -107,6 +111,20 @@ public class Database {
         }
 
         return retVal;
+    }
+
+    public void editPicture(String UserID, String path) throws SQLException, FileNotFoundException {
+
+        PreparedStatement pstmt = conn.prepareStatement("update user03 set ProfilePicture = ? where id = ?");
+        File blob = new File(path);
+        FileInputStream in = new FileInputStream(blob);
+        // the cast to int is necessary because with JDBC 4 there is
+        // also a version of this method with a (int, long)
+        // but that is not implemented by Oracle
+        pstmt.setBinaryStream(1, in, (int)blob.length());
+        pstmt.setInt(2, Integer.parseInt(UserID));  // set the PK value
+        pstmt.executeUpdate();
+        conn.commit();
     }
 
     public boolean usernameExists(String username) {

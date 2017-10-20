@@ -118,5 +118,14 @@
         android:text="Save"
         android:visibility="invisible" />
 
+    <ImageButton
+        android:id="@+id/btnEditImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/txtPassword"
+        android:layout_toEndOf="@+id/txtEmail"
+        android:layout_toRightOf="@+id/txtEmail"
+        app:srcCompat="@drawable/ic_menu_manage" />
+
 
 </RelativeLayout>
