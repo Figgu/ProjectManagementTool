@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,7 +26,8 @@ public class Database {
     private static Database db;
     private String user = "d5b03";
     private String pwd = "d5b";
-    private static ArrayList<User> users;
+    private ArrayList<User> users;
+    private ArrayList<Project> projects;
     private Connection conn;
     private User currentUser;       //Current logged in user
 
@@ -88,15 +90,43 @@ public class Database {
     }
 
     //Only called by the async task
-    //TODO CORRECT INSERT
-    public void insertProjct(String username, String password, String email) throws ClassNotFoundException, SQLException {
-        PreparedStatement statement = conn.prepareStatement("insert into user03 (username, password, email) values (?, ?, ?)");
-        statement.setString(1, username);
-        statement.setString(2, password);
-        statement.setString(3, email);
+    public void insertProject(Project project) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("insert into project03 (name, description, projectbeginn) values (?, ?, ?)");
+        statement.setString(1, project.getName());
+        statement.setString(2, project.getDescription());
+        statement.setDate(3, new Date(project.getStartDate().getTime()));
         statement.executeQuery();
         conn.commit();;
         statement.close();
+    }
+
+    //Only called by async task
+    public void insertUserInProject(int userID, int projectID) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("insert into USERISINPROJECTWITHROLE03 (UserID, ProjectID) values (?, ?)");
+        statement.setInt(1, userID);
+        statement.setInt(2, projectID);
+        statement.executeQuery();
+        statement.close();
+    }
+
+    //Only called by async task
+    public void getAllProjects() throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select * from project03");
+        ResultSet rs = statement.executeQuery();
+        projects = new ArrayList<>();
+
+        while(rs.next()) {
+            Project project = new Project();
+            project.setProjectID(rs.getInt("projectID"));
+            project.setName(rs.getString("name"));
+            project.setDescription(rs.getString("description"));
+
+            projects.add(project);
+        }
+
+        System.out.println("projects: " + projects);
+        statement.close();
+        rs.close();
     }
 
     public boolean loginCorrect(User user) {
@@ -177,6 +207,20 @@ public class Database {
         }
 
         return user;
+    }
+
+    public Project getProjectByName(String name) {
+        Iterator<Project> it = projects.iterator();
+        Project project = null;
+
+        while (it.hasNext()) {
+            Project currentProject = it.next();
+            if (currentProject.getName().equals(name)) {
+                project = currentProject;
+            }
+        }
+
+        return project;
     }
 
     public void setCurrentUser(User user) {

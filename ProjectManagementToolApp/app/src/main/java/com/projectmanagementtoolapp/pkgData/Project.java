@@ -22,6 +22,17 @@ public class Project {
         this.startDate = startDate;
     }
 
+    public Project(String name, String description, Date startDate) {
+        this.name = name;
+        this.description = description;
+        this.contributors = contributors;
+        this.startDate = startDate;
+    }
+
+    public Project() {
+
+    }
+
     public int getProjectID() {
         return projectID;
     }
