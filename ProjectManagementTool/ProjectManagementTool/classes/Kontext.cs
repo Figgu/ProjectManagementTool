@@ -14,7 +14,7 @@ namespace ProjectManagementTool.classes
         public Kontext ()
         {
             //Use 192.168.128.152 for connection in htl, use 212.152.179.117 for external use
-            this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 192.168.128.152:1521/ora11g;User Id = d5b03; Password=d5b;";
+            this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 212.152.179.117:1521/ora11g;User Id = d5b03; Password=d5b;";
         }
 
         string connectionString;
@@ -42,7 +42,7 @@ namespace ProjectManagementTool.classes
             using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
             {
                 conn.Open();
-                commandText = "INSERT INTO User03(Name, Password, Email) VALUES (?, ?, ?)";
+                commandText = "INSERT INTO User03(Username, Password, Email) VALUES (?, ?, ?)";
                 cmd = new OleDbCommand(commandText, conn);
                 cmd.Parameters.AddWithValue("?", user.Username);
                 cmd.Parameters.AddWithValue("?", user.Password);
@@ -59,10 +59,10 @@ namespace ProjectManagementTool.classes
             using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
             {
                 conn.Open();
-                da = new OleDbDataAdapter("SELECT * FROM User03 WHERE UserID = " + id, conn);
+                da = new OleDbDataAdapter("SELECT userid, username, password, email FROM User03 WHERE UserID = " + id, conn);
                 da.Fill(dt);
             }
-            user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][3].ToString(), dt.Rows[0][4].ToString(), dt.Rows[0][5].ToString());
+            user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
             return user;
         }
 
@@ -92,11 +92,19 @@ namespace ProjectManagementTool.classes
             using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
             {
                 conn.Open();
-                da = new OleDbDataAdapter("SELECT * FROM User03 WHERE name = '" + username + "' AND password = '" + password + "'", conn);
+                da = new OleDbDataAdapter("SELECT userid, username, password, email FROM User03 WHERE username = '" + username + "' AND password = '" + password + "'", conn);
                 da.Fill(dt);
             }
-
-            user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][3].ToString(), dt.Rows[0][4].ToString(), dt.Rows[0][5].ToString());
+            //if there is a picture in the database
+            if (dt.Rows.Count == 5)
+            {
+                user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
+            }
+            //if there is no picture
+            else
+            {
+                user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
+            }
             return user;
         }
 
@@ -108,11 +116,11 @@ namespace ProjectManagementTool.classes
             using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
             {
                 conn.Open();
-                da = new OleDbDataAdapter("SELECT * FROM User03 WHERE email = '" + email + "'", conn);
+                da = new OleDbDataAdapter("SELECT userid, username, password, email FROM User03 WHERE email = '" + email + "'", conn);
                 da.Fill(dt);
             }
 
-            user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][3].ToString(), dt.Rows[0][4].ToString(), dt.Rows[0][5].ToString());
+            user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
             return user;
         }
         #endregion

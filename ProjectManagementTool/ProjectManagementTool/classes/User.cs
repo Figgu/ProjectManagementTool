@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManagementTool.classes
 {
-    //TODO profile picture, Load methods for projects & groups
+    //TODO profile picture
     public class User
     {
         private string username;
@@ -59,22 +59,6 @@ namespace ProjectManagementTool.classes
             this.Username = username;
             this.Password = password;
             this.Email = email;
-        }
-
-        private List<Group> groups;
-
-        public List<Group> Groups
-        {
-            get { return groups; }
-            set { groups = value; }
-        }
-
-        private List<Project> projects;
-
-        public List<Project> Projects
-        {
-            get { return projects; }
-            set { projects = value; }
         }
     }
 }

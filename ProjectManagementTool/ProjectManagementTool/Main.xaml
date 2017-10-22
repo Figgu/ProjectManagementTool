@@ -23,7 +23,7 @@
             </Label>
 
             <Label  Grid.Column="3" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="Black" Margin="0,16,10.4,16" Height="43" Width="88">
-                <Hyperlink x:Name="lblLogout" Foreground="Black">Logout</Hyperlink>
+                <Hyperlink x:Name="lblLogout" Foreground="Black" Click="Logout">Logout</Hyperlink>
             </Label>
         </Grid>
 

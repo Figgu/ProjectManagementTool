@@ -27,29 +27,38 @@ namespace ProjectManagementTool
         {
             InitializeComponent();
             this.currentUser = user;
-            loadGUI();
+            LoadGUI();
 
-            generateListItems(20);
+            GenerateListItems(20);
         }
 
-        private void generateListItems(int numberOfItems)
+        private void GenerateListItems(int numberOfItems)
         {
             for (int i=0; i<numberOfItems; i++)
             {
-                ListBoxItem item = new ListBoxItem();
-                item.Content = "Item " + i;
-                item.FontSize = 30;
-                item.Height = 50;
-               
+                ListBoxItem item = new ListBoxItem
+                {
+                    Content = "Item " + i,
+                    FontSize = 30,
+                    Height = 50
+                };
+
 
                 projectList.Items.Add(item);
             }
         }
 
-        private void loadGUI()
+        private void LoadGUI()
         {
             lblProfile.Inlines.Clear();
             lblProfile.Inlines.Add(currentUser.Username);
+        }
+
+        private void Logout(object sender, RoutedEventArgs e)
+        {
+            LoginWindow login = new LoginWindow();
+            login.Show();
+            this.Close();
         }
     }
 }
