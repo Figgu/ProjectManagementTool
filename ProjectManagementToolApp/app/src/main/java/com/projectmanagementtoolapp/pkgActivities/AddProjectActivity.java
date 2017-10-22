@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
@@ -38,7 +39,6 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
     private EditText txtProjectDescription;
     private EditText txtContributorName;
     private ImageView imgAddButton;
-    private ListView contributorsList;
     private EditText txtProjectStart;
     private Button btnAddProject;
     private RelativeLayout mRoot;
@@ -49,6 +49,7 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
     private Database db;
     private Calendar cal = Calendar.getInstance(TimeZone.getDefault()); // Get current date
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private ArrayAdapter<User> adapter;
 
     // Listener
     private DatePickerDialog.OnDateSetListener datePickerListener = new DatePickerDialog.OnDateSetListener() {
@@ -104,6 +105,7 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
         imgAddButton.setOnClickListener(this);
         btnAddProject.setOnClickListener(this);
         txtProjectStart.setOnClickListener(this);
+        linearLayout.setOnClickListener(this);
     }
 
     @Override
@@ -115,9 +117,21 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
                     if (!contributors.contains(user)) {
                         contributors.add(db.getUserByUsername(txtContributorName.getText().toString()));
                         System.out.println(contributors);
-                        ArrayAdapter<User> adapter = new ArrayAdapter<>(this, R.layout.list_view_add_contributors, R.id.contributorNameAdd, contributors);
-                        System.out.println(adapter.getCount());
-                        linearLayout.addView(adapter.getView(adapter.getCount()-1, null, null));
+                        adapter = new ArrayAdapter<>(this, R.layout.list_view_add_contributors, R.id.contributorNameAdd, contributors);
+                        final View view = adapter.getView(adapter.getCount()-1, null, null);
+                        final View child = view.findViewById(R.id.imgDeleteCon);
+                        child.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                linearLayout.removeView(view);
+                                TextView textView = (TextView) view.findViewById(R.id.contributorNameAdd);
+                                User user = db.getUserByUsername(textView.getText().toString());
+                                contributors.remove(user);
+                            }
+                        });
+
+                        linearLayout.addView(view);
+                        txtContributorName.setText("");
                     } else {
                         Snackbar.make(mRoot, "User already in project!", Snackbar.LENGTH_LONG).show();
                     }
@@ -181,10 +195,15 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
             GetAllProjectsTask getAllProjectsTask = new GetAllProjectsTask(this);
             getAllProjectsTask.execute();
             result = getAllProjectsTask.get();
+            System.out.println(db.getProjects());
 
+            System.out.println(db.getProjectByName(txtProjectName.getText().toString()).getProjectID());
             //Add the users to the project
             InsertUsersInProject insertUsersInProject = new InsertUsersInProject(this);
             insertUsersInProject.execute(contributors, db.getProjectByName(txtProjectName.getText().toString()).getProjectID());
+            result = insertUsersInProject.get();
+
+            this.finish();
         }
     }
 }

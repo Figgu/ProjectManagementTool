@@ -21,6 +21,8 @@ import com.projectmanagementtoolapp.pkgTasks.OpenConnectionTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
 import com.projectmanagementtoolapp.pkgData.User;
 
+import java.util.concurrent.ExecutionException;
+
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
 
     //GUI elements
@@ -30,7 +32,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextView txtForogtPw;
     private Button btnLogin;
     private RelativeLayout mRoot;
-    private ProgressDialog pd;
 
     //Non gui elements
     private Database db;

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +19,10 @@ import android.widget.TextView;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
+import com.projectmanagementtoolapp.pkgTasks.GetAllProjectsTask;
+
+import java.sql.SQLException;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
@@ -29,6 +34,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private TextView txtNoProjectsFound;
 
     //Non gui elements
     private Database db;
@@ -39,10 +45,23 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         db = Database.getInstance();
+
         setTitle("Your projects");
         getAllViews();
         setSupportActionBar(toolbar);
         initEventlisteners();
+
+        //Get all projects
+        GetAllProjectsTask getAllProjectsTask = new GetAllProjectsTask(this);
+        getAllProjectsTask.execute();
+        try {
+            String result = getAllProjectsTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         addFAB();
         addList();
         setUpNavigation();
@@ -55,6 +74,7 @@ public class MainActivity extends AppCompatActivity
         drawer  = (DrawerLayout) findViewById(R.id.drawer_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        txtNoProjectsFound = (TextView) findViewById(R.id.txtNoProjectsFoundMain);
     }
 
     private void initEventlisteners() {
@@ -72,17 +92,8 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onResume()
-    {  // After a pause OR at startup
-        super.onResume();
-        //Refresh your stuff here
-
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -109,11 +120,12 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void addList() {
-        String[] mobileArray = {"Android","IPhone","WindowsMobile","Blackberry",
-                "WebOS","Ubuntu","Windows7","Max OS X"};
-
-        ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, mobileArray);
-        projectsList.setAdapter(adapter);
+        if  (db.getProjects().size() > 0) {
+            ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, db.getProjects());
+            projectsList.setAdapter(adapter);
+        } else {
+            txtNoProjectsFound.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override

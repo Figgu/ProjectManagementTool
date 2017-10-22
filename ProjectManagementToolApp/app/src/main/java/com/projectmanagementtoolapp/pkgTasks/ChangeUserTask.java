@@ -43,6 +43,7 @@ public class ChangeUserTask extends AsyncTask<Object, Object, String>
     protected void onPreExecute() {
         this.dialog.setTitle("Loading");
         this.dialog.setMessage("Wait while loading...");
+        this.dialog.setCancelable(false);
         this.dialog.show();
     }
 

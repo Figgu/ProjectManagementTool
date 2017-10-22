@@ -1,5 +1,6 @@
 package com.projectmanagementtoolapp.pkgActivities;
 
+import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -9,6 +10,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.transition.Visibility;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -27,6 +30,7 @@ import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Figgu on 17.10.2017.
@@ -42,9 +46,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     private TextView lblPassword;
     private TextView lblEmail;
     private ImageView profilePicture;
-    private Button btnEdit;
-    private Button btnSave;
-    private ImageButton btnEditImage;
+    private Button btnEditImage;
     private static final int RESULT_LOAD_IMAGE = 1;
 
     //non gui elements
@@ -61,6 +63,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         initEventHandlers();
         db = Database.getInstance();
         User currentUser = db.getCurrentUser();
+
         lblName.setText(currentUser.getUsername());
         lblPassword.setText(currentUser.getPassword());
         lblEmail.setText(currentUser.getEmail());
@@ -77,16 +80,19 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         lblEmail = (TextView) findViewById(R.id.lblEmail);
         lblPassword = (TextView) findViewById(R.id.lblPassword);
         profilePicture = (ImageView) findViewById(R.id.IVPP);
-        btnEdit = (Button) findViewById(R.id.btnEdit);
-        btnSave = (Button) findViewById(R.id.btnSave);
-        btnEditImage = (ImageButton) findViewById(R.id.btnEditImage);
+        btnEditImage = (Button) findViewById(R.id.btnEditImage);
     }
 
     private void initEventHandlers() {
-
-        btnEdit.setOnClickListener(this);
         btnEditImage.setOnClickListener(this);
-        btnSave.setOnClickListener(this);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_show_profile_edit, menu);
+        return true;
     }
 
     /*
@@ -96,8 +102,42 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // app icon in action bar clicked; goto parent activity.
                 this.finish();
+                return true;
+            case R.id.edit_profile:
+                lblName.setVisibility(View.INVISIBLE);
+                lblEmail.setVisibility(View.INVISIBLE);
+                lblPassword.setVisibility(View.INVISIBLE);
+                txtName.setVisibility(View.VISIBLE);
+                txtPassword.setVisibility(View.VISIBLE);
+                txtEmail.setVisibility(View.VISIBLE);
+                return true;
+            case R.id.save_profile:
+                lblName.setVisibility(View.VISIBLE);
+                lblEmail.setVisibility(View.VISIBLE);
+                lblPassword.setVisibility(View.VISIBLE);
+                txtName.setVisibility(View.INVISIBLE);
+                txtPassword.setVisibility(View.INVISIBLE);
+                txtEmail.setVisibility(View.INVISIBLE);
+
+                ChangeUserTask changeUserTask = new ChangeUserTask(this);
+                User currentUser = db.getCurrentUser();
+                changeUserTask.execute(txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString(), Integer.toString(currentUser.getUserID()));
+                try {
+                    String result = changeUserTask.get();       //Wait for result
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+                db.setCurrentUser(new User(txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString()));
+                currentUser = db.getCurrentUser();
+                lblName.setText(currentUser.getUsername());
+                lblPassword.setText(currentUser.getPassword());
+                lblEmail.setText(currentUser.getEmail());
+                txtName.setText(currentUser.getUsername());
+                txtPassword.setText(currentUser.getPassword());
+                txtEmail.setText(currentUser.getEmail());
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -106,41 +146,6 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View v) {
-        if(v == btnEdit) {
-            lblName.setVisibility(View.INVISIBLE);
-            lblEmail.setVisibility(View.INVISIBLE);
-            lblPassword.setVisibility(View.INVISIBLE);
-            btnEdit.setVisibility(View.INVISIBLE);
-            txtName.setVisibility(View.VISIBLE);
-            txtPassword.setVisibility(View.VISIBLE);
-            txtEmail.setVisibility(View.VISIBLE);
-            btnSave.setVisibility(View.VISIBLE);
-        }
-        if(v == btnSave) {
-            lblName.setVisibility(View.VISIBLE);
-            lblEmail.setVisibility(View.VISIBLE);
-            lblPassword.setVisibility(View.VISIBLE);
-            btnEdit.setVisibility(View.VISIBLE);
-            txtName.setVisibility(View.INVISIBLE);
-            txtPassword.setVisibility(View.INVISIBLE);
-            txtEmail.setVisibility(View.INVISIBLE);
-            btnSave.setVisibility(View.INVISIBLE);
-
-            ChangeUserTask changeUserTask = new ChangeUserTask(this);
-            User currentUser = db.getCurrentUser();
-            changeUserTask.execute(txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString(), Integer.toString(currentUser.getUserID()));
-            db = Database.getInstance();
-            db.setCurrentUser(new User(txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString()));
-            currentUser = db.getCurrentUser();
-            lblName.setText(currentUser.getUsername());
-            lblPassword.setText(currentUser.getPassword());
-            lblEmail.setText(currentUser.getEmail());
-            txtName.setText(currentUser.getUsername());
-            txtPassword.setText(currentUser.getPassword());
-            txtEmail.setText(currentUser.getEmail());
-            db = Database.getInstance();
-
-        }
         if(v == btnEditImage)
         {
             Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
