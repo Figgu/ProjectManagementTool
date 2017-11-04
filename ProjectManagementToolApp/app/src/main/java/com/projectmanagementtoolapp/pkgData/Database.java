@@ -100,6 +100,17 @@ public class Database {
         statement.close();
     }
 
+    //Only called by the async task
+    public void insertSprint(Sprint sprint, Project project) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("insert into sprint03 (projectID, endDate, startDate) values (?, ?, ?)");
+        statement.setInt(1, project.getProjectID());
+        statement.setDate(2, new Date(sprint.getStartDate().getTime()));
+        statement.setDate(3, new Date(sprint.getEndDate().getTime()));
+        statement.executeQuery();
+        conn.commit();;
+        statement.close();
+    }
+
     //Only called by async task
     public void insertUserInProject(int userID, int projectID) throws ClassNotFoundException, SQLException {
         PreparedStatement statement = conn.prepareStatement("insert into USERISINPROJECTWITHROLE03 (UserID, ProjectID) values (?, ?)");
@@ -127,6 +138,56 @@ public class Database {
         System.out.println("projects: " + projects);
         statement.close();
         rs.close();
+    }
+
+    //Only called by async task
+    public void getAllSprints(Project project) throws SQLException {
+        System.out.println("id in select sprints: " + project.getProjectID());
+        PreparedStatement statement = conn.prepareStatement("select * from sprint03 where projectid = ?");
+        statement.setInt(1, project.getProjectID());
+        ResultSet rs = statement.executeQuery();
+        ArrayList<Sprint> sprints = new ArrayList<>();
+
+        while(rs.next()) {
+            Sprint sprint = new Sprint();
+            sprint.setSprintID(rs.getInt("sprintID"));
+            sprint.setProject(getProjectByID(rs.getInt("projectID")));
+            sprint.setStartDate(rs.getDate("startDate"));
+            sprint.setEndDate(rs.getDate("endDate"));
+
+            sprints.add(sprint);
+        }
+
+        project.setSprints(sprints);
+        int indexOfProject = getIndexOfProject(project.getProjectID())-1;
+        projects.set(indexOfProject, project);           //Set the sprints to the project
+        System.out.println("sprints in select: " + projects.get(indexOfProject).getSprints());
+        statement.close();
+        rs.close();
+    }
+
+    private int getIndexOfProject(int ID) {
+        Iterator<Project> it = projects.iterator();
+        int counter = 0;
+        boolean flag = true;
+
+        while (it.hasNext() && flag) {
+            Project currentProject = it.next();
+            System.out.println("currentProject in get index: " + currentProject);
+
+            if (currentProject.getProjectID() == ID) {
+                flag = false;
+            }
+
+            counter++;
+            System.out.println("index of project:" + counter);
+        }
+
+        return counter;
+    }
+
+    private void setProjectOnIndex(int index, Project project) {
+
     }
 
     public boolean loginCorrect(User user) {
@@ -212,12 +273,34 @@ public class Database {
     public Project getProjectByName(String name) {
         Iterator<Project> it = projects.iterator();
         Project project = null;
+        boolean flag = true;
 
         while (it.hasNext()) {
             Project currentProject = it.next();
-            if (currentProject.getName().equals(name)) {
+            if (currentProject.getName().equals(name) && flag) {
                 project = currentProject;
+                flag = false;
             }
+
+            System.out.println("name: " + currentProject.getName() + " id: " + currentProject.getProjectID());
+        }
+
+        return project;
+    }
+
+    public Project getProjectByID(int id) {
+        Iterator<Project> it = projects.iterator();
+        Project project = null;
+        boolean flag = true;
+
+        while (it.hasNext()) {
+            Project currentProject = it.next();
+            if (currentProject.getProjectID() == id && flag) {
+                project = currentProject;
+                flag = false;
+            }
+
+            System.out.println("name: " + currentProject.getName() + " id: " + currentProject.getProjectID());
         }
 
         return project;

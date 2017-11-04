@@ -12,7 +12,6 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,7 +19,7 @@ import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.User;
-import com.projectmanagementtoolapp.pkgTasks.GetAllProjectsTask;
+import com.projectmanagementtoolapp.pkgTasks.SelectAllProjectsTask;
 import com.projectmanagementtoolapp.pkgTasks.InsertProjectTask;
 import com.projectmanagementtoolapp.pkgTasks.InsertUsersInProject;
 
@@ -58,7 +57,12 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
                               int selectedMonth, int selectedDay) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(selectedYear, selectedMonth, selectedDay);
-            txtProjectStart.setText(dateFormat.format(calendar.getTime()));
+
+            if (!isDateOK(calendar.getTime())) {
+                Snackbar.make(mRoot, "Project start cant be in the past!", Snackbar.LENGTH_LONG).show();
+            } else {
+                txtProjectStart.setText(dateFormat.format(calendar.getTime()));
+            }
         }
     };
 
@@ -153,11 +157,21 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
             }
         } else if (v == txtProjectStart) {
             new DatePickerDialog(this,
-                    R.style.AppTheme, datePickerListener,
+                    datePickerListener,
                     cal.get(Calendar.YEAR),
                     cal.get(Calendar.MONTH),
                     cal.get(Calendar.DAY_OF_MONTH)).show();
         }
+    }
+
+    private boolean isDateOK(Date date) {
+        boolean retVal = true;
+        Date currentTime = Calendar.getInstance().getTime();
+
+        if (date.before(currentTime))
+            retVal = false;
+
+        return retVal;
     }
 
     private void createProject() throws ParseException, InterruptedException, ExecutionException {
@@ -192,7 +206,7 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
             insertProjectTask.execute(project);
             String result = insertProjectTask.get();
 
-            GetAllProjectsTask getAllProjectsTask = new GetAllProjectsTask(this);
+            SelectAllProjectsTask getAllProjectsTask = new SelectAllProjectsTask(this);
             getAllProjectsTask.execute();
             result = getAllProjectsTask.get();
             System.out.println(db.getProjects());

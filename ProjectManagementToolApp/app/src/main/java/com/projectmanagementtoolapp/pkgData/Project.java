@@ -1,5 +1,7 @@
 package com.projectmanagementtoolapp.pkgData;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -7,7 +9,7 @@ import java.util.List;
  * Created by alexk on 11.10.2017.
  */
 
-public class Project {
+public class Project implements Serializable{
     private int projectID;
     private String name;
     private String description;
@@ -20,17 +22,12 @@ public class Project {
         this.description = description;
         this.contributors = contributors;
         this.startDate = startDate;
-    }
 
-    public Project(String name, String description, Date startDate) {
-        this.name = name;
-        this.description = description;
-        this.contributors = contributors;
-        this.startDate = startDate;
+        sprints = new ArrayList<>();
     }
 
     public Project() {
-
+        sprints = new ArrayList<>();
     }
 
     public int getProjectID() {

@@ -1,11 +1,13 @@
 package com.projectmanagementtoolapp.pkgActivities;
 
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
@@ -83,6 +85,37 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         } catch (Exception ex) {
             Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_SHORT);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        closeAppDialog();
+    }
+
+    private void closeAppDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        builder.setTitle("Exit");
+        builder.setMessage("Do you want to exit the Project Management Tool?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                System.exit(0);     //Close App
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     //Check the given account details

@@ -6,21 +6,21 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.projectmanagementtoolapp.pkgData.Database;
+import com.projectmanagementtoolapp.pkgData.Project;
+import com.projectmanagementtoolapp.pkgData.Sprint;
 
-import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
 /**
- * Created by Figgu on 20.10.2017.
+ * Created by alexk on 28.10.2017.
  */
 
-public class ChangeProfilePictureTask extends AsyncTask<Object, Object, String> {
-
+public class InsertSprintTask extends AsyncTask<Object, Object, String> {
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    public ChangeProfilePictureTask(Activity activity) {
+    public InsertSprintTask(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -30,10 +30,10 @@ public class ChangeProfilePictureTask extends AsyncTask<Object, Object, String> 
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
         try {
-            db.editPicture((String) params[0], (String) params[1]);
-        } catch (SQLException e) {
+            db.insertSprint((Sprint) params[0], (Project) params[1]);
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        } catch (FileNotFoundException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
 
@@ -52,5 +52,4 @@ public class ChangeProfilePictureTask extends AsyncTask<Object, Object, String> 
     protected void onPostExecute(String s) {
         this.dialog.dismiss();
     }
-
 }

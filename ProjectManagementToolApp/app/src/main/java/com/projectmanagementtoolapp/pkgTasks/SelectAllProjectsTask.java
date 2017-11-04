@@ -10,16 +10,15 @@ import com.projectmanagementtoolapp.pkgData.Database;
 import java.sql.SQLException;
 
 /**
- * Created by Figgu on 19.10.2017.
+ * Created by alexk on 17.10.2017.
  */
 
-public class ChangeUserTask extends AsyncTask<Object, Object, String>
-{
+public class SelectAllProjectsTask extends AsyncTask<Object, Object, String> {
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    public ChangeUserTask(Activity activity) {
+    public SelectAllProjectsTask(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -29,9 +28,7 @@ public class ChangeUserTask extends AsyncTask<Object, Object, String>
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
         try {
-            db.changeUser((String) params[0], (String) params[1], (String) params[2], (String) params[3]);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            db.getAllProjects();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -51,7 +48,4 @@ public class ChangeUserTask extends AsyncTask<Object, Object, String>
     protected void onPostExecute(String s) {
         this.dialog.dismiss();
     }
-
-
-
 }

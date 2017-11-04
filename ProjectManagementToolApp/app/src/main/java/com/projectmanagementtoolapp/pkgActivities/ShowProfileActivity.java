@@ -1,14 +1,11 @@
 package com.projectmanagementtoolapp.pkgActivities;
 
-import android.content.ClipData;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.transition.Visibility;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,20 +13,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.User;
-import com.projectmanagementtoolapp.pkgTasks.ChangeProfilePictureTask;
-import com.projectmanagementtoolapp.pkgTasks.ChangeUserTask;
-import com.projectmanagementtoolapp.pkgTasks.InsertUserTask;
-import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
+import com.projectmanagementtoolapp.pkgTasks.UpdateProfilePictureTask;
+import com.projectmanagementtoolapp.pkgTasks.UpdateUserTask;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -120,11 +112,11 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 txtPassword.setVisibility(View.INVISIBLE);
                 txtEmail.setVisibility(View.INVISIBLE);
 
-                ChangeUserTask changeUserTask = new ChangeUserTask(this);
+                UpdateUserTask updateUserTask = new UpdateUserTask(this);
                 User currentUser = db.getCurrentUser();
-                changeUserTask.execute(txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString(), Integer.toString(currentUser.getUserID()));
+                updateUserTask.execute(txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString(), Integer.toString(currentUser.getUserID()));
                 try {
-                    String result = changeUserTask.get();       //Wait for result
+                    String result = updateUserTask.get();       //Wait for result
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
@@ -167,7 +159,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
             ImageView imageView = (ImageView) findViewById(R.id.IVPP);
             imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 
-            ChangeProfilePictureTask cppt = new ChangeProfilePictureTask(this);
+            UpdateProfilePictureTask cppt = new UpdateProfilePictureTask(this);
             cppt.execute(db.getCurrentUser().getUserID(), picturePath);
         }
     }

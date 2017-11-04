@@ -7,18 +7,20 @@ import android.os.AsyncTask;
 
 import com.projectmanagementtoolapp.pkgData.Database;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLException;
 
 /**
- * Created by alexk on 17.10.2017.
+ * Created by Figgu on 20.10.2017.
  */
 
-public class GetAllProjectsTask extends AsyncTask<Object, Object, String> {
+public class UpdateProfilePictureTask extends AsyncTask<Object, Object, String> {
+
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    public GetAllProjectsTask(Activity activity) {
+    public UpdateProfilePictureTask(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -28,8 +30,10 @@ public class GetAllProjectsTask extends AsyncTask<Object, Object, String> {
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
         try {
-            db.getAllProjects();
+            db.editPicture((String) params[0], (String) params[1]);
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
 
@@ -48,4 +52,5 @@ public class GetAllProjectsTask extends AsyncTask<Object, Object, String> {
     protected void onPostExecute(String s) {
         this.dialog.dismiss();
     }
+
 }

@@ -30,7 +30,9 @@
             android:name=".pkgActivities.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".pkgActivities.AddProjectActivity"></activity>
+        <activity android:name=".pkgActivities.AddProjectActivity" />
+        <activity android:name=".pkgActivities.ShowSprintsActivity" />
+        <activity android:name=".pkgActivities.ShowIssuesActivity"></activity>
     </application>
 
 </manifest>

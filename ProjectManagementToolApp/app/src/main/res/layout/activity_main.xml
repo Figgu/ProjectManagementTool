@@ -14,7 +14,7 @@
         android:layout_height="match_parent"
         android:paddingTop="?attr/actionBarSize"
         android:dividerHeight="1sp"
-        android:layout_marginLeft="5sp">
+        android:paddingLeft="4dp">
     </ListView>
 
     <RelativeLayout
@@ -32,7 +32,6 @@
             android:layout_centerHorizontal="true"
             android:visibility="invisible"/>
     </RelativeLayout>
-
 
     <include
         layout="@layout/app_bar_main"

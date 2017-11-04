@@ -7,24 +7,19 @@ import android.os.AsyncTask;
 
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
-import com.projectmanagementtoolapp.pkgData.User;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
 
 /**
- * Created by alexk on 17.10.2017.
+ * Created by alexk on 28.10.2017.
  */
 
-public class InsertUsersInProject extends AsyncTask<Object, Object, String> {
-
+public class SelectAllSprintsTask extends AsyncTask<Object, Object, String> {
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    public InsertUsersInProject(Activity activity) {
+    public SelectAllSprintsTask(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -33,16 +28,8 @@ public class InsertUsersInProject extends AsyncTask<Object, Object, String> {
     @Override
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
-        System.out.println((ArrayList<User>) params[0]);
-        Iterator<User> it = ((ArrayList<User>) params[0]).iterator();
-
-        System.out.println((int) params[1]);
         try {
-            while (it.hasNext()) {
-                db.insertUserInProject(it.next().getUserID(), (int) params[1]);
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            db.getAllSprints((Project) params[0]);
         } catch (SQLException e) {
             e.printStackTrace();
         }
