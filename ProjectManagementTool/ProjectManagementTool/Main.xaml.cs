@@ -22,36 +22,33 @@ namespace ProjectManagementTool
     {
         private Kontext ktx = new Kontext();
         private User currentUser;
+        private List<Project> projects;
 
         public Main(User user)
         {
             InitializeComponent();
             this.currentUser = user;
             LoadGUI();
-
-            GenerateListItems(20);
         }
 
-        private void GenerateListItems(int numberOfItems)
+        private ListBoxItem GenerateListItem(Project p)
         {
-            for (int i=0; i<numberOfItems; i++)
+            ListBoxItem item = new ListBoxItem
             {
-                ListBoxItem item = new ListBoxItem
-                {
-                    Content = "Item " + i,
-                    FontSize = 30,
-                    Height = 50
-                };
-
-
-                projectList.Items.Add(item);
-            }
+                Name = Convert.ToString(p.Id),
+                Content = "Name: " + p.Name + ", Started On: " + p.ProjectStart.Day + "." + p.ProjectStart.Month + "." + p.ProjectStart.Year,
+                FontSize = 30,
+                Height = 50
+            };
+            return item;
         }
 
         private void LoadGUI()
         {
             lblProfile.Inlines.Clear();
             lblProfile.Inlines.Add(currentUser.Username);
+            LoadProjectList();
+            projectList.MouseDoubleClick += projectList_MouseDoubleClick;
         }
 
         private void Logout(object sender, RoutedEventArgs e)
@@ -60,5 +57,27 @@ namespace ProjectManagementTool
             login.Show();
             this.Close();
         }
+
+        private void LoadProjectList()
+        {
+            projects = ktx.GetAllProjectsOfUser(this.currentUser.Id);
+            foreach(Project p in projects)
+            {
+                projectList.Items.Add(GenerateListItem(p));
+            }
+        }
+
+        //not tested
+        private void projectList_MouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            if (projectList.SelectedItem != null)
+            {
+                ListBoxItem selectedListBoxItem = (ListBoxItem)projectList.SelectedItem;
+                Project selectedProject = projects.Find(p => p.Id == Convert.ToInt32(selectedListBoxItem.Name));
+                SprintsWindow s = new SprintsWindow(currentUser, selectedProject);
+                s.Show();
+            }
+        }
+
     }
 }

@@ -14,7 +14,7 @@ namespace ProjectManagementTool.classes
         public Kontext ()
         {
             //Use 192.168.128.152 for connection in htl, use 212.152.179.117 for external use
-            this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 212.152.179.117:1521/ora11g;User Id = d5b03; Password=d5b;";
+            this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 192.168.128.152:1521/ora11g;User Id = d5b03; Password=d5b;";
         }
 
         string connectionString;
@@ -122,6 +122,43 @@ namespace ProjectManagementTool.classes
 
             user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
             return user;
+        }
+
+        public List<Project> GetAllProjectsOfUser(int userId)
+        {
+            DataTable dt = new DataTable();
+            OleDbDataAdapter da = null;
+            List<Project> projects = new List<Project>();
+            using(OleDbConnection conn = new OleDbConnection(this.connectionString))
+            {
+                conn.Open();
+                da = new OleDbDataAdapter("select distinct p.projectid, p.name, p.description, p.projectbeginn from userisinprojectwithrole03 up join project03 p on up.PROJECTID = p.PROJECTID where up.USERID = "+userId,conn);
+                da.Fill(dt);
+                foreach(DataRow r in dt.Rows)
+                {
+                    projects.Add(new Project(Convert.ToInt32(r[0]), r[1].ToString(), r[2].ToString(), Convert.ToDateTime(r[3])));
+                }
+            }
+            return projects;
+        }
+
+        //not complete TODO: SELECT STATEMENT
+        public List<Sprint> GetAllSprintsFromProject(int projectId)
+        {
+            DataTable dt = new DataTable();
+            OleDbDataAdapter da = null;
+            List<Sprint> sprints = new List<Sprint>();
+            using (OleDbConnection conn = new OleDbConnection(this.connectionString))
+            {
+                conn.Open();
+                //da = new OleDbDataAdapter(, conn);
+                da.Fill(dt);
+                foreach (DataRow r in dt.Rows)
+                {
+                    sprints.Add(new Sprint());
+                }
+            }
+            return sprints;
         }
         #endregion
     }

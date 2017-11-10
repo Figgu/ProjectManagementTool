@@ -47,6 +47,14 @@ namespace ProjectManagementTool.classes
             this.ProjectStart = start;
         }
 
+        public Project(int id, String name, String description, DateTime start)
+        {
+            this.Id = id;
+            this.Name = name;
+            this.Description = description;
+            this.ProjectStart = start;
+        }
+
         private List<Sprint> sprints;
 
         public List<Sprint> Sprint
