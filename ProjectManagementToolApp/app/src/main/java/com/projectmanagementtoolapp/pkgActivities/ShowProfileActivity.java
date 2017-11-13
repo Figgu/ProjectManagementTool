@@ -54,7 +54,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     private ImageButton btnEditImage;
     private static final int RESULT_LOAD_IMAGE = 1;
 
-    //non gui element
+    //non gui elements
     private Database db;
 
     //Figgu pls
