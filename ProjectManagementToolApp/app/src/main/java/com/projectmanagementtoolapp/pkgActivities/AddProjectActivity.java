@@ -77,8 +77,6 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
         getAllViews();
         initEventhandlers();
         db = Database.getInstance();
-
-        contributors.add(db.getCurrentUser());
     }
 
     /*
@@ -200,6 +198,7 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
         }
 
         if (everythingOK) {
+            contributors.add(db.getCurrentUser());
             Date date = dateFormat.parse(txtProjectStart.getText().toString());
             Project project = new Project(txtProjectName.getText().toString(), txtProjectDescription.getText().toString(), contributors, date);
             //Create the basic project

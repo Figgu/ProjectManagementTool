@@ -30,7 +30,7 @@ public class InsertUserTask extends AsyncTask<Object, Object, String> {
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
         try {
-            db.insertUserWithPicture((String) params[0], (String) params[1], (String) params[2], (byte[]) params[3]);
+            db.insertUser((String) params[0], (String) params[1], (String) params[2]);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
