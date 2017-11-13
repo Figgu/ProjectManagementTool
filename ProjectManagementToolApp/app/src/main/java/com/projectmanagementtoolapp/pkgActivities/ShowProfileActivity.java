@@ -42,7 +42,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     private Button btnEditImage;
     private static final int RESULT_LOAD_IMAGE = 1;
 
-    //non gui elements
+    //non gui element
     private Database db;
 
     protected void onCreate(Bundle savedInstanceState) {
