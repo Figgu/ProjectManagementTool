@@ -200,7 +200,8 @@ public class Database {
 
     public void editPicture(String UserID, String path) throws SQLException, FileNotFoundException {
 
-        PreparedStatement pstmt = conn.prepareStatement("update user03 set ProfilePicture = ? where id = ?");
+        System.out.println(UserID + "loooooooooooooool");
+        PreparedStatement pstmt = conn.prepareStatement("update user03 set ProfilePicture = ? where userid = ?");
         File blob = new File(path);
         FileInputStream in = new FileInputStream(blob);
         // the cast to int is necessary because with JDBC 4 there is
@@ -208,7 +209,8 @@ public class Database {
         // but that is not implemented by Oracle
         pstmt.setBinaryStream(1, in, (int)blob.length());
         pstmt.setInt(2, Integer.parseInt(UserID));  // set the PK value
-        pstmt.executeUpdate();
+        System.out.println(UserID + "loooooooooooooool");
+        pstmt.executeQuery();
         conn.commit();
     }
 

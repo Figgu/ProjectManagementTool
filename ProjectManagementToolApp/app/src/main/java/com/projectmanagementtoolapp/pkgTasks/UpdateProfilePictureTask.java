@@ -29,7 +29,9 @@ public class UpdateProfilePictureTask extends AsyncTask<Object, Object, String> 
     @Override
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
+        System.out.println("test");
         try {
+            System.out.println("test");
             db.editPicture((String) params[0], (String) params[1]);
         } catch (SQLException e) {
             e.printStackTrace();
