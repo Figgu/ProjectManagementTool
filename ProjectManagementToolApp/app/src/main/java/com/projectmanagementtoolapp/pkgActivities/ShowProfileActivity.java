@@ -29,9 +29,11 @@ import com.projectmanagementtoolapp.pkgTasks.ChangeProfilePictureTask;
 import com.projectmanagementtoolapp.pkgTasks.ChangeUserTask;
 import com.projectmanagementtoolapp.pkgTasks.InsertUserTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
+import com.projectmanagementtoolapp.pkgTasks.UpdateUserTask;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Figgu on 17.10.2017.
