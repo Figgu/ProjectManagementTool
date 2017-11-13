@@ -1,5 +1,11 @@
 package com.projectmanagementtoolapp.pkgActivities;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +21,7 @@ import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.InsertUserTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
 
+import java.io.ByteArrayOutputStream;
 import java.util.concurrent.ExecutionException;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
@@ -70,6 +77,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         btnRegister.setOnClickListener(this);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     @Override
     public void onClick(View v) {
         if(v == btnRegister) {
@@ -84,6 +92,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     }
 
     //Checking the given account details
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
     private void doRegister() throws ExecutionException, InterruptedException {
         boolean usernameEntered = true;
         boolean emailEntered = true;
@@ -136,8 +145,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 if (usernameOK && emailOK && passwordOK) {
                     if (!db.usernameExists(txtUsername.getText().toString())) {
                         if (!db.emailExists(txtEmail.getText().toString())) {
+                            Bitmap bmp = BitmapFactory.decodeResource(getResources(), R.drawable.add);
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            bmp.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                            byte[] byteArray = stream.toByteArray();
+
                             InsertUserTask insertUserTask = new InsertUserTask(this);
-                            insertUserTask.execute(txtUsername.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString());
+                            insertUserTask.execute(txtUsername.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString(), byteArray);
                             String ret = insertUserTask.get();
 
                             SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(this);

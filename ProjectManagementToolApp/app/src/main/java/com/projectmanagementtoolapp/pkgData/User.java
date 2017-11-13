@@ -11,7 +11,7 @@ public class User {
     private String username;
     private String password;
     private String email;
-    //TODO blob
+    private byte[] profilePicture;
     private List<Project> projects;
 
     public User(int userID, String username, String password, String email) {
@@ -28,6 +28,14 @@ public class User {
     }
 
     public User() {
+    }
+
+    public byte[] getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(byte[] profilePicture) {
+        this.profilePicture = profilePicture;
     }
 
     public int getUserID() {

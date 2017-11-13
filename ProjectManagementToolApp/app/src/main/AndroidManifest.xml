@@ -32,7 +32,8 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".pkgActivities.AddProjectActivity" />
         <activity android:name=".pkgActivities.ShowSprintsActivity" />
-        <activity android:name=".pkgActivities.ShowIssuesActivity"></activity>
+        <activity android:name=".pkgActivities.ShowIssuesActivity" />
+        <activity android:name=".pkgActivities.AddIssueActivity"></activity>
     </application>
 
 </manifest>

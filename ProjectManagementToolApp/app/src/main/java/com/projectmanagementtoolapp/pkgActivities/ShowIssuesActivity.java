@@ -37,9 +37,10 @@ public class ShowIssuesActivity extends AppCompatActivity implements AdapterView
 
         db = Database.getInstance();
         currentSprint = (Sprint) getIntent().getSerializableExtra("sprint");
-        setTitle("Issues of " + currentSprint);
+        setTitle("Issues of Sprint");
         getAllViews();
         initEventHandlers();
+        initList();
     }
 
     /*

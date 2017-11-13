@@ -46,7 +46,7 @@ public class Database {
 }
 
     private Connection createConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:oracle:thin:@212.152.179.117:1521:ora11g", user, pwd);
+        return DriverManager.getConnection("jdbc:oracle:thin:@192.168.128.152:1521:ora11g", user, pwd);
     }
 
     //Only called by the async task
@@ -61,6 +61,7 @@ public class Database {
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
             user.setEmail(rs.getString("email"));
+            user.setProfilePicture(rs.getBytes("profilepicture"));
             users.add(user);
         }
 
@@ -75,6 +76,17 @@ public class Database {
         statement.setString(1, username);
         statement.setString(2, password);
         statement.setString(3, email);
+        statement.executeQuery();
+        statement.close();
+    }
+
+    //Only called by the async task
+    public void insertUserWithPicture(String username, String password, String email, byte[] picture) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("insert into user03 (username, password, email, profilepicture) values (?, ?, ?, ?)");
+        statement.setString(1, username);
+        statement.setString(2, password);
+        statement.setString(3, email);
+        statement.setBytes(4, picture);
         statement.executeQuery();
         statement.close();
     }
@@ -102,7 +114,7 @@ public class Database {
 
     //Only called by the async task
     public void insertSprint(Sprint sprint, Project project) throws ClassNotFoundException, SQLException {
-        PreparedStatement statement = conn.prepareStatement("insert into sprint03 (projectID, endDate, startDate) values (?, ?, ?)");
+        PreparedStatement statement = conn.prepareStatement("insert into sprint03 (projectID, startdate, endDate) values (?, ?, ?)");
         statement.setInt(1, project.getProjectID());
         statement.setDate(2, new Date(sprint.getStartDate().getTime()));
         statement.setDate(3, new Date(sprint.getEndDate().getTime()));
@@ -184,24 +196,6 @@ public class Database {
         }
 
         return counter;
-    }
-
-    private void setProjectOnIndex(int index, Project project) {
-
-    }
-
-    public boolean loginCorrect(User user) {
-        boolean retVal = false;
-        Iterator<User> it = users.iterator();
-
-        while (it.hasNext()) {
-            User currentUser = it.next();
-            if (currentUser.getUsername().equals(user.getUsername()) && currentUser.getPassword().equals(user.getPassword())) {
-                retVal = true;
-            }
-        }
-
-        return retVal;
     }
 
     public void editPicture(String UserID, String path) throws SQLException, FileNotFoundException {
