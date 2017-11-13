@@ -1,37 +1,28 @@
 package com.projectmanagementtoolapp.pkgActivities;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.transition.Visibility;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.User;
-import com.projectmanagementtoolapp.pkgTasks.ChangeProfilePictureTask;
-import com.projectmanagementtoolapp.pkgTasks.ChangeUserTask;
-import com.projectmanagementtoolapp.pkgTasks.InsertUserTask;
-import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
+import com.projectmanagementtoolapp.pkgTasks.UpdateProfilePictureTask;
 import com.projectmanagementtoolapp.pkgTasks.UpdateUserTask;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -48,22 +39,16 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     private TextView lblPassword;
     private TextView lblEmail;
     private ImageView profilePicture;
-    private Button btnEdit;
-    private Button btnSave;
-    private ImageButton btnEditImage;
+    private Button btnEditImage;
     private static final int RESULT_LOAD_IMAGE = 1;
 
-    //non gui elements
+    //non gui element
     private Database db;
 
     //Figgu pls
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_showprofile);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            checkPermissions();
-        }
 
         setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);      //Back navigation
@@ -72,6 +57,12 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         initEventHandlers();
         db = Database.getInstance();
         User currentUser = db.getCurrentUser();
+
+        System.out.println(currentUser.getProfilePicture().length);
+        //Convert byte array to bitmap
+        Bitmap bmp = BitmapFactory.decodeByteArray(currentUser.getProfilePicture(), 0, currentUser.getProfilePicture().length);
+        //Set the imageview
+        profilePicture.setImageBitmap(bmp);
 
         lblName.setText(currentUser.getUsername());
         lblPassword.setText(currentUser.getPassword());
@@ -89,14 +80,11 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         lblEmail = (TextView) findViewById(R.id.lblEmail);
         lblPassword = (TextView) findViewById(R.id.lblPassword);
         profilePicture = (ImageView) findViewById(R.id.IVPP);
-        btnEdit = (Button) findViewById(R.id.btnEdit);
         btnEditImage = (Button) findViewById(R.id.btnEditImage);
-        btnEditImage = (ImageButton) findViewById(R.id.btnEditImage);
     }
 
     private void initEventHandlers() {
         btnEditImage.setOnClickListener(this);
-
     }
 
     @Override
@@ -113,14 +101,12 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case android.R.id.home:
-                // app icon in action bar clicked; goto parent activity.
                 this.finish();
                 return true;
             case R.id.edit_profile:
                 lblName.setVisibility(View.INVISIBLE);
                 lblEmail.setVisibility(View.INVISIBLE);
                 lblPassword.setVisibility(View.INVISIBLE);
-            btnEdit.setVisibility(View.INVISIBLE);
                 txtName.setVisibility(View.VISIBLE);
                 txtPassword.setVisibility(View.VISIBLE);
                 txtEmail.setVisibility(View.VISIBLE);
@@ -129,11 +115,9 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 lblName.setVisibility(View.VISIBLE);
                 lblEmail.setVisibility(View.VISIBLE);
                 lblPassword.setVisibility(View.VISIBLE);
-            btnEdit.setVisibility(View.VISIBLE);
                 txtName.setVisibility(View.INVISIBLE);
                 txtPassword.setVisibility(View.INVISIBLE);
                 txtEmail.setVisibility(View.INVISIBLE);
-            btnSave.setVisibility(View.INVISIBLE);
 
                 UpdateUserTask updateUserTask = new UpdateUserTask(this);
                 User currentUser = db.getCurrentUser();
@@ -163,7 +147,6 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         if(v == btnEditImage)
         {
-            checkPermissions();
             Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(i, RESULT_LOAD_IMAGE);
         }
@@ -182,12 +165,6 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
             cursor.close();
             ImageView imageView = (ImageView) findViewById(R.id.IVPP);
             imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-            System.out.println("wat");
-            ChangeProfilePictureTask cppt = new ChangeProfilePictureTask(this);
-            cppt.execute(Integer.toString(db.getCurrentUser().getUserID()), picturePath);
-            System.out.println("wat");
-        }
-    }
 
             UpdateProfilePictureTask cppt = new UpdateProfilePictureTask(this);
             cppt.execute(db.getCurrentUser().getUserID(), picturePath);
