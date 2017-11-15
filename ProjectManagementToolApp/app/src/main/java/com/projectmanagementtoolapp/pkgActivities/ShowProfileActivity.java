@@ -45,6 +45,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     //non gui element
     private Database db;
 
+    //Figgu pls
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_showprofile);
