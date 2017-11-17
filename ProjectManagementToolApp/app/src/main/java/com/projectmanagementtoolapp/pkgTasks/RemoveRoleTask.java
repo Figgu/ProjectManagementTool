@@ -29,7 +29,11 @@ public class RemoveRoleTask extends AsyncTask<Object, Object, String> {
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
 
-        db.removeRole((String) params[0]);
+        try {
+            db.removeRole((String) params[0]);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
 
         return null;

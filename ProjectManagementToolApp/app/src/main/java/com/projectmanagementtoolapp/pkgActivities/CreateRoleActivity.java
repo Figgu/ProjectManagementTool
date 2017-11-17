@@ -19,6 +19,7 @@ import com.projectmanagementtoolapp.pkgData.Sprint;
 import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.InsertRoleTask;
 import com.projectmanagementtoolapp.pkgTasks.InsertUserTask;
+import com.projectmanagementtoolapp.pkgTasks.RemoveRoleTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllRolesTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
 import com.projectmanagementtoolapp.pkgTasks.UpdateUserTask;
@@ -61,9 +62,18 @@ public class CreateRoleActivity extends AppCompatActivity implements View.OnClic
         }
         else if(v == btnRemoveRole)
         {
-            InsertRoleTask insertRoleTask = new InsertRoleTask(this);
-
-            insertRoleTask.execute(txtRoleName.getText(), txtRoleDescription.getText(), String.valueOf(cbIsUnique.isChecked()));
+            RemoveRoleTask removeRoleTask = new RemoveRoleTask(this);
+            Role role = (Role) listViewRoles.getSelectedItem();
+            removeRoleTask.execute(String.valueOf(role.getRoleID()));
+            try {
+                fillListView();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
     }

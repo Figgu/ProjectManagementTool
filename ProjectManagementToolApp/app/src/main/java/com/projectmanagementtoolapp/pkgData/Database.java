@@ -346,8 +346,12 @@ public class Database {
         return roles;
     }
 
-    public void removeRole(String roleId) {
-
+    public void removeRole(String roleId) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("delete from role03 where roleid = ?");
+        statement.setString(1, roleId);
+        ResultSet rs = statement.executeQuery();
+        statement.close();
+        rs.close();
     }
 
     public ArrayList<Role> getRoles() {
