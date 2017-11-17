@@ -28,6 +28,8 @@ public class Database {
     private String pwd = "d5b";
     private ArrayList<User> users;
     private ArrayList<Project> projects;
+    private ArrayList<Role> roles;
+    private ArrayList<Right> rights;
     private Connection conn;
     private User currentUser;       //Current logged in user
 
@@ -67,6 +69,16 @@ public class Database {
         System.out.println("users: " + users);
         statement.close();
         rs.close();
+    }
+
+    public void insertRole()
+    {
+
+    }
+
+    public void getAllRoles()
+    {
+        
     }
 
     //Only called by the async task

@@ -58,11 +58,8 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         db = Database.getInstance();
         User currentUser = db.getCurrentUser();
 
-        System.out.println(currentUser.getProfilePicture().length);
-        //Convert byte array to bitmap
-        Bitmap bmp = BitmapFactory.decodeByteArray(currentUser.getProfilePicture(), 0, currentUser.getProfilePicture().length);
-        //Set the imageview
-        profilePicture.setImageBitmap(bmp);
+
+
 
         lblName.setText(currentUser.getUsername());
         lblPassword.setText(currentUser.getPassword());

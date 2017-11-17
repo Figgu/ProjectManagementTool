@@ -3,21 +3,36 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/textView"
+    <ListView
+        android:id="@+id/listViewRoles"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="405dp" />
 
-    <TextView
-        android:id="@+id/textView2"
+    <GridLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/textView3"
+        <Button
+            android:id="@+id/btnAddRole"
+            android:layout_width="190dp"
+            android:layout_height="match_parent"
+            android:text="Add" />
+
+        <Button
+            android:id="@+id/btnRemoveRole"
+            android:layout_width="190dp"
+            android:layout_height="match_parent"
+            android:layout_column="3"
+            android:layout_row="0"
+            android:text="Remove" />
+    </GridLayout>
+
+    <EditText
+        android:id="@+id/txt_roleName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Name" />
+
 </LinearLayout>
