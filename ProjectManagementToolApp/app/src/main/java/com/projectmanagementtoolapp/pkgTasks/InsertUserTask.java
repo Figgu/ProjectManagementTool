@@ -9,6 +9,9 @@ import com.projectmanagementtoolapp.pkgActivities.LoginActivity;
 import com.projectmanagementtoolapp.pkgActivities.RegisterActivity;
 import com.projectmanagementtoolapp.pkgData.Database;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.sql.SQLException;
 
 /**
@@ -30,15 +33,26 @@ public class InsertUserTask extends AsyncTask<Object, Object, String> {
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
         try {
-            db.insertUser((String) params[0], (String) params[1], (String) params[2]);
+            db.insertUserWithPicture((String) params[0], (String) params[1], (String) params[2], objToByte(params[3]));
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
         return null;
     }
+
+    public byte[] objToByte(Object o) throws IOException {
+        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+        ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
+        objStream.writeObject(o);
+
+        return byteStream.toByteArray();
+    }
+
 
     @Override
     protected void onPreExecute() {

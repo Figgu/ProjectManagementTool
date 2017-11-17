@@ -23,6 +23,8 @@ import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.UpdateProfilePictureTask;
 import com.projectmanagementtoolapp.pkgTasks.UpdateUserTask;
 
+import java.io.ByteArrayInputStream;
+import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -58,8 +60,15 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         db = Database.getInstance();
         User currentUser = db.getCurrentUser();
 
-
-
+        /*
+        try {
+            byte[] imagebytes = currentUser.getProfilePicture().getBytes(0, (int) currentUser.getProfilePicture().length());
+            Bitmap bitmap = BitmapFactory.decodeByteArray(imagebytes, 0, imagebytes.length);
+            profilePicture.setImageBitmap(bitmap);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        */
 
         lblName.setText(currentUser.getUsername());
         lblPassword.setText(currentUser.getPassword());

@@ -1,5 +1,6 @@
 package com.projectmanagementtoolapp.pkgData;
 
+import java.sql.Blob;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ public class User {
     private String username;
     private String password;
     private String email;
-    private byte[] profilePicture;
+    private Blob profilePicture;
     private List<Project> projects;
 
     public User(int userID, String username, String password, String email) {
@@ -70,11 +71,11 @@ public class User {
         this.projects = projects;
     }
 
-    public byte[] getProfilePicture() {
+    public Blob getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(byte[] profilePicture) {
+    public void setProfilePicture(Blob profilePicture) {
         this.profilePicture = profilePicture;
     }
 

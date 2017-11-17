@@ -3,15 +3,18 @@ package com.projectmanagementtoolapp.pkgData;
 import android.content.Intent;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
@@ -53,8 +56,8 @@ public class Database {
 
     //Only called by the async task
     public void selectAllUsers() throws ClassNotFoundException, SQLException {
-        PreparedStatement statement = conn.prepareStatement("select * from user03");
-        ResultSet rs = statement.executeQuery();
+        Statement statement = conn.createStatement();
+        ResultSet rs = statement.executeQuery("select * from user03");
         users = new ArrayList<>();
 
         while(rs.next()) {
@@ -63,7 +66,7 @@ public class Database {
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
             user.setEmail(rs.getString("email"));
-            user.setProfilePicture(rs.getBytes("profilepicture"));
+            user.setProfilePicture(rs.getBlob("profilepicture"));
             users.add(user);
         }
 
@@ -84,6 +87,7 @@ public class Database {
 
     //Only called by the async task
     public void insertUserWithPicture(String username, String password, String email, byte[] picture) throws ClassNotFoundException, SQLException {
+        //InputStream targetStream = new ByteArrayInputStream(picture);
         PreparedStatement statement = conn.prepareStatement("insert into user03 (username, password, email, profilepicture) values (?, ?, ?, ?)");
         statement.setString(1, username);
         statement.setString(2, password);
