@@ -10,15 +10,16 @@ import com.projectmanagementtoolapp.pkgData.Database;
 import java.sql.SQLException;
 
 /**
- * Created by Figgu on 10.11.2017.
+ * Created by Figgu on 17.11.2017.
  */
 
-public class InsertRoleTask extends AsyncTask<Object, Object, String> {
+public class RemoveRoleTask extends AsyncTask<Object, Object, String> {
+
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    public InsertRoleTask(Activity activity) {
+    public RemoveRoleTask (Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -27,11 +28,9 @@ public class InsertRoleTask extends AsyncTask<Object, Object, String> {
     @Override
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
-        try {
-            db.insertRole((String) params[0], (String) params[1], (String) params[2]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+
+        db.removeRole((String) params[0]);
+
 
         return null;
     }

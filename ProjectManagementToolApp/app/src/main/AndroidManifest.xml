@@ -34,8 +34,8 @@
         <activity android:name=".pkgActivities.AddProjectActivity" />
         <activity android:name=".pkgActivities.ShowSprintsActivity" />
         <activity android:name=".pkgActivities.ShowIssuesActivity" />
-        <activity android:name=".pkgActivities.AddIssueActivity"></activity>
-        <activity android:name=".pkgActivities.CreateRoleActivity"></activity>
+
+        <activity android:name=".pkgActivities.CreateRoleActivity" />
     </application>
 
 </manifest>

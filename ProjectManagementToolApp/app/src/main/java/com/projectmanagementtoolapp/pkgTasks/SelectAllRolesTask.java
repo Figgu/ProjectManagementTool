@@ -10,33 +10,33 @@ import com.projectmanagementtoolapp.pkgData.Database;
 import java.sql.SQLException;
 
 /**
- * Created by Figgu on 10.11.2017.
+ * Created by Figgu on 17.11.2017.
  */
 
-public class InsertRoleTask extends AsyncTask<Object, Object, String> {
+public class SelectAllRolesTask extends AsyncTask<Object, Object, String> {
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    public InsertRoleTask(Activity activity) {
+    public SelectAllRolesTask(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
     }
-
     @Override
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
-        try {
-            db.insertRole((String) params[0], (String) params[1], (String) params[2]);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        System.out.println("check2");
+            try {
+                db.getAllRoles();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
 
-        return null;
+            return null;
+
     }
 
-    @Override
     protected void onPreExecute() {
         this.dialog.setTitle("Loading");
         this.dialog.setMessage("Wait while loading...");

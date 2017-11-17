@@ -180,10 +180,6 @@ public class Database {
         rs.close();
     }
 
-    public void insertRole() {
-
-    }
-
     private int getIndexOfProject(int ID) {
         Iterator<Project> it = projects.iterator();
         int counter = 0;
@@ -322,6 +318,15 @@ public class Database {
         return projects;
     }
 
+    public void insertRole(String roleName, String description, String isUnique) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("insert into role03 (name, description, ISUNIQUE) values (?, ?, ?)");
+        statement.setString(1, roleName);
+        statement.setString(2, description);
+        statement.setString(3, isUnique);
+        statement.executeQuery();
+        statement.close();
+    }
+
     public ArrayList<Role> getAllRoles() throws SQLException {
         PreparedStatement statement = conn.prepareStatement("select * from role03");
         ResultSet rs = statement.executeQuery();
@@ -329,16 +334,27 @@ public class Database {
 
         while(rs.next()) {
             Role role = new Role();
-            role.setRoleID(rs.getInt("projectID"));
+            role.setRoleID(rs.getInt("roleID"));
             role.setName(rs.getString("name"));
             role.setDescription(rs.getString("description"));
-
+            role.setUnique(Boolean.parseBoolean(rs.getString("isunique")));
+            System.out.println("check1");
             roles.add(role);
         }
-
-        System.out.println("roles: " + roles);
         statement.close();
         rs.close();
         return roles;
+    }
+
+    public void removeRole(String roleId) {
+
+    }
+
+    public ArrayList<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(ArrayList<Role> roles) {
+        this.roles = roles;
     }
 }
