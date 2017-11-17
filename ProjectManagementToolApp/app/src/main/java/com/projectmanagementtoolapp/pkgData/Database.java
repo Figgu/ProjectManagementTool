@@ -48,7 +48,7 @@ public class Database {
 }
 
     private Connection createConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:oracle:thin:@212.152.179.117:1521:ora11g", user, pwd);
+        return DriverManager.getConnection("jdbc:oracle:thin:@192.168.128.152:1521:ora11g", user, pwd);
     }
 
     //Only called by the async task
@@ -63,6 +63,7 @@ public class Database {
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
             user.setEmail(rs.getString("email"));
+            user.setProfilePicture(rs.getBytes("profilepicture"));
             users.add(user);
         }
 
@@ -71,22 +72,23 @@ public class Database {
         rs.close();
     }
 
-    public void insertRole()
-    {
-
-    }
-
-    public void getAllRoles()
-    {
-        
-    }
-
     //Only called by the async task
     public void insertUser(String username, String password, String email) throws ClassNotFoundException, SQLException {
         PreparedStatement statement = conn.prepareStatement("insert into user03 (username, password, email) values (?, ?, ?)");
         statement.setString(1, username);
         statement.setString(2, password);
         statement.setString(3, email);
+        statement.executeQuery();
+        statement.close();
+    }
+
+    //Only called by the async task
+    public void insertUserWithPicture(String username, String password, String email, byte[] picture) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("insert into user03 (username, password, email, profilepicture) values (?, ?, ?, ?)");
+        statement.setString(1, username);
+        statement.setString(2, password);
+        statement.setString(3, email);
+        statement.setBytes(4, picture);
         statement.executeQuery();
         statement.close();
     }
@@ -114,7 +116,7 @@ public class Database {
 
     //Only called by the async task
     public void insertSprint(Sprint sprint, Project project) throws ClassNotFoundException, SQLException {
-        PreparedStatement statement = conn.prepareStatement("insert into sprint03 (projectID, endDate, startDate) values (?, ?, ?)");
+        PreparedStatement statement = conn.prepareStatement("insert into sprint03 (projectID, startdate, endDate) values (?, ?, ?)");
         statement.setInt(1, project.getProjectID());
         statement.setDate(2, new Date(sprint.getStartDate().getTime()));
         statement.setDate(3, new Date(sprint.getEndDate().getTime()));
@@ -178,6 +180,10 @@ public class Database {
         rs.close();
     }
 
+    public void insertRole() {
+
+    }
+
     private int getIndexOfProject(int ID) {
         Iterator<Project> it = projects.iterator();
         int counter = 0;
@@ -198,27 +204,8 @@ public class Database {
         return counter;
     }
 
-    private void setProjectOnIndex(int index, Project project) {
-
-    }
-
-    public boolean loginCorrect(User user) {
-        boolean retVal = false;
-        Iterator<User> it = users.iterator();
-
-        while (it.hasNext()) {
-            User currentUser = it.next();
-            if (currentUser.getUsername().equals(user.getUsername()) && currentUser.getPassword().equals(user.getPassword())) {
-                retVal = true;
-            }
-        }
-
-        return retVal;
-    }
-
     public void editPicture(String UserID, String path) throws SQLException, FileNotFoundException {
 
-        System.out.println(UserID + "loooooooooooooool");
         PreparedStatement pstmt = conn.prepareStatement("update user03 set ProfilePicture = ? where userid = ?");
         File blob = new File(path);
         FileInputStream in = new FileInputStream(blob);
@@ -227,8 +214,7 @@ public class Database {
         // but that is not implemented by Oracle
         pstmt.setBinaryStream(1, in, (int)blob.length());
         pstmt.setInt(2, Integer.parseInt(UserID));  // set the PK value
-        System.out.println(UserID + "loooooooooooooool");
-        pstmt.executeQuery();
+        pstmt.executeUpdate();
         conn.commit();
     }
 
@@ -334,5 +320,25 @@ public class Database {
 
     public ArrayList<Project> getProjects() {
         return projects;
+    }
+
+    public ArrayList<Role> getAllRoles() throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select * from role03");
+        ResultSet rs = statement.executeQuery();
+        roles = new ArrayList<>();
+
+        while(rs.next()) {
+            Role role = new Role();
+            role.setRoleID(rs.getInt("projectID"));
+            role.setName(rs.getString("name"));
+            role.setDescription(rs.getString("description"));
+
+            roles.add(role);
+        }
+
+        System.out.println("roles: " + roles);
+        statement.close();
+        rs.close();
+        return roles;
     }
 }

@@ -1,9 +1,11 @@
 package com.projectmanagementtoolapp.pkgActivities;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,15 +14,20 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
+import com.projectmanagementtoolapp.pkgData.Project;
+import com.projectmanagementtoolapp.pkgTasks.SelectAllProjectsTask;
+
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
 
     //Gui elements
     private CoordinatorLayout layout;
@@ -29,6 +36,7 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout drawer;
     private NavigationView navigationView;
     private Toolbar toolbar;
+    private TextView txtNoProjectsFound;
 
     //Non gui elements
     private Database db;
@@ -39,13 +47,33 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         db = Database.getInstance();
-        setTitle("Your projects");
+
+        setTitle("All projects");
         getAllViews();
         setSupportActionBar(toolbar);
         initEventlisteners();
-        addFAB();
+
+        //Get all projects
+        SelectAllProjectsTask getAllProjectsTask = new SelectAllProjectsTask(this);
+        getAllProjectsTask.execute();
+        try {
+            String result = getAllProjectsTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
         addList();
         setUpNavigation();
+    }
+
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 
     private void getAllViews() {
@@ -55,6 +83,7 @@ public class MainActivity extends AppCompatActivity
         drawer  = (DrawerLayout) findViewById(R.id.drawer_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+        txtNoProjectsFound = (TextView) findViewById(R.id.txtNoProjectsFoundMain);
     }
 
     private void initEventlisteners() {
@@ -64,6 +93,8 @@ public class MainActivity extends AppCompatActivity
         toggle.syncState();
 
         navigationView.setNavigationItemSelectedListener(this);
+        projectsList.setOnItemClickListener(this);
+        fab.setOnClickListener(this);
     }
 
     @Override
@@ -72,17 +103,40 @@ public class MainActivity extends AppCompatActivity
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-
-
+            showLogoutDialog();
         }
     }
 
-    @Override
-    public void onResume()
-    {  // After a pause OR at startup
-        super.onResume();
-        //Refresh your stuff here
+    private void showLogoutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
+        builder.setTitle("Logout");
+        builder.setMessage("Do you want to logout?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                logout();
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    private void logout() {
+        db.setCurrentUser(null);
+        Intent intent = new Intent(this, LoginActivity.class);
+        startActivity(intent);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -93,10 +147,10 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_showProfile) {
             Intent intent = new Intent(this, ShowProfileActivity.class);
             startActivity(intent);
-
         } else if (id == R.id.nav_logout) {
-            db.setCurrentUser(null);
-            Intent intent = new Intent(this, LoginActivity.class);
+            logout();
+        } else if (id == R.id.nav_createRole) {
+            Intent intent = new Intent(this, CreateRoleActivity.class);
             startActivity(intent);
         }
 
@@ -104,16 +158,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void addFAB() {
-        fab.setOnClickListener(this);
-    }
-
     private void addList() {
-        String[] mobileArray = {"Android","IPhone","WindowsMobile","Blackberry",
-                "WebOS","Ubuntu","Windows7","Max OS X"};
-
-        ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, mobileArray);
-        projectsList.setAdapter(adapter);
+        if  (db.getProjects().size() > 0) {
+            ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, db.getProjects());
+            projectsList.setAdapter(adapter);
+        } else {
+            txtNoProjectsFound.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -131,5 +182,13 @@ public class MainActivity extends AppCompatActivity
 
         TextView nav_email = (TextView)hView.findViewById(R.id.txtEmailInNav);
         nav_email.setText(db.getCurrentUser().getEmail());
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Project project = (Project) projectsList.getItemAtPosition(position);
+        Intent intent = new Intent(this, ShowSprintsActivity.class);
+        intent.putExtra("project", project);
+        startActivity(intent);
     }
 }

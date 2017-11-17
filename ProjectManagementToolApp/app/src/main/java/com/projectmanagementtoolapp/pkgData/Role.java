@@ -15,6 +15,11 @@ public class Role {
         this.description = description;
     }
 
+    public Role()
+    {
+
+    }
+
     public int getRoleID() {
         return roleID;
     }
