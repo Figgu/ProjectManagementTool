@@ -1,38 +1,30 @@
 package com.projectmanagementtoolapp.pkgActivities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Role;
-import com.projectmanagementtoolapp.pkgData.Sprint;
-import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.InsertRoleTask;
-import com.projectmanagementtoolapp.pkgTasks.InsertUserTask;
 import com.projectmanagementtoolapp.pkgTasks.RemoveRoleTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllRolesTask;
-import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
-import com.projectmanagementtoolapp.pkgTasks.UpdateUserTask;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 /**
  * Created by Figgu on 10.11.2017.
  */
 
-public class CreateRoleActivity extends AppCompatActivity implements View.OnClickListener{
+public class CreateRoleActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener{
 
     private Button btnAddRole;
     private Button btnRemoveRole;
@@ -41,6 +33,9 @@ public class CreateRoleActivity extends AppCompatActivity implements View.OnClic
     private CheckBox cbIsUnique;
     private ListView listViewRoles;
     private Database db;
+    private Role selectedItem;
+
+
 
     @Override
     public void onClick(View v) {
@@ -63,8 +58,7 @@ public class CreateRoleActivity extends AppCompatActivity implements View.OnClic
         else if(v == btnRemoveRole)
         {
             RemoveRoleTask removeRoleTask = new RemoveRoleTask(this);
-            Role role = (Role) listViewRoles.getSelectedItem();
-            removeRoleTask.execute(String.valueOf(role.getRoleID()));
+            removeRoleTask.execute(String.valueOf(selectedItem.getRoleID()));
             try {
                 fillListView();
             } catch (SQLException e) {
@@ -75,7 +69,6 @@ public class CreateRoleActivity extends AppCompatActivity implements View.OnClic
                 e.printStackTrace();
             }
         }
-
     }
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,6 +104,14 @@ public class CreateRoleActivity extends AppCompatActivity implements View.OnClic
     private void initEventHandlers() {
         btnAddRole.setOnClickListener(this);
         btnRemoveRole.setOnClickListener(this);
+        listViewRoles.setOnItemClickListener(new android.widget.AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedItem = (Role) listViewRoles.getItemAtPosition(position);
+                System.out.println(position);
+            }
+
+        });
     }
 
     private void fillListView() throws SQLException, ExecutionException, InterruptedException {
@@ -123,4 +124,10 @@ public class CreateRoleActivity extends AppCompatActivity implements View.OnClic
     }
 
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        System.out.println("boi");
+
+
+    }
 }
