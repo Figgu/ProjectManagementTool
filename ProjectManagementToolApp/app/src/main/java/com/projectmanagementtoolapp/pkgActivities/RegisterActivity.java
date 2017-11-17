@@ -1,4 +1,4 @@
-package com.projectmanagementtoolapp.activities;
+package com.projectmanagementtoolapp.pkgActivities;
 
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -10,15 +10,25 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 
 import com.projectmanagementtoolapp.R;
+import com.projectmanagementtoolapp.pkgData.Database;
+import com.projectmanagementtoolapp.pkgData.User;
+import com.projectmanagementtoolapp.pkgTasks.InsertUserTask;
+import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
+
+import java.util.concurrent.ExecutionException;
 
 public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //Gui elements
     private EditText txtUsername;
     private EditText txtEmail;
     private EditText txtPassword;
     private EditText txtConfirmPassword;
     private Button btnRegister;
     private RelativeLayout mRoot;
+
+    //non gui elements
+    private Database db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +39,7 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);      //Back navigation
         getAllViews();
         initEventHandlers();
+        db = Database.getInstance();
     }
 
     /*
@@ -62,12 +73,18 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     @Override
     public void onClick(View v) {
         if(v == btnRegister) {
-            doRegister();
+            try {
+                doRegister();
+            } catch (ExecutionException e) {
+                Snackbar.make(mRoot, "Your passwords are not equal!", Snackbar.LENGTH_LONG).show();
+            } catch (InterruptedException e) {
+                Snackbar.make(mRoot, "Your passwords are not equal!", Snackbar.LENGTH_LONG).show();
+            }
         }
     }
 
     //Checking the given account details
-    private void doRegister() {
+    private void doRegister() throws ExecutionException, InterruptedException {
         boolean usernameEntered = true;
         boolean emailEntered = true;
         boolean passwordEntered = true;
@@ -117,7 +134,23 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 }
 
                 if (usernameOK && emailOK && passwordOK) {
-                    //TODO register
+                    if (!db.usernameExists(txtUsername.getText().toString())) {
+                        if (!db.emailExists(txtEmail.getText().toString())) {
+                            InsertUserTask insertUserTask = new InsertUserTask(this);
+                            insertUserTask.execute(txtUsername.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString());
+                            String ret = insertUserTask.get();
+
+                            SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(this);
+                            selectAllUsersTask.execute();
+                            ret = selectAllUsersTask.get();
+
+                            this.finish();
+                        } else {
+                          txtEmail.setError("Email already exists");
+                        }
+                    } else {
+                        txtUsername.setError("Username already exists");
+                    }
                 }
             } else {
                 txtPassword.setText("");

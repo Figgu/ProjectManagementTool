@@ -1,7 +1,8 @@
-package com.projectmanagementtoolapp.activities;
+package com.projectmanagementtoolapp.pkgActivities;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,14 +10,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.projectmanagementtoolapp.R;
+import com.projectmanagementtoolapp.pkgData.Database;
+import com.projectmanagementtoolapp.pkgData.User;
 
 public class ForgotPasswordActivity extends AppCompatActivity implements View.OnClickListener {
 
+    //GUI elements
     private EditText txtEmail;
     private Button btnSendEmail;
 
+    //non gui elements
+    private Database db;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +34,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
 
         getAllViews();
         initEventHandlers();
+        db = Database.getInstance();
     }
 
     private void getAllViews() {
@@ -57,7 +65,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     public void onClick(View v) {
         if (v == btnSendEmail) {
             if(isEmailValid()) {
-                showDialog();
+                sendEmail(db.getUserByEmail(txtEmail.getText().toString()));
             } else {
                 txtEmail.setError("Email not valid");
             }
@@ -89,5 +97,23 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         });
         dlgAlert.setCancelable(false);
         dlgAlert.create().show();
+    }
+
+    public void sendEmail(User user) {
+        StringBuilder builder = new StringBuilder();
+        builder.append("Your account details for the project management tool");
+        builder.append("Username: " + user.getUsername());
+        builder.append("Password: " + user.getPassword());
+        builder.append("This is an automaticaly sent email, do not reply");
+        Intent i = new Intent(Intent.ACTION_SEND);
+        i.setType("message/rfc822");
+        i.putExtra(Intent.EXTRA_EMAIL  , new String[]{user.getEmail()});
+        i.putExtra(Intent.EXTRA_SUBJECT, "PMT: Account Details");
+        i.putExtra(Intent.EXTRA_TEXT   , builder.toString());
+        try {
+            startActivity(Intent.createChooser(i, "Send mail..."));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(ForgotPasswordActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
+        }
     }
 }

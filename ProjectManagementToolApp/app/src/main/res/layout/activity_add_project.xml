@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.projectmanagementtoolapp.activities.AddProjectActivity">
+    tools:context=".pkgActivities.AddProjectActivity"
+    android:id="@+id/layoutAddProject">
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -14,70 +15,80 @@
         android:layout_marginTop="100dp"
         app:cardBackgroundColor="@color/cardview_shadow_end_color">
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/txtProjectName"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:hint="Projectname"/>
+                android:layout_margin="10dp">
 
-            <EditText
-                android:id="@+id/txtProjectDescription"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtProjectName"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:hint="Description"
-                android:inputType="textMultiLine"
-                android:lines="5"/>
+                <EditText
+                    android:id="@+id/txtProjectName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:hint="Projectname"/>
 
-            <EditText
-                android:id="@+id/txtContributorName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtProjectDescription"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:hint="Add new Contributor"/>
+                <EditText
+                    android:id="@+id/txtProjectDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtProjectName"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:hint="Description"
+                    android:inputType="textMultiLine"
+                    android:lines="5"/>
 
-            <ImageView
-                android:id="@+id/imgAddButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/txtContributorName"
-                android:layout_below="@id/txtProjectDescription"
-                app:srcCompat="@android:drawable/ic_input_add"
-                android:layout_centerHorizontal="true"/>
+                <EditText
+                    android:id="@+id/txtContributorName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtProjectDescription"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:hint="Add new Contributor"/>
 
-            <ListView
-                android:id="@+id/contributorsList"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/txtContributorName">
-            </ListView>
+                <ImageView
+                    android:id="@+id/imgAddButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@+id/txtContributorName"
+                    android:layout_below="@+id/txtProjectDescription"
+                    app:srcCompat="@android:drawable/ic_input_add"
+                    android:layout_centerHorizontal="true" />
 
-            <EditText
-                android:id="@+id/txtProjectStart"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/contributorsList"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:hint="Projectstart"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/txtContributorName"
+                    android:id="@+id/linearLayoutContributors"
+                    android:orientation="vertical">
+                </LinearLayout>
 
-            <Button
-                android:id="@+id/btnAddProject"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtProjectStart"
-                android:text="Add project"/>
-        </RelativeLayout>
+                <EditText
+                    android:id="@+id/txtProjectStart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/linearLayoutContributors"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:hint="Projectstart"/>
+
+                <Button
+                    android:id="@+id/btnAddProject"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtProjectStart"
+                    android:text="Add project"/>
+            </RelativeLayout>
+        </ScrollView>
+
+
     </android.support.v7.widget.CardView>
 </RelativeLayout>

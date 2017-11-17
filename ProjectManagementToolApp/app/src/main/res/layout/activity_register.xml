@@ -4,8 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.projectmanagementtoolapp.activities.RegisterActivity"
+    tools:context=".pkgActivities.RegisterActivity"
     android:id="@+id/layoutRegister">
+
+
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -15,55 +17,60 @@
         android:layout_marginTop="100dp"
         app:cardBackgroundColor="@color/cardview_shadow_end_color">
 
-        <RelativeLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp">
+            android:layout_height="match_parent">
 
-            <EditText
-                android:id="@+id/txtUsernameRegister"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:hint="Username" />
+                android:layout_margin="10dp">
 
-            <EditText
-                android:id="@+id/txtEmailRegister"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtUsernameRegister"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:hint="Email" />
+                <EditText
+                    android:id="@+id/txtUsernameRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:hint="Username" />
 
-            <EditText
-                android:id="@+id/txtPasswordRegister"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtEmailRegister"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:hint="Password"
-                android:inputType="textPassword" />
+                <EditText
+                    android:id="@+id/txtEmailRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtUsernameRegister"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:hint="Email" />
 
-            <EditText
-                android:id="@+id/txtConfirmPasswordRegister"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/txtPasswordRegister"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:hint="Confirm Password"
-                android:inputType="textPassword" />
+                <EditText
+                    android:id="@+id/txtPasswordRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtEmailRegister"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:hint="Password"
+                    android:inputType="textPassword" />
 
-            <Button
-                android:id="@+id/btnRegister"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txtConfirmPasswordRegister"
-                android:layout_centerHorizontal="true"
-                android:text="Register" />
-        </RelativeLayout>
+                <EditText
+                    android:id="@+id/txtConfirmPasswordRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtPasswordRegister"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:hint="Confirm Password"
+                    android:inputType="textPassword" />
+
+                <Button
+                    android:id="@+id/btnRegister"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/txtConfirmPasswordRegister"
+                    android:layout_centerHorizontal="true"
+                    android:text="Register" />
+            </RelativeLayout>
+        </ScrollView>
     </android.support.v7.widget.CardView>
 </RelativeLayout>
