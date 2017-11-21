@@ -16,13 +16,17 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
+import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllProjectsTask;
+import com.projectmanagementtoolapp.pkgTasks.SelectMyProjectsTask;
 
 import java.util.concurrent.ExecutionException;
 
@@ -48,16 +52,16 @@ public class MainActivity extends AppCompatActivity
 
         db = Database.getInstance();
 
-        setTitle("All projects");
+        setTitle("Your projects");
         getAllViews();
         setSupportActionBar(toolbar);
         initEventlisteners();
 
         //Get all projects
-        SelectAllProjectsTask getAllProjectsTask = new SelectAllProjectsTask(this);
-        getAllProjectsTask.execute();
+        SelectMyProjectsTask getMyProjectsTask = new SelectMyProjectsTask(this);
+        getMyProjectsTask.execute(db.getCurrentUser());
         try {
-            String result = getAllProjectsTask.get();
+            String result = getMyProjectsTask.get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -159,8 +163,8 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void addList() {
-        if  (db.getProjects().size() > 0) {
-            ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, db.getProjects());
+        if  (db.getMyProjects().size() > 0) {
+            ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, R.id.projectName, db.getMyProjects());
             projectsList.setAdapter(adapter);
         } else {
             txtNoProjectsFound.setVisibility(View.VISIBLE);
@@ -186,9 +190,13 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Project project = (Project) projectsList.getItemAtPosition(position);
-        Intent intent = new Intent(this, ShowSprintsActivity.class);
-        intent.putExtra("project", project);
-        startActivity(intent);
+        if (view == projectsList) {
+            Project project = (Project) projectsList.getItemAtPosition(position);
+            Intent intent = new Intent(this, ShowSprintsActivity.class);
+            intent.putExtra("project", project);
+            startActivity(intent);
+        } else {
+            System.out.println("test");
+        }
     }
 }

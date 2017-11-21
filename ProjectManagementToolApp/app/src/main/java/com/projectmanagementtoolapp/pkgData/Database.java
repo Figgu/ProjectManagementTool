@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -31,6 +32,7 @@ public class Database {
     private String pwd = "d5b";
     private ArrayList<User> users;
     private ArrayList<Project> projects;
+    private ArrayList<Project> myProjects;
     private ArrayList<Role> roles;
     private ArrayList<Right> rights;
     private Connection conn;
@@ -114,7 +116,7 @@ public class Database {
         statement.setString(2, project.getDescription());
         statement.setDate(3, new Date(project.getStartDate().getTime()));
         statement.executeQuery();
-        conn.commit();;
+        conn.commit();
         statement.close();
     }
 
@@ -159,6 +161,27 @@ public class Database {
     }
 
     //Only called by async task
+    public void getMyProjects(User user) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select po.projectid, po.name, po.description, po.projectbeginn from userisinprojectwithrole03 p join user03 u on u.userid = p.userid join project03 po on p.projectid = po.projectid where u.userid = ?");
+        statement.setInt(1, user.getUserID());
+        ResultSet rs = statement.executeQuery();
+        myProjects = new ArrayList<>();
+
+        while(rs.next()) {
+            Project project = new Project();
+            project.setProjectID(rs.getInt("projectID"));
+            project.setName(rs.getString("name"));
+            project.setDescription(rs.getString("description"));
+
+            myProjects.add(project);
+        }
+
+        System.out.println("projects: " + projects);
+        statement.close();
+        rs.close();
+    }
+
+    //Only called by async task
     public void getAllSprints(Project project) throws SQLException {
         System.out.println("id in select sprints: " + project.getProjectID());
         PreparedStatement statement = conn.prepareStatement("select * from sprint03 where projectid = ?");
@@ -178,14 +201,14 @@ public class Database {
 
         project.setSprints(sprints);
         int indexOfProject = getIndexOfProject(project.getProjectID())-1;
-        projects.set(indexOfProject, project);           //Set the sprints to the project
-        System.out.println("sprints in select: " + projects.get(indexOfProject).getSprints());
+        myProjects.set(indexOfProject, project);           //Set the sprints to the project
+        System.out.println("sprints in select: " + myProjects.get(indexOfProject).getSprints());
         statement.close();
         rs.close();
     }
 
     private int getIndexOfProject(int ID) {
-        Iterator<Project> it = projects.iterator();
+        Iterator<Project> it = myProjects.iterator();
         int counter = 0;
         boolean flag = true;
 
@@ -289,7 +312,7 @@ public class Database {
     }
 
     public Project getProjectByID(int id) {
-        Iterator<Project> it = projects.iterator();
+        Iterator<Project> it = myProjects.iterator();
         Project project = null;
         boolean flag = true;
 
@@ -364,5 +387,9 @@ public class Database {
 
     public void setRoles(ArrayList<Role> roles) {
         this.roles = roles;
+    }
+
+    public ArrayList<Project> getMyProjects() {
+        return myProjects;
     }
 }
