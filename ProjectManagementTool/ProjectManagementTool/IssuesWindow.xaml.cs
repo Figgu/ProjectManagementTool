@@ -16,38 +16,36 @@ using System.Windows.Shapes;
 namespace ProjectManagementTool
 {
     /// <summary>
-    /// Interaktionslogik für Issues.xaml
+    /// Interaktionslogik für IssuesWindow.xaml
     /// </summary>
-    public partial class SprintsWindow : Window
+    public partial class IssuesWindow : Window
     {
-        public SprintsWindow(User user, Project p)
+        public IssuesWindow(User user, Project p, Sprint s)
         {
             InitializeComponent();
             this.currentUser = user;
             this.currentProject = p;
+            this.currentSprint = s;
             LoadGUI();
         }
 
         private Kontext ktx = new Kontext();
         private User currentUser;
         private Project currentProject;
-        private List<Sprint> sprints;
+        private Sprint currentSprint;
+        private List<Issue> issues;
         private char charForNameWorkaround = 'x';
 
-        private ListBoxItem GenerateListItem(Sprint s)
+        private ListBoxItem GenerateListItem(Issue i)
         {
             ListBoxItem item = new ListBoxItem
             {
-                //char as a workaround because name cant be only a number
-                Name = charForNameWorkaround + s.Id.ToString(),
-                Content = "Started On: " + s.Start.Day + "." + s.Start.Month + "." + s.Start.Year,
+                Name = charForNameWorkaround + i.Id.ToString(),
+                //TODO: UPDATE THIS FOR ISSUES
+                Content = "",//"Started On: " + s.Start.Day + "." + s.Start.Month + "." + s.Start.Year,
                 FontSize = 30,
                 Height = 50
             };
-            if (s.End != null)
-            {
-                item.Content += ", Ended On: " + s.End.Day + "." + s.End.Month + "." + s.End.Year; 
-            }
             return item;
         }
 
@@ -55,8 +53,8 @@ namespace ProjectManagementTool
         {
             lblProfile.Inlines.Clear();
             lblProfile.Inlines.Add(currentUser.Username);
-            LoadSprintList();
-            sprintList.MouseDoubleClick += sprintList_MouseDoubleClick;
+            LoadIssueList();
+            issueList.MouseDoubleClick += issueList_MouseDoubleClick;
         }
 
         private void Logout(object sender, RoutedEventArgs e)
@@ -66,24 +64,25 @@ namespace ProjectManagementTool
             this.Close();
         }
 
-        private void LoadSprintList()
+        private void LoadIssueList()
         {
-            sprints = ktx.GetAllSprintsFromProject(this.currentProject.Id);
-            foreach (Sprint s in sprints)
+            issues = ktx.GetAllIssuesFromUserInSprint(this.currentUser.Id,this.currentSprint.Id);
+            foreach (Issue i in issues)
             {
-                sprintList.Items.Add(GenerateListItem(s));
+                issueList.Items.Add(GenerateListItem(i));
             }
         }
 
-        private void sprintList_MouseDoubleClick(object sender, RoutedEventArgs e)
+        private void issueList_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
-            if (sprintList.SelectedItem != null)
+            if (issueList.SelectedItem != null)
             {
-                ListBoxItem selectedListBoxItem = (ListBoxItem)sprintList.SelectedItem;
+                ListBoxItem selectedListBoxItem = (ListBoxItem)issueList.SelectedItem;
                 //workaround for the x added to the name
-                Sprint selectedSprint = sprints.Find(s => s.Id == Convert.ToInt32(selectedListBoxItem.Name.Replace(charForNameWorkaround, ' ').Trim()));
-                IssuesWindow i = new IssuesWindow(currentUser, currentProject, selectedSprint);
-                i.Show();
+                Issue selectedIssue = issues.Find(i => i.Id == Convert.ToInt32(selectedListBoxItem.Name.Replace(charForNameWorkaround, ' ').Trim()));
+                //TODO: OPEN WINDOW WITH ISSUE INFO HERE
+                //IssuesWindow i = new IssuesWindow(currentUser, currentProject, selectedSprint);
+                //i.Show();
             }
         }
     }

@@ -66,6 +66,9 @@
       <DependentUpon>ForgotPasswordWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="interfaces\IDataManager.cs" />
+    <Compile Include="IssuesWindow.xaml.cs">
+      <DependentUpon>IssuesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SprintsWindow.xaml.cs">
       <DependentUpon>SprintsWindow.xaml</DependentUpon>
     </Compile>
@@ -73,6 +76,10 @@
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="ForgotPasswordWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="IssuesWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

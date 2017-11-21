@@ -96,15 +96,16 @@ namespace ProjectManagementTool.classes
                 da.Fill(dt);
             }
             //if there is a picture in the database
-            if (dt.Rows.Count == 5)
-            {
+            //if (dt.Rows.Count == 5)
+            //{
                 user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
-            }
+            //}
             //if there is no picture
+            /*
             else
             {
                 user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
-            }
+            }*/
             return user;
         }
 
@@ -142,7 +143,6 @@ namespace ProjectManagementTool.classes
             return projects;
         }
 
-        //not complete TODO: SELECT STATEMENT
         public List<Sprint> GetAllSprintsFromProject(int projectId)
         {
             DataTable dt = new DataTable();
@@ -151,14 +151,20 @@ namespace ProjectManagementTool.classes
             using (OleDbConnection conn = new OleDbConnection(this.connectionString))
             {
                 conn.Open();
-                //da = new OleDbDataAdapter(, conn);
+                da = new OleDbDataAdapter("select distinct sprintid, startdate, enddate from sprint03 where projectid = "+projectId, conn);
                 da.Fill(dt);
                 foreach (DataRow r in dt.Rows)
                 {
-                    sprints.Add(new Sprint());
+                    sprints.Add(new Sprint(Convert.ToInt32(r[0]),Convert.ToDateTime(r[1]),Convert.ToDateTime(r[2])));
                 }
             }
             return sprints;
+        }
+
+        //TODO: IMPLEMENT THIS METHOD WHEN ISSUES ARE IN THE DATABASE
+        public List<Issue> GetAllIssuesFromUserInSprint(int userId, int sprintId)
+        {
+            return new List<Issue>();
         }
         #endregion
     }

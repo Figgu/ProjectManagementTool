@@ -23,6 +23,7 @@ namespace ProjectManagementTool
         private Kontext ktx = new Kontext();
         private User currentUser;
         private List<Project> projects;
+        private char charForNameWorkaround = 'x';
 
         public Main(User user)
         {
@@ -35,7 +36,8 @@ namespace ProjectManagementTool
         {
             ListBoxItem item = new ListBoxItem
             {
-                Name = Convert.ToString(p.Id),
+                //workaround, as name cant only contain numbers for some reason
+                Name = charForNameWorkaround+p.Id.ToString(),
                 Content = "Name: " + p.Name + ", Started On: " + p.ProjectStart.Day + "." + p.ProjectStart.Month + "." + p.ProjectStart.Year,
                 FontSize = 30,
                 Height = 50
@@ -66,14 +68,13 @@ namespace ProjectManagementTool
                 projectList.Items.Add(GenerateListItem(p));
             }
         }
-
-        //not tested
         private void projectList_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
             if (projectList.SelectedItem != null)
             {
                 ListBoxItem selectedListBoxItem = (ListBoxItem)projectList.SelectedItem;
-                Project selectedProject = projects.Find(p => p.Id == Convert.ToInt32(selectedListBoxItem.Name));
+                //workaround for the x added to the name
+                Project selectedProject = projects.Find(p => p.Id == Convert.ToInt32(selectedListBoxItem.Name.Replace(charForNameWorkaround,' ').Trim()));
                 SprintsWindow s = new SprintsWindow(currentUser, selectedProject);
                 s.Show();
             }
