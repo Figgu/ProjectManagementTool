@@ -46,6 +46,8 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
 
     //non gui element
     private Database db;
+    private MenuItem mSave;
+    private MenuItem mEdit;
 
     //Figgu pls
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +99,9 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_show_profile_edit, menu);
+        mSave = menu.findItem(R.id.save_profile);
+        mEdit = menu.findItem(R.id.edit_profile);
+        mSave.setVisible(false);
         return true;
     }
 
@@ -110,6 +115,8 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 this.finish();
                 return true;
             case R.id.edit_profile:
+                mSave.setVisible(true);
+                mEdit.setVisible(false);
                 lblName.setVisibility(View.INVISIBLE);
                 lblEmail.setVisibility(View.INVISIBLE);
                 lblPassword.setVisibility(View.INVISIBLE);
@@ -118,6 +125,8 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 txtEmail.setVisibility(View.VISIBLE);
                 return true;
             case R.id.save_profile:
+                mSave.setVisible(false);
+                mEdit.setVisible(true);
                 lblName.setVisibility(View.VISIBLE);
                 lblEmail.setVisibility(View.VISIBLE);
                 lblPassword.setVisibility(View.VISIBLE);

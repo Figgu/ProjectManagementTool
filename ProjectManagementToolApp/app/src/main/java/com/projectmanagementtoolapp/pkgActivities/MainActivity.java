@@ -190,13 +190,9 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        if (view == projectsList) {
-            Project project = (Project) projectsList.getItemAtPosition(position);
-            Intent intent = new Intent(this, ShowSprintsActivity.class);
-            intent.putExtra("project", project);
-            startActivity(intent);
-        } else {
-            System.out.println("test");
-        }
+        Project project = (Project) projectsList.getItemAtPosition(position);
+        Intent intent = new Intent(this, ShowSprintsActivity.class);
+        intent.putExtra("project", project);
+        startActivity(intent);
     }
 }

@@ -77,6 +77,30 @@ public class Database {
         rs.close();
     }
 
+    //Only called by async task
+    public void selectAllUsersFromProject(Project project) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select u.userid, u.username, u.password, u.email, u.profilepicture from userisinprojectwithrole03 p join user03 u on p.userid = u.userid where p.projectid = ?");
+        statement.setInt(1, project.getProjectID());
+        ResultSet rs = statement.executeQuery();
+        ArrayList<User> usersOfProject = new ArrayList<>();
+
+        while(rs.next()) {
+            User user = new User();
+            user.setUserID(rs.getInt("userID"));
+            user.setUsername(rs.getString("username"));
+            user.setPassword(rs.getString("password"));
+            user.setEmail(rs.getString("email"));
+            user.setProfilePicture(rs.getBlob("profilepicture"));
+            usersOfProject.add(user);
+        }
+
+        project.setContributors(usersOfProject);
+        int indexOfProject = getIndexOfProject(project.getProjectID())-1;
+        myProjects.set(indexOfProject, project);           //Set the user to the project
+        statement.close();
+        rs.close();
+    }
+
     //Only called by the async task
     public void insertUser(String username, String password, String email) throws ClassNotFoundException, SQLException {
         PreparedStatement statement = conn.prepareStatement("insert into user03 (username, password, email) values (?, ?, ?)");
