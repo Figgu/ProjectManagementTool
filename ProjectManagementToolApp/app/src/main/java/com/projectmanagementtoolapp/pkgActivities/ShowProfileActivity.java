@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -15,6 +16,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.projectmanagementtoolapp.R;
@@ -42,12 +44,14 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     private TextView lblEmail;
     private ImageView profilePicture;
     private Button btnEditImage;
+    private Switch showPassword;
     private static final int RESULT_LOAD_IMAGE = 1;
 
     //non gui element
     private Database db;
     private MenuItem mSave;
     private MenuItem mEdit;
+    private boolean shownAsPassword = true;
 
     //Figgu pls
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         db = Database.getInstance();
         User currentUser = db.getCurrentUser();
 
+        profilePicture.setImageResource(R.drawable.profileplaceholder);
         /*
         try {
             byte[] imagebytes = currentUser.getProfilePicture().getBytes(0, (int) currentUser.getProfilePicture().length());
@@ -89,10 +94,12 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         lblPassword = (TextView) findViewById(R.id.lblPassword);
         profilePicture = (ImageView) findViewById(R.id.IVPP);
         btnEditImage = (Button) findViewById(R.id.btnEditImage);
+        showPassword = (Switch) findViewById(R.id.showPassword);
     }
 
     private void initEventHandlers() {
         btnEditImage.setOnClickListener(this);
+        showPassword.setOnClickListener(this);
     }
 
     @Override
@@ -115,6 +122,11 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 this.finish();
                 return true;
             case R.id.edit_profile:
+                if (shownAsPassword)
+                    txtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                else
+                    txtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+
                 mSave.setVisible(true);
                 mEdit.setVisible(false);
                 lblName.setVisibility(View.INVISIBLE);
@@ -125,6 +137,11 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 txtEmail.setVisibility(View.VISIBLE);
                 return true;
             case R.id.save_profile:
+                if (shownAsPassword)
+                    lblPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                else
+                    lblPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+
                 mSave.setVisible(false);
                 mEdit.setVisible(true);
                 lblName.setVisibility(View.VISIBLE);
@@ -164,6 +181,18 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         {
             Intent i = new Intent(Intent.ACTION_PICK,android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             startActivityForResult(i, RESULT_LOAD_IMAGE);
+        } else if(v == showPassword) {
+            if(shownAsPassword) {
+                lblPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+                txtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+                shownAsPassword = false;
+            } else {
+                txtPassword.setInputType(InputType.TYPE_CLASS_TEXT |
+                        InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                lblPassword.setInputType(InputType.TYPE_CLASS_TEXT |
+                        InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                shownAsPassword = true;
+            }
         }
     }
 
