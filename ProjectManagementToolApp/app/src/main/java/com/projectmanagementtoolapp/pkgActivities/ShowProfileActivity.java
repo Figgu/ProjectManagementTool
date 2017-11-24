@@ -187,6 +187,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 }
 
                 db.setCurrentUser(db.getUserByUsername(txtName.getText().toString()));
+                currentUser = db.getCurrentUser();
 
                 lblName.setText(currentUser.getUsername());
                 lblPassword.setText(currentUser.getPassword());
