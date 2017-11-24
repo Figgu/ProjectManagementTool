@@ -119,7 +119,7 @@ public class CreateRoleActivity extends AppCompatActivity implements View.OnClic
         selectRolesTask.execute();
         ArrayAdapter<Role> adapter = null;
         String result = selectRolesTask.get();
-        adapter = new ArrayAdapter<Role>(this, R.layout.list_view_main, db.getRoles());
+        adapter = new ArrayAdapter<Role>(this, R.layout.list_view_sprints, db.getRoles());
         listViewRoles.setAdapter(adapter);
     }
 

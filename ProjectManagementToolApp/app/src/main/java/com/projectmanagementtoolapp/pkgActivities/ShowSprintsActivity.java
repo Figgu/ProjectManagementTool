@@ -81,6 +81,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
                 this.finish();
                 return true;
             case R.id.show_all_users:
+                fab.setVisibility(View.VISIBLE);
                 showingSprints = false;
 
                 SelectUsersOfProjectTask selectUsersOfProjectTask = new SelectUsersOfProjectTask(this);
@@ -101,6 +102,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
                 return true;
 
             case R.id.show_all_sprints:
+                fab.setVisibility(View.INVISIBLE);
                 showingSprints = true;
                 setTitle("Sprints of " + currentProject);
 
@@ -147,7 +149,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
     }
 
     private void initList() {
-        if  (showingSprints) {
+        if (showingSprints) {
             ArrayAdapter<Sprint> adapter = new ArrayAdapter<>(this, R.layout.list_view_sprints, currentProject.getSprints());
             if (currentProject.getSprints().size() > 0) {
                 listSprints.setAdapter(adapter);
@@ -164,29 +166,28 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Sprint selectedSprint = (Sprint) listSprints.getItemAtPosition(position);
-        Intent intent = new Intent(this, ShowIssuesActivity.class);
-        intent.putExtra("sprint", selectedSprint);
-        startActivity(intent);
+        if (showingSprints) {
+            Sprint selectedSprint = (Sprint) listSprints.getItemAtPosition(position);
+            Intent intent = new Intent(this, ShowIssuesActivity.class);
+            intent.putExtra("sprint", selectedSprint);
+            startActivity(intent);
+        }
     }
 
     @Override
     public void onClick(View v) {
         if (v == fab) {
-            if (showingSprints) {
-                txtNoSprintsFound.setVisibility(View.INVISIBLE);
-                listSprints.setVisibility(View.INVISIBLE);
+            txtNoSprintsFound.setVisibility(View.INVISIBLE);
+            listSprints.setVisibility(View.INVISIBLE);
 
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("currentProject", currentProject);
-                AddSprintFragment fragment = new AddSprintFragment();
-                fragment.setArguments(bundle);
-                android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.layoutShowSprints, fragment);
-                transaction.commit();
-            } else {    //Click for user
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("currentProject", currentProject);
+            AddSprintFragment fragment = new AddSprintFragment();
+            fragment.setArguments(bundle);
+            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.layoutShowSprints, fragment);
+            transaction.commit();
 
-            }
         }
     }
 }

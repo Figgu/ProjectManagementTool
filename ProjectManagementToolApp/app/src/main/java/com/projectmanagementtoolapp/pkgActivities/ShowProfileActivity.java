@@ -22,6 +22,9 @@ import android.widget.TextView;
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.User;
+import com.projectmanagementtoolapp.pkgTasks.SelectAllSprintsTask;
+import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
+import com.projectmanagementtoolapp.pkgTasks.SelectMyProjectsTask;
 import com.projectmanagementtoolapp.pkgTasks.UpdateProfilePictureTask;
 import com.projectmanagementtoolapp.pkgTasks.UpdateUserTask;
 
@@ -172,8 +175,19 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 } catch (ExecutionException e) {
                     e.printStackTrace();
                 }
-                db.setCurrentUser(new User(txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString()));
-                currentUser = db.getCurrentUser();
+
+                SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(this);
+                selectAllUsersTask.execute();
+                try {
+                    String result = selectAllUsersTask.get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+                db.setCurrentUser(db.getUserByUsername(txtName.getText().toString()));
+
                 lblName.setText(currentUser.getUsername());
                 lblPassword.setText(currentUser.getPassword());
                 lblEmail.setText(currentUser.getEmail());
