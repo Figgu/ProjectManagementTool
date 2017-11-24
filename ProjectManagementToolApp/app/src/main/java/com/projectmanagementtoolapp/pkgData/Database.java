@@ -52,6 +52,8 @@ public class Database {
         conn.setTransactionIsolation(TRANSACTION_SERIALIZABLE);
 }
 
+    //212.152.179.117
+    //192.168.128.152
     private Connection createConnection() throws SQLException {
         return DriverManager.getConnection("jdbc:oracle:thin:@212.152.179.117:1521:ora11g", user, pwd);
     }

@@ -25,7 +25,17 @@ import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.UpdateProfilePictureTask;
 import com.projectmanagementtoolapp.pkgTasks.UpdateUserTask;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
 
@@ -52,6 +62,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     private MenuItem mSave;
     private MenuItem mEdit;
     private boolean shownAsPassword = true;
+
 
     //Figgu pls
     protected void onCreate(Bundle savedInstanceState) {
@@ -211,7 +222,8 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
             imageView.setImageBitmap(BitmapFactory.decodeFile(picturePath));
 
             UpdateProfilePictureTask cppt = new UpdateProfilePictureTask(this);
-            cppt.execute(db.getCurrentUser().getUserID(), picturePath);
+            cppt.execute(String.valueOf(db.getCurrentUser().getUserID()), picturePath);
+
         }
     }
 }
