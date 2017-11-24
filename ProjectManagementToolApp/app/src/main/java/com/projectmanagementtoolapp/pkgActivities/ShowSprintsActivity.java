@@ -81,7 +81,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
                 this.finish();
                 return true;
             case R.id.show_all_users:
-                fab.setVisibility(View.VISIBLE);
+                fab.setVisibility(View.INVISIBLE);
                 showingSprints = false;
 
                 SelectUsersOfProjectTask selectUsersOfProjectTask = new SelectUsersOfProjectTask(this);
@@ -102,7 +102,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
                 return true;
 
             case R.id.show_all_sprints:
-                fab.setVisibility(View.INVISIBLE);
+                fab.setVisibility(View.VISIBLE);
                 showingSprints = true;
                 setTitle("Sprints of " + currentProject);
 

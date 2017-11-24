@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(this, ShowProfileActivity.class);
             startActivity(intent);
         } else if (id == R.id.nav_logout) {
-            logout();
+            showLogoutDialog();
         } else if (id == R.id.nav_createRole) {
             Intent intent = new Intent(this, CreateRoleActivity.class);
             startActivity(intent);
