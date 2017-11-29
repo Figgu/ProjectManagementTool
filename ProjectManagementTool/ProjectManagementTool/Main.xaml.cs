@@ -20,7 +20,7 @@ namespace ProjectManagementTool
     /// </summary>
     public partial class Main : Window
     {
-        private Kontext ktx = new Kontext();
+        private Kontext ktx = Kontext.getIntance();
         private User currentUser;
         private List<Project> projects;
         private char charForNameWorkaround = 'x';
@@ -62,11 +62,13 @@ namespace ProjectManagementTool
 
         private void LoadProjectList()
         {
+            projectList.Items.Clear();
             projects = ktx.GetAllProjectsOfUser(this.currentUser.Id);
             foreach(Project p in projects)
             {
                 projectList.Items.Add(GenerateListItem(p));
             }
+            
         }
         private void projectList_MouseDoubleClick(object sender, RoutedEventArgs e)
         {
@@ -80,5 +82,26 @@ namespace ProjectManagementTool
             }
         }
 
+        private void btnAddProject_Click(object sender, RoutedEventArgs e)
+        {
+            // ... Get DatePicker reference.
+            DatePicker dp = dpProjectDate;
+
+            // ... Get nullable DateTime from SelectedDate.
+            DateTime? date = dp.SelectedDate;
+            if (date == null || date < DateTime.Now)
+            {
+                // ... A null object.
+                MessageBox.Show("Select a valid date please");
+            }
+            else
+            {
+                DateTime UpdatedTime = date ?? DateTime.Now;
+                //MessageBox.Show(UpdatedTime.ToString());
+                ktx.insertProject(new Project(txtProjectName.Text, "no description", UpdatedTime));
+                LoadProjectList();
+            }
+            
+        }
     }
 }

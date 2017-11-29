@@ -28,7 +28,7 @@ namespace ProjectManagementTool
         public LoginWindow()
         {
             InitializeComponent();
-            ktx = new Kontext();
+            ktx = Kontext.getIntance();
   
         }
 

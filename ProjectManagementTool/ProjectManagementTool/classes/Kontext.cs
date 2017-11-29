@@ -11,12 +11,23 @@ namespace ProjectManagementTool.classes
 {
     class Kontext : IDataManager
     {
+        private static Kontext instance = null;
+        public static Kontext getIntance() {
+            if (instance==null)
+            {
+                instance = new Kontext();
+            }
+            return instance;
+        }
+
+
         public Kontext ()
         {
             //Use 192.168.128.152 for connection in htl, use 212.152.179.117 for external use
             this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 192.168.128.152:1521/ora11g;User Id = d5b03; Password=d5b;";
         }
 
+        
         string connectionString;
         #region properties
         public string ConnectionString
@@ -31,6 +42,8 @@ namespace ProjectManagementTool.classes
                 this.connectionString = value;
             }
         }
+
+        User currentUser { get; set; }
 
         #endregion
         #region methods
@@ -51,6 +64,63 @@ namespace ProjectManagementTool.classes
             }
         }
 
+        public void insertProject(Project project)
+        {
+            OleDbCommand cmd = null;
+            OleDbTransaction transaction = null;
+            string commandText = "";
+            using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
+            {
+                conn.Open();
+                transaction = conn.BeginTransaction();
+                commandText = "INSERT INTO Project03(Name, Description, ProjectBeginn) VALUES (?, ?, ?)";
+                cmd = new OleDbCommand(commandText, conn);
+                cmd.Transaction = transaction;
+                cmd.Parameters.AddWithValue("?", project.Name);
+                cmd.Parameters.AddWithValue("?", project.Description);
+                cmd.Parameters.AddWithValue("?", project.ProjectStart);
+                cmd.ExecuteNonQuery();
+                transaction.Commit();
+                connectProjectWithUser(project, currentUser);
+            }
+
+        }
+
+        public void connectProjectWithUser(Project project, User user)
+        {
+            OleDbCommand cmd = null;
+            OleDbTransaction transaction = null;
+            string commandText = "";
+            using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
+            {
+                conn.Open();
+                transaction = conn.BeginTransaction();
+                commandText = "INSERT INTO USERISINPROJECTWITHROLE03(UserID, ProjectID) VALUES (?, ?)";
+                cmd = new OleDbCommand(commandText, conn);
+                cmd.Transaction = transaction;
+                Console.WriteLine(user.Id.ToString());
+                cmd.Parameters.AddWithValue("?", user.Id);
+                Console.WriteLine(getCurrentProjectID(project).ToString());
+                cmd.Parameters.AddWithValue("?", getCurrentProjectID(project));
+                cmd.ExecuteNonQuery();
+                transaction.Commit();
+            }
+        }
+
+        public int getCurrentProjectID(Project project)
+        {
+            DataTable dt = new DataTable();
+            OleDbDataAdapter da = null;
+            using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
+            {
+                conn.Open();
+                da = new OleDbDataAdapter("select projectid from project03 WHERE name = '" + project.Name + "' AND description = '" + project.Description + "'", conn);
+                da.Fill(dt);
+            }
+
+            return Convert.ToInt32(dt.Rows[0][0]);
+        }
+
         public User selectUser(int id)
         {
             DataTable dt = new DataTable();
@@ -63,6 +133,10 @@ namespace ProjectManagementTool.classes
                 da.Fill(dt);
             }
             user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
+            Console.WriteLine("--------------------------1");
+            Console.WriteLine(user.ToString());
+            currentUser = user;
+            Console.WriteLine(currentUser.ToString());
             return user;
         }
 
@@ -106,6 +180,11 @@ namespace ProjectManagementTool.classes
             {
                 user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
             }*/
+            Console.WriteLine("--------------------------2");
+            Console.WriteLine(user.ToString());
+            currentUser = user;
+            Console.WriteLine(currentUser.ToString());
+            Console.WriteLine(currentUser.Id.ToString());
             return user;
         }
 
@@ -122,6 +201,10 @@ namespace ProjectManagementTool.classes
             }
 
             user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
+            Console.WriteLine("--------------------------3");
+            Console.WriteLine(user.ToString());
+            currentUser = user;
+            Console.WriteLine(currentUser.ToString());
             return user;
         }
 
@@ -166,6 +249,9 @@ namespace ProjectManagementTool.classes
         {
             return new List<Issue>();
         }
+
         #endregion
     }
+
+    
 }
