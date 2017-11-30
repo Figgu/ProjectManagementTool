@@ -12,14 +12,4 @@ android:layout_height="match_parent">
         android:textSize="30dp"
         android:layout_height="wrap_content">
     </TextView>
-
-    <ImageView
-        android:id="@+id/imgEditProject"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:layout_alignRight="@+id/projectName"
-        android:src="@drawable/settings"
-        android:layout_marginRight="5dp"/>
 </RelativeLayout>

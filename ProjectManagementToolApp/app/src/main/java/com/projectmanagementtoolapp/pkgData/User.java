@@ -13,7 +13,7 @@ public class User implements Serializable{
     private String username;
     private String password;
     private String email;
-    private Blob profilePicture;
+    private byte[] profilePicture;
     private List<Project> projects;
 
     public User(int userID, String username, String password, String email) {
@@ -72,11 +72,11 @@ public class User implements Serializable{
         this.projects = projects;
     }
 
-    public Blob getProfilePicture() {
+    public byte[] getProfilePicture() {
         return profilePicture;
     }
 
-    public void setProfilePicture(Blob profilePicture) {
+    public void setProfilePicture(byte[] profilePicture) {
         this.profilePicture = profilePicture;
     }
 

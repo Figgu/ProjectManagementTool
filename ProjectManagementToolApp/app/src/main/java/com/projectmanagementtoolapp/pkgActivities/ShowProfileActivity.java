@@ -2,7 +2,6 @@ package com.projectmanagementtoolapp.pkgActivities;
 
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,24 +21,10 @@ import android.widget.TextView;
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.User;
-import com.projectmanagementtoolapp.pkgTasks.SelectAllSprintsTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
-import com.projectmanagementtoolapp.pkgTasks.SelectMyProjectsTask;
 import com.projectmanagementtoolapp.pkgTasks.UpdateProfilePictureTask;
 import com.projectmanagementtoolapp.pkgTasks.UpdateUserTask;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -65,12 +50,13 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     private MenuItem mSave;
     private MenuItem mEdit;
     private boolean shownAsPassword = true;
+    User currentUser;
 
 
     //Figgu pls
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_showprofile);
+        setContentView(R.layout.activity_show_profile);
 
         setTitle("Profile");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);      //Back navigation
@@ -78,7 +64,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         getAllViews();
         initEventHandlers();
         db = Database.getInstance();
-        User currentUser = db.getCurrentUser();
+        currentUser = db.getCurrentUser();
 
         profilePicture.setImageResource(R.drawable.profileplaceholder);
         /*
@@ -141,6 +127,8 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 else
                     txtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
 
+                txtPassword.setCursorVisible(true);
+
                 mSave.setVisible(true);
                 mEdit.setVisible(false);
                 lblName.setVisibility(View.INVISIBLE);
@@ -151,50 +139,82 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 txtEmail.setVisibility(View.VISIBLE);
                 return true;
             case R.id.save_profile:
-                if (shownAsPassword)
-                    lblPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                else
-                    lblPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+                boolean usernameOK = true,
+                        emailOK = true,
+                        passwordOK = true;
 
-                mSave.setVisible(false);
-                mEdit.setVisible(true);
-                lblName.setVisibility(View.VISIBLE);
-                lblEmail.setVisibility(View.VISIBLE);
-                lblPassword.setVisibility(View.VISIBLE);
-                txtName.setVisibility(View.INVISIBLE);
-                txtPassword.setVisibility(View.INVISIBLE);
-                txtEmail.setVisibility(View.INVISIBLE);
-
-                UpdateUserTask updateUserTask = new UpdateUserTask(this);
-                User currentUser = db.getCurrentUser();
-                updateUserTask.execute(txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString(), Integer.toString(currentUser.getUserID()));
-                try {
-                    String result = updateUserTask.get();       //Wait for result
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                if (txtName.getText().length() < 3) {
+                    usernameOK = false;
+                    txtName.setError("Username needs to be at least 3 characters long!");
                 }
 
-                SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(this);
-                selectAllUsersTask.execute();
-                try {
-                    String result = selectAllUsersTask.get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                if (!txtEmail.getText().toString().contains("@") || txtEmail.getText().length() < 3) {
+                    emailOK = false;
+                    txtEmail.setError("Email address not valid!");
+                }
+                if (txtPassword.getText().length() < 3) {
+                    passwordOK = false;
+                    txtPassword.setError("Password needs to be at least 3 characters long!");
                 }
 
-                db.setCurrentUser(db.getUserByUsername(txtName.getText().toString()));
-                currentUser = db.getCurrentUser();
+                if (usernameOK && emailOK && passwordOK) {
+                    //if (!db.usernameExists(txtName.getText().toString())) {
+                       // if (!db.emailExists(txtEmail.getText().toString())) {
 
-                lblName.setText(currentUser.getUsername());
-                lblPassword.setText(currentUser.getPassword());
-                lblEmail.setText(currentUser.getEmail());
-                txtName.setText(currentUser.getUsername());
-                txtPassword.setText(currentUser.getPassword());
-                txtEmail.setText(currentUser.getEmail());
+                            if (shownAsPassword)
+                                lblPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                            else
+                                lblPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+
+                            mSave.setVisible(false);
+                            mEdit.setVisible(true);
+                            lblName.setVisibility(View.VISIBLE);
+                            lblEmail.setVisibility(View.VISIBLE);
+                            lblPassword.setVisibility(View.VISIBLE);
+                            txtName.setVisibility(View.INVISIBLE);
+                            txtPassword.setVisibility(View.INVISIBLE);
+                            txtEmail.setVisibility(View.INVISIBLE);
+
+                            UpdateUserTask updateUserTask = new UpdateUserTask(this);
+                            User currentUser = db.getCurrentUser();
+                            updateUserTask.execute(txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString(), Integer.toString(currentUser.getUserID()));
+                            try {
+                                String result = updateUserTask.get();       //Wait for result
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+
+                            SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(this);
+                            selectAllUsersTask.execute();
+                            try {
+                                String result = selectAllUsersTask.get();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } catch (ExecutionException e) {
+                                e.printStackTrace();
+                            }
+
+                            db.setCurrentUser(db.getUserByUsername(txtName.getText().toString()));
+                            currentUser = db.getCurrentUser();
+
+                            lblName.setText(currentUser.getUsername());
+                            lblPassword.setText(currentUser.getPassword());
+                            lblEmail.setText(currentUser.getEmail());
+                            txtName.setText(currentUser.getUsername());
+                            txtPassword.setText(currentUser.getPassword());
+                            txtEmail.setText(currentUser.getEmail());
+
+
+                        //} else {
+                        //    txtEmail.setError("Email already exists");
+                     //   }
+                  //  } else {
+                   //     txtName.setError("Username already exists");
+                   // }
+                }
+
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

@@ -26,6 +26,25 @@ public class Project implements Serializable{
         sprints = new ArrayList<>();
     }
 
+    public Project(int projectID, String name, String description, Date startDate) {
+        this.projectID = projectID;
+        this.name = name;
+        this.description = description;
+        this.startDate = startDate;
+
+        sprints = new ArrayList<>();
+    }
+
+    public Project(int projectID, String name, String description, List<User> contributors, Date startDate) {
+        this.projectID = projectID;
+        this.name = name;
+        this.description = description;
+        this.contributors = contributors;
+        this.startDate = startDate;
+
+        sprints = new ArrayList<>();
+    }
+
     public Project() {
         sprints = new ArrayList<>();
     }

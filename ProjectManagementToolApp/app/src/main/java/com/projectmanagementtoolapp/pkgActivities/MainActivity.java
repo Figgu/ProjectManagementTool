@@ -27,11 +27,12 @@ import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllProjectsTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectMyProjectsTask;
+import com.projectmanagementtoolapp.pkgTasks.SelectUsersOfProjectTask;
 
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener {
+        implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
 
     //Gui elements
     private CoordinatorLayout layout;
@@ -99,6 +100,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
         projectsList.setOnItemClickListener(this);
         fab.setOnClickListener(this);
+        projectsList.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -194,5 +196,14 @@ public class MainActivity extends AppCompatActivity
         Intent intent = new Intent(this, ShowSprintsActivity.class);
         intent.putExtra("project", project);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+        Project project = (Project) projectsList.getItemAtPosition(position);
+        Intent intent = new Intent(this, EditProjectActivity.class);
+        intent.putExtra("project", project);
+        startActivity(intent);
+        return true;
     }
 }

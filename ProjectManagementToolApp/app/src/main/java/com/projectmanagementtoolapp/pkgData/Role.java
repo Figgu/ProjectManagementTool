@@ -54,6 +54,6 @@ public class Role {
 
     @Override
     public String toString() {
-        return "ID: " + getRoleID() + " Name: " + getName() + " Description: " + getDescription();
+        return getName() + "\n" + getDescription();
     }
 }

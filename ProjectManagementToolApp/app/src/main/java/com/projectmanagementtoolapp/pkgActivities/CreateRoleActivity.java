@@ -2,6 +2,7 @@ package com.projectmanagementtoolapp.pkgActivities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,7 +26,6 @@ import java.util.concurrent.ExecutionException;
  */
 
 public class CreateRoleActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener{
-
     private Button btnAddRole;
     private Button btnRemoveRole;
     private EditText txtRoleName;
@@ -35,14 +35,10 @@ public class CreateRoleActivity extends AppCompatActivity implements View.OnClic
     private Database db;
     private Role selectedItem;
 
-
-
     @Override
     public void onClick(View v) {
-
         if(v == btnAddRole)
         {
-
             InsertRoleTask insertRoleTask = new InsertRoleTask(this);
             insertRoleTask.execute(txtRoleName.getText().toString(), txtRoleDescription.getText().toString(), String.valueOf(cbIsUnique.isChecked()));
             try {
@@ -73,7 +69,7 @@ public class CreateRoleActivity extends AppCompatActivity implements View.OnClic
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_createrole);
+        setContentView(R.layout.activity_create_role);
         db = Database.getInstance();
         setTitle("Roles");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);      //Back navigation
@@ -89,6 +85,21 @@ public class CreateRoleActivity extends AppCompatActivity implements View.OnClic
             e.printStackTrace();
         } catch (ExecutionException e) {
             e.printStackTrace();
+        }
+    }
+
+    /*
+    For back navigation to parent activity
+    */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; goto parent activity.
+                this.finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 

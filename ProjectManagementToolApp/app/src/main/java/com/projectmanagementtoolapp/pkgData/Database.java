@@ -55,7 +55,7 @@ public class Database {
     //212.152.179.117
     //192.168.128.152
     private Connection createConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:oracle:thin:@192.168.128.152:1521:ora11g", user, pwd);
+        return DriverManager.getConnection("jdbc:oracle:thin:@212.152.179.117:1521:ora11g", user, pwd);
     }
 
     //Only called by the async task
@@ -70,7 +70,7 @@ public class Database {
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
             user.setEmail(rs.getString("email"));
-            user.setProfilePicture(rs.getBlob("profilepicture"));
+            user.setProfilePicture(rs.getBytes("profilepicture"));
             users.add(user);
         }
 
@@ -92,7 +92,7 @@ public class Database {
             user.setUsername(rs.getString("username"));
             user.setPassword(rs.getString("password"));
             user.setEmail(rs.getString("email"));
-            user.setProfilePicture(rs.getBlob("profilepicture"));
+            user.setProfilePicture(rs.getBytes("profilepicture"));
             usersOfProject.add(user);
         }
 
@@ -135,6 +135,19 @@ public class Database {
         statement.close();
     }
 
+    public void updateProject(Project project) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("update project03 set name = ?, description = ?, projectbeginn = ? where projectid = ? ");
+        statement.setString(1, project.getName());
+        statement.setString(2, project.getDescription());
+        statement.setDate(3, new Date(project.getStartDate().getTime()));
+        statement.setInt(4, project.getProjectID());
+        statement.executeUpdate();
+        statement.close();
+
+        int indexOfProject = getIndexOfProject(project.getProjectID())-1;
+        myProjects.set(indexOfProject, project);
+    }
+
     //Only called by the async task
     public void insertProject(Project project) throws ClassNotFoundException, SQLException {
         PreparedStatement statement = conn.prepareStatement("insert into project03 (name, description, projectbeginn) values (?, ?, ?)");
@@ -162,6 +175,14 @@ public class Database {
         PreparedStatement statement = conn.prepareStatement("insert into USERISINPROJECTWITHROLE03 (UserID, ProjectID) values (?, ?)");
         statement.setInt(1, userID);
         statement.setInt(2, projectID);
+        statement.executeQuery();
+        statement.close();
+    }
+
+    //Only called by async task
+    public void deleteUsersFromProject(int projectID) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("delete from USERISINPROJECTWITHROLE03 where projectID = ?");
+        statement.setInt(1, projectID);
         statement.executeQuery();
         statement.close();
     }
@@ -198,6 +219,7 @@ public class Database {
             project.setProjectID(rs.getInt("projectID"));
             project.setName(rs.getString("name"));
             project.setDescription(rs.getString("description"));
+            project.setStartDate(rs.getDate("projectbeginn"));
 
             myProjects.add(project);
         }
@@ -284,7 +306,7 @@ public class Database {
         Iterator<User> it = users.iterator();
 
         while (it.hasNext()) {
-            if (it.next().getEmail().equals(email))
+            if (it.next().getEmail().equals(email) )
                 retVal = true;
         }
 
@@ -391,7 +413,6 @@ public class Database {
             role.setName(rs.getString("name"));
             role.setDescription(rs.getString("description"));
             role.setUnique(Boolean.parseBoolean(rs.getString("isunique")));
-            System.out.println("check1");
             roles.add(role);
         }
         statement.close();
