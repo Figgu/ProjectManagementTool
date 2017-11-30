@@ -66,21 +66,42 @@ public class AddSprintFragment extends Fragment implements View.OnClickListener 
 
             if (lastView == txtStartDateSprint) {
                 if (!calendar.getTime().before(currentTime)) {
-                    txtStartDateSprint.setText(dateFormat.format(calendar.getTime()));
+                    try {
+                        if (txtEndDateSprint.getText().length() > 1) {
+                            if (calendar.getTime().before(dateFormat.parse(txtEndDateSprint.getText().toString()))) {
+                                if (!dateFormat.format(calendar.getTime()).equals(txtStartDateSprint.getText().toString())) {
+                                    txtStartDateSprint.setText(dateFormat.format(calendar.getTime()));
+                                } else {
+                                    Snackbar.make(layoutFragment, "Start date and end date cant be on the same day!", Snackbar.LENGTH_LONG).show();
+                                }
+                            } else {
+                                Snackbar.make(layoutFragment, "Start date cant be after end date", Snackbar.LENGTH_LONG).show();
+                            }
+                        } else {
+                            txtStartDateSprint.setText(dateFormat.format(calendar.getTime()));
+                        }
+
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
                 } else {
                     Snackbar.make(layoutFragment, "Start date cant be in the past!", Snackbar.LENGTH_LONG).show();
                 }
             } else {
                 if (!calendar.getTime().before(currentTime)) {
                     try {
-                        if (calendar.getTime().after(dateFormat.parse(txtStartDateSprint.getText().toString()))) {
-                            if (!dateFormat.format(calendar.getTime()).equals(dateFormat.parse(txtStartDateSprint.getText().toString()))) {
-                                txtEndDateSprint.setText(dateFormat.format(calendar.getTime()));
+                        if (txtStartDateSprint.getText().length() > 1) {
+                            if (calendar.getTime().after(dateFormat.parse(txtStartDateSprint.getText().toString()))) {
+                                if (!dateFormat.format(calendar.getTime()).equals(dateFormat.parse(txtStartDateSprint.getText().toString()).getTime())) {
+                                    txtEndDateSprint.setText(dateFormat.format(calendar.getTime()));
+                                } else {
+                                    Snackbar.make(layoutFragment, "Start date and end date cant be on the same day!", Snackbar.LENGTH_LONG).show();
+                                }
                             } else {
-                                Snackbar.make(layoutFragment, "Start date and end date cant be on the same day!", Snackbar.LENGTH_LONG).show();
+                                Snackbar.make(layoutFragment, "End date cant be before start date", Snackbar.LENGTH_LONG).show();
                             }
                         } else {
-                            Snackbar.make(layoutFragment, "End date cant be before start date", Snackbar.LENGTH_LONG).show();
+                            txtEndDateSprint.setText(dateFormat.format(calendar.getTime()));
                         }
                     } catch (ParseException e) {
                         e.printStackTrace();

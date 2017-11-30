@@ -14,7 +14,8 @@
         android:layout_height="match_parent"
         android:paddingTop="?attr/actionBarSize"
         android:dividerHeight="1sp"
-        android:paddingLeft="4dp">
+        android:paddingLeft="4dp"
+        android:longClickable="true">
     </ListView>
 
     <RelativeLayout

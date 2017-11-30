@@ -5,25 +5,23 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.projectmanagementtoolapp.pkgActivities.LoginActivity;
-import com.projectmanagementtoolapp.pkgActivities.RegisterActivity;
 import com.projectmanagementtoolapp.pkgData.Database;
+import com.projectmanagementtoolapp.pkgData.User;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
- * Created by alexk on 10.10.2017.
+ * Created by alexk on 30.11.2017.
  */
 
-public class InsertUserTask extends AsyncTask<Object, Object, String> {
+public class DeleteUsersFromProject extends AsyncTask<Object, Object, String> {
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    public InsertUserTask(Activity activity) {
+    public DeleteUsersFromProject(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -32,27 +30,17 @@ public class InsertUserTask extends AsyncTask<Object, Object, String> {
     @Override
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
+
         try {
-            db.insertUserWithPicture((String) params[0], (String) params[1], (String) params[2], objToByte(params[3]));
+            db.deleteUsersFromProject((int) params[0]);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
 
         return null;
     }
-
-    public byte[] objToByte(Object o) throws IOException {
-        ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
-        ObjectOutputStream objStream = new ObjectOutputStream(byteStream);
-        objStream.writeObject(o);
-
-        return byteStream.toByteArray();
-    }
-
 
     @Override
     protected void onPreExecute() {

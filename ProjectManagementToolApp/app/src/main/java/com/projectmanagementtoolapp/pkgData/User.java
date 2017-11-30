@@ -1,12 +1,14 @@
 package com.projectmanagementtoolapp.pkgData;
 
+import java.io.Serializable;
+import java.sql.Blob;
 import java.util.List;
 
 /**
  * Created by alexk on 09.10.2017.
  */
 
-public class User {
+public class User implements Serializable{
     private int userID;
     private String username;
     private String password;

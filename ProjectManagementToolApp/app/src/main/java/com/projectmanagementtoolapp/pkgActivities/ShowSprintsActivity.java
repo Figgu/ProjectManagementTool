@@ -2,11 +2,14 @@ package com.projectmanagementtoolapp.pkgActivities;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ClipData;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -19,8 +22,10 @@ import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.Sprint;
+import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgFragments.AddSprintFragment;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllSprintsTask;
+import com.projectmanagementtoolapp.pkgTasks.SelectUsersOfProjectTask;
 
 import java.util.concurrent.ExecutionException;
 
@@ -35,6 +40,9 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
     //Non gui elements
     private Database db;
     private Project currentProject;
+    private MenuItem allUsers;
+    private MenuItem allSprints;
+    private boolean showingSprints = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +69,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
 
         System.out.println("currentProject: " +currentProject.getSprints());
 
-        initList();
+        initList();             //Showing sprints
     }
     /*
     For back navigation to parent activity
@@ -72,9 +80,60 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             case android.R.id.home:
                 this.finish();
                 return true;
+            case R.id.show_all_users:
+                fab.setVisibility(View.INVISIBLE);
+                showingSprints = false;
+
+                SelectUsersOfProjectTask selectUsersOfProjectTask = new SelectUsersOfProjectTask(this);
+                selectUsersOfProjectTask.execute(currentProject);
+
+                try {
+                    String result = selectUsersOfProjectTask.get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+                setTitle("Users of " + currentProject);
+                initList();
+                allUsers.setVisible(false);
+                allSprints.setVisible(true);
+                return true;
+
+            case R.id.show_all_sprints:
+                fab.setVisibility(View.VISIBLE);
+                showingSprints = true;
+                setTitle("Sprints of " + currentProject);
+
+                SelectAllSprintsTask selectAllSprintsTask = new SelectAllSprintsTask(this);
+                selectAllSprintsTask.execute(currentProject);
+                try {
+                    String result = selectAllSprintsTask.get();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    e.printStackTrace();
+                }
+
+                initList();         //Showing sprints
+                allSprints.setVisible(false);
+                allUsers.setVisible(true);
+                return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_show_users_of_project, menu);
+        allUsers = menu.findItem(R.id.show_all_users);
+        allSprints = menu.findItem(R.id.show_all_sprints);
+        allSprints.setVisible(false);
+        return true;
     }
 
     private void getAllViews() {
@@ -90,20 +149,29 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
     }
 
     private void initList() {
-        if (currentProject.getSprints().size() > 0) {
+        if (showingSprints) {
             ArrayAdapter<Sprint> adapter = new ArrayAdapter<>(this, R.layout.list_view_sprints, currentProject.getSprints());
-            listSprints.setAdapter(adapter);
+            if (currentProject.getSprints().size() > 0) {
+                listSprints.setAdapter(adapter);
+            } else {
+                listSprints.setAdapter(null);
+                txtNoSprintsFound.setVisibility(View.VISIBLE);
+            }
         } else {
-            txtNoSprintsFound.setVisibility(View.VISIBLE);
+            txtNoSprintsFound.setVisibility(View.INVISIBLE);
+            ArrayAdapter<User> adapter = new ArrayAdapter<>(this, R.layout.list_view_sprints, currentProject.getContributors());
+            listSprints.setAdapter(adapter);
         }
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Sprint selectedSprint = (Sprint) listSprints.getItemAtPosition(position);
-        Intent intent = new Intent(this, ShowIssuesActivity.class);
-        intent.putExtra("sprint", selectedSprint);
-        startActivity(intent);
+        if (showingSprints) {
+            Sprint selectedSprint = (Sprint) listSprints.getItemAtPosition(position);
+            Intent intent = new Intent(this, ShowIssuesActivity.class);
+            intent.putExtra("sprint", selectedSprint);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -119,6 +187,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.layoutShowSprints, fragment);
             transaction.commit();
+
         }
     }
 }

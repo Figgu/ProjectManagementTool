@@ -3,15 +3,19 @@ package com.projectmanagementtoolapp.pkgData;
 import android.content.Intent;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.lang.reflect.Array;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Properties;
@@ -28,6 +32,7 @@ public class Database {
     private String pwd = "d5b";
     private ArrayList<User> users;
     private ArrayList<Project> projects;
+    private ArrayList<Project> myProjects;
     private ArrayList<Role> roles;
     private ArrayList<Right> rights;
     private Connection conn;
@@ -47,14 +52,16 @@ public class Database {
         conn.setTransactionIsolation(TRANSACTION_SERIALIZABLE);
 }
 
+    //212.152.179.117
+    //192.168.128.152
     private Connection createConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:oracle:thin:@192.168.128.152:1521:ora11g", user, pwd);
+        return DriverManager.getConnection("jdbc:oracle:thin:@212.152.179.117:1521:ora11g", user, pwd);
     }
 
     //Only called by the async task
     public void selectAllUsers() throws ClassNotFoundException, SQLException {
-        PreparedStatement statement = conn.prepareStatement("select * from user03");
-        ResultSet rs = statement.executeQuery();
+        Statement statement = conn.createStatement();
+        ResultSet rs = statement.executeQuery("select * from user03");
         users = new ArrayList<>();
 
         while(rs.next()) {
@@ -72,6 +79,30 @@ public class Database {
         rs.close();
     }
 
+    //Only called by async task
+    public void selectAllUsersFromProject(Project project) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select u.userid, u.username, u.password, u.email, u.profilepicture from userisinprojectwithrole03 p join user03 u on p.userid = u.userid where p.projectid = ?");
+        statement.setInt(1, project.getProjectID());
+        ResultSet rs = statement.executeQuery();
+        ArrayList<User> usersOfProject = new ArrayList<>();
+
+        while(rs.next()) {
+            User user = new User();
+            user.setUserID(rs.getInt("userID"));
+            user.setUsername(rs.getString("username"));
+            user.setPassword(rs.getString("password"));
+            user.setEmail(rs.getString("email"));
+            user.setProfilePicture(rs.getBytes("profilepicture"));
+            usersOfProject.add(user);
+        }
+
+        project.setContributors(usersOfProject);
+        int indexOfProject = getIndexOfProject(project.getProjectID())-1;
+        myProjects.set(indexOfProject, project);           //Set the user to the project
+        statement.close();
+        rs.close();
+    }
+
     //Only called by the async task
     public void insertUser(String username, String password, String email) throws ClassNotFoundException, SQLException {
         PreparedStatement statement = conn.prepareStatement("insert into user03 (username, password, email) values (?, ?, ?)");
@@ -84,6 +115,7 @@ public class Database {
 
     //Only called by the async task
     public void insertUserWithPicture(String username, String password, String email, byte[] picture) throws ClassNotFoundException, SQLException {
+        //InputStream targetStream = new ByteArrayInputStream(picture);
         PreparedStatement statement = conn.prepareStatement("insert into user03 (username, password, email, profilepicture) values (?, ?, ?, ?)");
         statement.setString(1, username);
         statement.setString(2, password);
@@ -103,6 +135,19 @@ public class Database {
         statement.close();
     }
 
+    public void updateProject(Project project) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("update project03 set name = ?, description = ?, projectbeginn = ? where projectid = ? ");
+        statement.setString(1, project.getName());
+        statement.setString(2, project.getDescription());
+        statement.setDate(3, new Date(project.getStartDate().getTime()));
+        statement.setInt(4, project.getProjectID());
+        statement.executeUpdate();
+        statement.close();
+
+        int indexOfProject = getIndexOfProject(project.getProjectID())-1;
+        myProjects.set(indexOfProject, project);
+    }
+
     //Only called by the async task
     public void insertProject(Project project) throws ClassNotFoundException, SQLException {
         PreparedStatement statement = conn.prepareStatement("insert into project03 (name, description, projectbeginn) values (?, ?, ?)");
@@ -110,7 +155,7 @@ public class Database {
         statement.setString(2, project.getDescription());
         statement.setDate(3, new Date(project.getStartDate().getTime()));
         statement.executeQuery();
-        conn.commit();;
+        conn.commit();
         statement.close();
     }
 
@@ -135,6 +180,14 @@ public class Database {
     }
 
     //Only called by async task
+    public void deleteUsersFromProject(int projectID) throws ClassNotFoundException, SQLException {
+        PreparedStatement statement = conn.prepareStatement("delete from USERISINPROJECTWITHROLE03 where projectID = ?");
+        statement.setInt(1, projectID);
+        statement.executeQuery();
+        statement.close();
+    }
+
+    //Only called by async task
     public void getAllProjects() throws SQLException {
         PreparedStatement statement = conn.prepareStatement("select * from project03");
         ResultSet rs = statement.executeQuery();
@@ -147,6 +200,28 @@ public class Database {
             project.setDescription(rs.getString("description"));
 
             projects.add(project);
+        }
+
+        System.out.println("projects: " + projects);
+        statement.close();
+        rs.close();
+    }
+
+    //Only called by async task
+    public void getMyProjects(User user) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("select po.projectid, po.name, po.description, po.projectbeginn from userisinprojectwithrole03 p join user03 u on u.userid = p.userid join project03 po on p.projectid = po.projectid where u.userid = ?");
+        statement.setInt(1, user.getUserID());
+        ResultSet rs = statement.executeQuery();
+        myProjects = new ArrayList<>();
+
+        while(rs.next()) {
+            Project project = new Project();
+            project.setProjectID(rs.getInt("projectID"));
+            project.setName(rs.getString("name"));
+            project.setDescription(rs.getString("description"));
+            project.setStartDate(rs.getDate("projectbeginn"));
+
+            myProjects.add(project);
         }
 
         System.out.println("projects: " + projects);
@@ -174,18 +249,14 @@ public class Database {
 
         project.setSprints(sprints);
         int indexOfProject = getIndexOfProject(project.getProjectID())-1;
-        projects.set(indexOfProject, project);           //Set the sprints to the project
-        System.out.println("sprints in select: " + projects.get(indexOfProject).getSprints());
+        myProjects.set(indexOfProject, project);           //Set the sprints to the project
+        System.out.println("sprints in select: " + myProjects.get(indexOfProject).getSprints());
         statement.close();
         rs.close();
     }
 
-    public void insertRole() {
-
-    }
-
     private int getIndexOfProject(int ID) {
-        Iterator<Project> it = projects.iterator();
+        Iterator<Project> it = myProjects.iterator();
         int counter = 0;
         boolean flag = true;
 
@@ -235,7 +306,7 @@ public class Database {
         Iterator<User> it = users.iterator();
 
         while (it.hasNext()) {
-            if (it.next().getEmail().equals(email))
+            if (it.next().getEmail().equals(email) )
                 retVal = true;
         }
 
@@ -289,7 +360,7 @@ public class Database {
     }
 
     public Project getProjectByID(int id) {
-        Iterator<Project> it = projects.iterator();
+        Iterator<Project> it = myProjects.iterator();
         Project project = null;
         boolean flag = true;
 
@@ -322,6 +393,15 @@ public class Database {
         return projects;
     }
 
+    public void insertRole(String roleName, String description, String isUnique) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("insert into role03 (name, description, ISUNIQUE) values (?, ?, ?)");
+        statement.setString(1, roleName);
+        statement.setString(2, description);
+        statement.setString(3, isUnique);
+        statement.executeQuery();
+        statement.close();
+    }
+
     public ArrayList<Role> getAllRoles() throws SQLException {
         PreparedStatement statement = conn.prepareStatement("select * from role03");
         ResultSet rs = statement.executeQuery();
@@ -329,16 +409,34 @@ public class Database {
 
         while(rs.next()) {
             Role role = new Role();
-            role.setRoleID(rs.getInt("projectID"));
+            role.setRoleID(rs.getInt("roleID"));
             role.setName(rs.getString("name"));
             role.setDescription(rs.getString("description"));
-
+            role.setUnique(Boolean.parseBoolean(rs.getString("isunique")));
             roles.add(role);
         }
-
-        System.out.println("roles: " + roles);
         statement.close();
         rs.close();
         return roles;
+    }
+
+    public void removeRole(String roleId) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("delete from role03 where roleid = ?");
+        statement.setString(1, roleId);
+        ResultSet rs = statement.executeQuery();
+        statement.close();
+        rs.close();
+    }
+
+    public ArrayList<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(ArrayList<Role> roles) {
+        this.roles = roles;
+    }
+
+    public ArrayList<Project> getMyProjects() {
+        return myProjects;
     }
 }

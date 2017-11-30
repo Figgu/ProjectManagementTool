@@ -71,6 +71,6 @@ public class Sprint implements Serializable{
 
     @Override
     public String toString() {
-        return "Sprint " + startDate + " - " + endDate;
+        return "Sprint from " + startDate + " to " + endDate;
     }
 }
