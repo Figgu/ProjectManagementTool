@@ -24,7 +24,7 @@ namespace ProjectManagementTool.classes
         public Kontext ()
         {
             //Use 192.168.128.152 for connection in htl, use 212.152.179.117 for external use
-            this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 192.168.128.152:1521/ora11g;User Id = d5b03; Password=d5b;";
+            this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 212.152.179.117:1521/ora11g;User Id = d5b03; Password=d5b;";
         }
 
         
@@ -107,6 +107,33 @@ namespace ProjectManagementTool.classes
             }
         }
 
+        public void updateUser(User user)
+        {
+            currentUser = user;
+            OleDbCommand cmd = null;
+            OleDbTransaction transaction = null;
+            string commandText = "";
+            using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
+            {
+                conn.Open();
+                transaction = conn.BeginTransaction();
+                commandText = "UPDATE user03 SET username = ?, password = ?, email = ? where userid = ?";
+                cmd = new OleDbCommand(commandText, conn);
+                cmd.Transaction = transaction;
+                cmd.Parameters.AddWithValue("?", user.Username);
+                cmd.Parameters.AddWithValue("?", user.Password);
+                cmd.Parameters.AddWithValue("?", user.Email);
+                cmd.Parameters.AddWithValue("?", user.Id);
+                cmd.ExecuteNonQuery();
+                transaction.Commit();
+            }
+        }
+
+        public User getCurrentUser()
+        {
+            return currentUser;
+        }
+
         public int getCurrentProjectID(Project project)
         {
             DataTable dt = new DataTable();
@@ -138,11 +165,6 @@ namespace ProjectManagementTool.classes
             currentUser = user;
             Console.WriteLine(currentUser.ToString());
             return user;
-        }
-
-        public void updateUser(User user)
-        {
-            throw new NotImplementedException();
         }
 
         public DataTable selectAllUsers()

@@ -16,9 +16,7 @@
             </Grid.ColumnDefinitions>
 
             <Image Grid.Column="0" Source="./assets/images/logo.png" Margin="5"></Image>
-
-            <Label Content="Project Management Tool V1" FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Height="56" Margin="3,10,181,9" Width="141" Grid.ColumnSpan="3"/>
-            <Label  Grid.Column="2" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="Black" Margin="0,16,10,16" Height="43" Width="147">
+            <Label x:Name="lblName"  Grid.Column="2" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="Black" Margin="0,16,10,16" Height="43" Width="147" >
                 <Hyperlink x:Name="lblProfile" Foreground="Black">Profilename</Hyperlink>
             </Label>
 
@@ -34,5 +32,6 @@
             <TextBox x:Name="txtProjectName" HorizontalAlignment="Left" Height="30" Margin="0,304,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
             <DatePicker x:Name="dpProjectDate" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="359,304,0,0" Height="30" Width="138"/>
         </Grid>
+        <Button x:Name="btnEditProfile" Content="Edit Profile" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="201,10,0,0" Click="btnEditProfile_Click"/>
     </Grid>
 </Window>

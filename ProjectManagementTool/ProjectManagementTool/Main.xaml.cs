@@ -89,7 +89,7 @@ namespace ProjectManagementTool
 
             // ... Get nullable DateTime from SelectedDate.
             DateTime? date = dp.SelectedDate;
-            if (date == null || date < DateTime.Now)
+            if (date == null || date <= DateTime.Now)
             {
                 // ... A null object.
                 MessageBox.Show("Select a valid date please");
@@ -102,6 +102,12 @@ namespace ProjectManagementTool
                 LoadProjectList();
             }
             
+        }
+
+        private void btnEditProfile_Click(object sender, RoutedEventArgs e)
+        {
+            ProfileWindow profileWindow = new ProfileWindow();
+            profileWindow.Show();
         }
     }
 }
