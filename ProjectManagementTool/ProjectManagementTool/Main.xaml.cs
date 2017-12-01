@@ -34,11 +34,16 @@ namespace ProjectManagementTool
 
         private ListBoxItem GenerateListItem(Project p)
         {
+            String test = ", Started On: ";
+            if(p.ProjectStart > DateTime.Now)
+            {
+                test = ", Start On: ";
+            }
             ListBoxItem item = new ListBoxItem
             {
                 //workaround, as name cant only contain numbers for some reason
                 Name = charForNameWorkaround+p.Id.ToString(),
-                Content = "Name: " + p.Name + ", Started On: " + p.ProjectStart.Day + "." + p.ProjectStart.Month + "." + p.ProjectStart.Year,
+                Content = "Name: " + p.Name + test + p.ProjectStart.Day + "." + p.ProjectStart.Month + "." + p.ProjectStart.Year,
                 FontSize = 30,
                 Height = 50
             };
@@ -104,7 +109,7 @@ namespace ProjectManagementTool
             
         }
 
-        private void btnEditProfile_Click(object sender, RoutedEventArgs e)
+        private void lblProfile_Click(object sender, RoutedEventArgs e)
         {
             ProfileWindow profileWindow = new ProfileWindow();
             profileWindow.Show();

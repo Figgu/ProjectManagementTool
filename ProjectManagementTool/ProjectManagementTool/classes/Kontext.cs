@@ -24,7 +24,7 @@ namespace ProjectManagementTool.classes
         public Kontext ()
         {
             //Use 192.168.128.152 for connection in htl, use 212.152.179.117 for external use
-            this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 212.152.179.117:1521/ora11g;User Id = d5b03; Password=d5b;";
+            this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 192.168.128.152:1521/ora11g;User Id = d5b03; Password=d5b;";
         }
 
         
