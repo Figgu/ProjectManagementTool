@@ -5,10 +5,25 @@
  */
 package pkgData;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import org.hibernate.annotations.GenericGenerator;
+
+
 /**
  *
  * @author alexk
- */
+ e*/
+@Entity
 public class Issue {
+    @Id
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    private String id;
+    
+    private String name;
+    private String description;
+    
     
 }
