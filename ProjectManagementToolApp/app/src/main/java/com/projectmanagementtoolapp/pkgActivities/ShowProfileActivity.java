@@ -50,7 +50,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     private MenuItem mSave;
     private MenuItem mEdit;
     private boolean shownAsPassword = true;
-    User currentUser;
+    private User currentUser;
 
 
     //Figgu pls
@@ -66,7 +66,7 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
         db = Database.getInstance();
         currentUser = db.getCurrentUser();
 
-        profilePicture.setImageResource(R.drawable.profileplaceholder);
+        profilePicture.setImageResource(R.drawable.standard_profile_picuture);
         /*
         try {
             byte[] imagebytes = currentUser.getProfilePicture().getBytes(0, (int) currentUser.getProfilePicture().length());

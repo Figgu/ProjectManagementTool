@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/delete_roles"
+        android:icon="@drawable/delete_bin"
+        android:title="Delete this roles"
+        app:showAsAction="ifRoom"></item>
+</menu>

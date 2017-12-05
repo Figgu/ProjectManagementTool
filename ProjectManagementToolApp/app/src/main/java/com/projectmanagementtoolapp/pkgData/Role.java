@@ -10,14 +10,15 @@ public class Role {
     private String description;
     private boolean isUnique;
 
-    public Role(String name, String description) {
-        this.name = name;
-        this.description = description;
-    }
-
     public Role()
     {
 
+    }
+
+    public Role(String name, String description, boolean isUnique) {
+        this.name = name;
+        this.description = description;
+        this.isUnique = isUnique;
     }
 
     public int getRoleID() {

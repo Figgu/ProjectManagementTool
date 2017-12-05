@@ -16,18 +16,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
-import com.projectmanagementtoolapp.pkgData.User;
-import com.projectmanagementtoolapp.pkgTasks.SelectAllProjectsTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectMyProjectsTask;
-import com.projectmanagementtoolapp.pkgTasks.SelectUsersOfProjectTask;
 
 import java.util.concurrent.ExecutionException;
 
@@ -156,7 +151,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_logout) {
             showLogoutDialog();
         } else if (id == R.id.nav_createRole) {
-            Intent intent = new Intent(this, CreateRoleActivity.class);
+            Intent intent = new Intent(this, AddRoleActivity.class);
             startActivity(intent);
         }
 

@@ -1,9 +1,13 @@
 package com.projectmanagementtoolapp.pkgActivities;
 
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -19,6 +23,7 @@ import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.User;
+import com.projectmanagementtoolapp.pkgTasks.DeleteProjectTask;
 import com.projectmanagementtoolapp.pkgTasks.DeleteUsersFromProject;
 import com.projectmanagementtoolapp.pkgTasks.InsertProjectTask;
 import com.projectmanagementtoolapp.pkgTasks.InsertUsersInProject;
@@ -94,9 +99,60 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
                 // app icon in action bar clicked; goto parent activity.
                 this.finish();
                 return true;
+            case R.id.delete_project:
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+                builder.setTitle("Delete");
+                builder.setMessage("Do you really want to delete this project?");
+
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        deleteProject();
+                    }
+                });
+
+                builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    //TODO DELETE SPRINTS/ISSUES
+    private void deleteProject() {
+        DeleteUsersFromProject deleteUsersFromProject = new DeleteUsersFromProject(this);
+        deleteUsersFromProject.execute(currentProject.getProjectID());
+        try {
+            String result = deleteUsersFromProject.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+
+        DeleteProjectTask deleteProjectTask = new DeleteProjectTask(this);
+        deleteProjectTask.execute(currentProject);
+        try {
+            String result = deleteProjectTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        this.finish();
     }
 
     // Listener
@@ -221,6 +277,13 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
             contributors.add(currentProject.getContributors().get(i));
             linearLayout.addView(view);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.activity_edit_project, menu);
+        return true;
     }
 
     private void deleteFromListByName(String name) {

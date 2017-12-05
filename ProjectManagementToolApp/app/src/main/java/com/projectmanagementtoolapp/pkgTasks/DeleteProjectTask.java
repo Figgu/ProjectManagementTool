@@ -6,20 +6,20 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.projectmanagementtoolapp.pkgData.Database;
-import com.projectmanagementtoolapp.pkgData.Role;
+import com.projectmanagementtoolapp.pkgData.Project;
 
 import java.sql.SQLException;
 
 /**
- * Created by Figgu on 10.11.2017.
+ * Created by alexk on 01.12.2017.
  */
 
-public class InsertRoleTask extends AsyncTask<Object, Object, String> {
+public class DeleteProjectTask extends AsyncTask<Object, Object, String> {
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    public InsertRoleTask(Activity activity) {
+    public DeleteProjectTask(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -29,7 +29,7 @@ public class InsertRoleTask extends AsyncTask<Object, Object, String> {
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
         try {
-            db.insertRole((Role) params[0]);
+            db.deleteProject((Project) params[0]);
         } catch (SQLException e) {
             e.printStackTrace();
         }

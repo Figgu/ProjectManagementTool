@@ -3,10 +3,12 @@ package com.projectmanagementtoolapp.pkgActivities;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -43,6 +45,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
     private MenuItem allUsers;
     private MenuItem allSprints;
     private boolean showingSprints = true;
+    private boolean infoShown = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,11 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
                 this.finish();
                 return true;
             case R.id.show_all_users:
+                //Display dialog of
+                if (!infoShown) {
+                    showInfoDialog();
+                }
+
                 fab.setVisibility(View.INVISIBLE);
                 showingSprints = false;
 
@@ -124,6 +132,20 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showInfoDialog() {
+        // Use the Builder class for convenient dialog construction
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Set Roles of Users");
+        builder.setMessage("In this activity you are able to add roles to the users of this project")
+                .setPositiveButton("Ok cool", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        // Create the AlertDialog object and return it
+        builder.create().show();
     }
 
     @Override

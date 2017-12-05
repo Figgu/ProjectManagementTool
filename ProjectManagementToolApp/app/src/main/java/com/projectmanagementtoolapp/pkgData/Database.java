@@ -393,11 +393,11 @@ public class Database {
         return projects;
     }
 
-    public void insertRole(String roleName, String description, String isUnique) throws SQLException {
+    public void insertRole(Role role) throws SQLException {
         PreparedStatement statement = conn.prepareStatement("insert into role03 (name, description, ISUNIQUE) values (?, ?, ?)");
-        statement.setString(1, roleName);
-        statement.setString(2, description);
-        statement.setString(3, isUnique);
+        statement.setString(1, role.getName());
+        statement.setString(2, role.getDescription());
+        statement.setString(3, String.valueOf(role.isUnique()));
         statement.executeQuery();
         statement.close();
     }
@@ -420,12 +420,23 @@ public class Database {
         return roles;
     }
 
-    public void removeRole(String roleId) throws SQLException {
+    public void removeRole(Role role) throws SQLException {
         PreparedStatement statement = conn.prepareStatement("delete from role03 where roleid = ?");
-        statement.setString(1, roleId);
+        statement.setInt(1, role.getRoleID());
         ResultSet rs = statement.executeQuery();
         statement.close();
         rs.close();
+    }
+
+    public void deleteProject(Project project) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("delete from project03 where projectid = ?");
+        statement.setInt(1, project.getProjectID());
+        ResultSet rs = statement.executeQuery();
+        statement.close();
+        rs.close();
+
+        myProjects.remove(project);
+        projects.remove(project);
     }
 
     public ArrayList<Role> getRoles() {
