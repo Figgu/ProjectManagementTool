@@ -41,6 +41,14 @@ namespace ProjectManagementTool.classes
             set { id = value; }
         }
 
+        private byte[] picture;
+
+        public byte[] Picture
+        {
+            get { return picture; }
+            set { picture = value; }
+        }
+
         public User()
         {
 
@@ -51,6 +59,15 @@ namespace ProjectManagementTool.classes
             this.Username = username;
             this.Password = password;
             this.Email = email;
+        }
+
+        public User(int id, String username, String password, String email, byte[] picture)
+        {
+            this.id = id;
+            this.Username = username;
+            this.Password = password;
+            this.Email = email;
+            this.Picture = picture;
         }
 
         public User(int id, String username, String password, String email)

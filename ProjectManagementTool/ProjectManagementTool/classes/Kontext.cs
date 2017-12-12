@@ -117,12 +117,13 @@ namespace ProjectManagementTool.classes
             {
                 conn.Open();
                 transaction = conn.BeginTransaction();
-                commandText = "UPDATE user03 SET username = ?, password = ?, email = ? where userid = ?";
+                commandText = "UPDATE user03 SET username = ?, password = ?, email = ?, profilepicture = ? where userid = ?";
                 cmd = new OleDbCommand(commandText, conn);
                 cmd.Transaction = transaction;
                 cmd.Parameters.AddWithValue("?", user.Username);
                 cmd.Parameters.AddWithValue("?", user.Password);
                 cmd.Parameters.AddWithValue("?", user.Email);
+                cmd.Parameters.AddWithValue("?", user.Picture);
                 cmd.Parameters.AddWithValue("?", user.Id);
                 cmd.ExecuteNonQuery();
                 transaction.Commit();
@@ -156,10 +157,19 @@ namespace ProjectManagementTool.classes
             using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
             {
                 conn.Open();
-                da = new OleDbDataAdapter("SELECT userid, username, password, email FROM User03 WHERE UserID = " + id, conn);
+                da = new OleDbDataAdapter("SELECT userid, username, password, email, profilepicture FROM User03 WHERE UserID = " + id, conn);
                 da.Fill(dt);
             }
-            user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
+            if(dt.Rows[0][4] != null)
+            {
+                Console.WriteLine(dt.Rows[0][4]);
+                Console.WriteLine("LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL");
+                user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString(), (byte[])dt.Rows[0][4]);
+            }
+            else
+            {
+                user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
+            }
             Console.WriteLine("--------------------------1");
             Console.WriteLine(user.ToString());
             currentUser = user;
@@ -188,20 +198,19 @@ namespace ProjectManagementTool.classes
             using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
             {
                 conn.Open();
-                da = new OleDbDataAdapter("SELECT userid, username, password, email FROM User03 WHERE username = '" + username + "' AND password = '" + password + "'", conn);
+                da = new OleDbDataAdapter("SELECT userid, username, password, email, profilepicture FROM User03 WHERE username = '" + username + "' AND password = '" + password + "'", conn);
                 da.Fill(dt);
             }
-            //if there is a picture in the database
-            //if (dt.Rows.Count == 5)
-            //{
-                user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
-            //}
-            //if there is no picture
-            /*
+            if (dt.Rows[0][4]!=DBNull.Value)
+            {
+                Console.WriteLine(dt.Rows[0][4].ToString());
+                Console.WriteLine("LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL");
+                user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString(), (byte[]) dt.Rows[0][4]);
+            }
             else
             {
                 user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
-            }*/
+            }
             Console.WriteLine("--------------------------2");
             Console.WriteLine(user.ToString());
             currentUser = user;
@@ -218,11 +227,21 @@ namespace ProjectManagementTool.classes
             using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
             {
                 conn.Open();
-                da = new OleDbDataAdapter("SELECT userid, username, password, email FROM User03 WHERE email = '" + email + "'", conn);
+                da = new OleDbDataAdapter("SELECT userid, username, password, email, profilepicture FROM User03 WHERE email = '" + email + "'", conn);
                 da.Fill(dt);
             }
 
-            user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
+            if (dt.Rows[0][4] != null)
+            {
+                Console.WriteLine(dt.Rows[0][4].ToString());
+                Console.WriteLine("LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOL");
+                user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString(), (byte[])dt.Rows[0][4]);
+                
+            }
+            else
+            {
+                user = new User(Convert.ToInt32(dt.Rows[0][0]), dt.Rows[0][1].ToString(), dt.Rows[0][2].ToString(), dt.Rows[0][3].ToString());
+            }
             Console.WriteLine("--------------------------3");
             Console.WriteLine(user.ToString());
             currentUser = user;

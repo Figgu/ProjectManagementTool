@@ -2,6 +2,7 @@
 using ProjectManagementTool.classes;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Drawing;
 
 namespace ProjectManagementTool
 {
@@ -39,6 +41,26 @@ namespace ProjectManagementTool
             lblName.Content = k.getCurrentUser().Username;
             lblPassword.Content = k.getCurrentUser().Password;
             lblEmail.Content = k.getCurrentUser().Email;
+            if(k.getCurrentUser().Picture != null)
+            {
+                byte[] blob = k.getCurrentUser().Picture;
+                MemoryStream stream = new MemoryStream();
+                stream.Write(blob, 0, blob.Length);
+                stream.Position = 0;
+
+                System.Drawing.Image img = System.Drawing.Image.FromStream(stream);
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+
+                MemoryStream ms = new MemoryStream();
+                img.Save(ms, System.Drawing.Imaging.ImageFormat.Bmp);
+                ms.Seek(0, SeekOrigin.Begin);
+                bi.StreamSource = ms;
+                bi.EndInit();
+                imgProfilBild.Source = bi;
+            }
+
+
         }
 
         private void btnProfileEdit_Click(object sender, RoutedEventArgs e)
@@ -70,7 +92,7 @@ namespace ProjectManagementTool
             lblName.Content = k.getCurrentUser().Username;
             lblPassword.Content = k.getCurrentUser().Password;
             lblEmail.Content = k.getCurrentUser().Email;
-            
+
         }
 
         private void btnEditPicture_Click(object sender, RoutedEventArgs e)
@@ -83,7 +105,18 @@ namespace ProjectManagementTool
             if (op.ShowDialog() == true)
             {
                 imgProfilBild.Source = new BitmapImage(new Uri(op.FileName));
+                string source = imgProfilBild.Source.ToString().Substring(8);
+                Console.WriteLine(source);
+                FileStream fs = new FileStream(source, FileMode.Open, FileAccess.Read);
+
+                // Create a byte array of file stream length
+                byte[] ImageData = new byte[fs.Length];
+
+                //Read block of bytes from stream into the byte array
+                fs.Read(ImageData, 0, System.Convert.ToInt32(fs.Length));
+                k.updateUser(new User(k.getCurrentUser().Id, lblName.Content.ToString(), lblPassword.Content.ToString(), lblEmail.Content.ToString(), ImageData));
             }
+            
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
