@@ -38,6 +38,7 @@ namespace ProjectManagementTool
             txtPassword.Visibility = Visibility.Hidden;
             txtEmail.Visibility = Visibility.Hidden;
             btnSave.Visibility = Visibility.Hidden;
+            btnCancel.Visibility = Visibility.Hidden;
             lblName.Content = k.GetCurrentUser().Username;
             lblPassword.Content = k.GetCurrentUser().Password;
             lblEmail.Content = k.GetCurrentUser().Email;
@@ -73,6 +74,7 @@ namespace ProjectManagementTool
             txtPassword.Visibility = Visibility.Visible;
             txtEmail.Visibility = Visibility.Visible;
             btnSave.Visibility = Visibility.Visible;
+            btnCancel.Visibility = Visibility.Visible;
             txtEmail.Text = k.GetCurrentUser().Email;
             txtName.Text = k.GetCurrentUser().Username;
             txtPassword.Text = k.GetCurrentUser().Password;
@@ -89,6 +91,7 @@ namespace ProjectManagementTool
             txtPassword.Visibility = Visibility.Hidden;
             txtEmail.Visibility = Visibility.Hidden;
             btnSave.Visibility = Visibility.Hidden;
+            btnCancel.Visibility = Visibility.Hidden;
             lblName.Content = k.GetCurrentUser().Username;
             lblPassword.Content = k.GetCurrentUser().Password;
             lblEmail.Content = k.GetCurrentUser().Email;
@@ -125,6 +128,19 @@ namespace ProjectManagementTool
             w.Close();
             Main m = new Main(k.GetCurrentUser());
             m.Show();
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            lblName.Visibility = Visibility.Visible;
+            lblPassword.Visibility = Visibility.Visible;
+            lblEmail.Visibility = Visibility.Visible;
+            btnProfileEdit.Visibility = Visibility.Visible;
+            txtName.Visibility = Visibility.Hidden;
+            txtPassword.Visibility = Visibility.Hidden;
+            txtEmail.Visibility = Visibility.Hidden;
+            btnSave.Visibility = Visibility.Hidden;
+            btnCancel.Visibility = Visibility.Hidden;
         }
     }
 }
