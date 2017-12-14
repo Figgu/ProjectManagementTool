@@ -20,7 +20,7 @@ namespace ProjectManagementTool
     /// </summary>
     public partial class Main : Window
     {
-        private Kontext ktx = Kontext.getIntance();
+        private Kontext ktx = Kontext.GetInstance();
         private User currentUser;
         private List<Project> projects;
         private char charForNameWorkaround = 'x';
@@ -103,7 +103,7 @@ namespace ProjectManagementTool
             {
                 DateTime UpdatedTime = date ?? DateTime.Now;
                 //MessageBox.Show(UpdatedTime.ToString());
-                ktx.insertProject(new Project(txtProjectName.Text, "no description", UpdatedTime));
+                ktx.InsertProject(new Project(txtProjectName.Text, "no description", UpdatedTime));
                 LoadProjectList();
             }
             
