@@ -28,7 +28,7 @@ namespace ProjectManagementTool
         public LoginWindow()
         {
             InitializeComponent();
-            ktx = Kontext.getIntance();
+            ktx = Kontext.GetInstance();
   
         }
 
@@ -75,7 +75,7 @@ namespace ProjectManagementTool
             User retVal = null;
             if (!username.Equals("") && !password.Equals(""))
             {
-                retVal = ktx.selectUser(username, password);
+                retVal = ktx.GetUser(username, password);
             }
             return retVal;
         }

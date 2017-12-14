@@ -29,7 +29,7 @@ namespace ProjectManagementTool
             LoadGUI();
         }
 
-        Kontext k = Kontext.getIntance();
+        Kontext k = Kontext.GetInstance();
         
 
         private void LoadGUI()
@@ -38,12 +38,12 @@ namespace ProjectManagementTool
             txtPassword.Visibility = Visibility.Hidden;
             txtEmail.Visibility = Visibility.Hidden;
             btnSave.Visibility = Visibility.Hidden;
-            lblName.Content = k.getCurrentUser().Username;
-            lblPassword.Content = k.getCurrentUser().Password;
-            lblEmail.Content = k.getCurrentUser().Email;
-            if(k.getCurrentUser().Picture != null)
+            lblName.Content = k.GetCurrentUser().Username;
+            lblPassword.Content = k.GetCurrentUser().Password;
+            lblEmail.Content = k.GetCurrentUser().Email;
+            if(k.GetCurrentUser().Picture != null)
             {
-                byte[] blob = k.getCurrentUser().Picture;
+                byte[] blob = k.GetCurrentUser().Picture;
                 MemoryStream stream = new MemoryStream();
                 stream.Write(blob, 0, blob.Length);
                 stream.Position = 0;
@@ -73,14 +73,14 @@ namespace ProjectManagementTool
             txtPassword.Visibility = Visibility.Visible;
             txtEmail.Visibility = Visibility.Visible;
             btnSave.Visibility = Visibility.Visible;
-            txtEmail.Text = k.getCurrentUser().Email;
-            txtName.Text = k.getCurrentUser().Username;
-            txtPassword.Text = k.getCurrentUser().Password;
+            txtEmail.Text = k.GetCurrentUser().Email;
+            txtName.Text = k.GetCurrentUser().Username;
+            txtPassword.Text = k.GetCurrentUser().Password;
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            k.updateUser(new User(k.getCurrentUser().Id, txtName.Text, txtPassword.Text, txtEmail.Text));
+            k.UpdateUser(new User(k.GetCurrentUser().Id, txtName.Text, txtPassword.Text, txtEmail.Text));
             lblName.Visibility = Visibility.Visible;
             lblPassword.Visibility = Visibility.Visible;
             lblEmail.Visibility = Visibility.Visible;
@@ -89,9 +89,9 @@ namespace ProjectManagementTool
             txtPassword.Visibility = Visibility.Hidden;
             txtEmail.Visibility = Visibility.Hidden;
             btnSave.Visibility = Visibility.Hidden;
-            lblName.Content = k.getCurrentUser().Username;
-            lblPassword.Content = k.getCurrentUser().Password;
-            lblEmail.Content = k.getCurrentUser().Email;
+            lblName.Content = k.GetCurrentUser().Username;
+            lblPassword.Content = k.GetCurrentUser().Password;
+            lblEmail.Content = k.GetCurrentUser().Email;
 
         }
 
@@ -114,7 +114,7 @@ namespace ProjectManagementTool
 
                 //Read block of bytes from stream into the byte array
                 fs.Read(ImageData, 0, System.Convert.ToInt32(fs.Length));
-                k.updateUser(new User(k.getCurrentUser().Id, lblName.Content.ToString(), lblPassword.Content.ToString(), lblEmail.Content.ToString(), ImageData));
+                k.UpdateUser(new User(k.GetCurrentUser().Id, lblName.Content.ToString(), lblPassword.Content.ToString(), lblEmail.Content.ToString(), ImageData));
             }
             
         }
@@ -123,7 +123,7 @@ namespace ProjectManagementTool
         {
             Window w = Application.Current.Windows.OfType<Window>().SingleOrDefault(x => x.IsActive);
             w.Close();
-            Main m = new Main(k.getCurrentUser());
+            Main m = new Main(k.GetCurrentUser());
             m.Show();
         }
     }

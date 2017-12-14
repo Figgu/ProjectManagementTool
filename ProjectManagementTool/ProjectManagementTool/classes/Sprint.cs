@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace ProjectManagementTool.classes
 {
-    //TODO loading
     public class Sprint
     {
         private int id;

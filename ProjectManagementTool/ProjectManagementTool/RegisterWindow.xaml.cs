@@ -34,7 +34,7 @@ namespace ProjectManagementTool
         //TODO Register user and check on textboxes [check if user already exists]
         private void BtnRegister_Click(object sender, RoutedEventArgs e)
         {
-            Kontext ktx = new Kontext();
+            Kontext ktx = Kontext.GetInstance();
             if (txtPassword.Password.Equals(txtConfirmPassword.Password))
             {
                 if (txtPassword.Password.Equals("") || txtConfirmPassword.Password.Equals("")||txtUsername.Text.Equals("")||
@@ -46,13 +46,9 @@ namespace ProjectManagementTool
                 {
                     if (IsValidEmail(txtEMail.Text))
                     {
-                        ktx.insertUser(new User(txtUsername.Text, txtPassword.Password, txtEMail.Text));
+                        ktx.InsertUser(new User(txtUsername.Text, txtPassword.Password, txtEMail.Text));
                         MessageBox.Show("Succesfully registered!");
                         this.Close();
-                    }
-                    else
-                    {
-                        MessageBox.Show("E-Mail Adress is not valid!");
                     }
                 }
             }
@@ -65,15 +61,17 @@ namespace ProjectManagementTool
         //Check the format of the email adress
         private bool IsValidEmail(string email)
         {
+            bool retVal = false;
             try
             {
                 var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
+                retVal = (addr.Address == email);
             }
             catch
             {
-                return false;
+                MessageBox.Show("E-Mail Adress is not valid!");
             }
+            return retVal;
         }
     }
 }

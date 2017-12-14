@@ -28,7 +28,7 @@ namespace ProjectManagementTool
             LoadGUI();
         }
 
-        private Kontext ktx = new Kontext();
+        private Kontext ktx = Kontext.GetInstance();
         private User currentUser;
         private Project currentProject;
         private List<Sprint> sprints;
