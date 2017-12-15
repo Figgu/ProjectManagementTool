@@ -1,31 +1,31 @@
-package com.projectmanagementtoolapp.pkgActivities;
+package com.projectmanagementtoolapp.pkgFragments;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.media.Image;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.view.MenuItem;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
-import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.InsertUserTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.ExecutionException;
 
-public class RegisterActivity extends AppCompatActivity implements View.OnClickListener {
+public class RegisterFragment extends Fragment implements View.OnClickListener {
 
     //Gui elements
     private EditText txtUsername;
@@ -38,40 +38,35 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     //non gui elements
     private Database db;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+    public RegisterFragment() {
+        // Required empty public constructor
+    }
 
-        setTitle("Register");
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);      //Back navigation
-        getAllViews();
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view =  inflater.inflate(R.layout.fragment_register, container, false);
+
+        getAllViews(view);
         initEventHandlers();
         db = Database.getInstance();
+
+        return view;
     }
 
-    /*
-    For back navigation to parent activity
-    */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                // app icon in action bar clicked; goto parent activity.
-                this.finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private void getAllViews() {
-        txtUsername = (EditText) findViewById(R.id.txtUsernameRegister);
-        txtEmail = (EditText) findViewById(R.id.txtEmailRegister);
-        txtPassword = (EditText) findViewById(R.id.txtPasswordRegister);
-        txtConfirmPassword = (EditText) findViewById(R.id.txtConfirmPasswordRegister);
-        btnRegister = (Button) findViewById(R.id.btnRegister);
-        mRoot = (RelativeLayout) findViewById(R.id.layoutRegister);
+    private void getAllViews(View view) {
+        txtUsername = (EditText) view.findViewById(R.id.txtUsernameRegister);
+        txtEmail = (EditText) view.findViewById(R.id.txtEmailRegister);
+        txtPassword = (EditText) view.findViewById(R.id.txtPasswordRegister);
+        txtConfirmPassword = (EditText) view.findViewById(R.id.txtConfirmPasswordRegister);
+        btnRegister = (Button) view.findViewById(R.id.btnRegister);
+        mRoot = (RelativeLayout) view.findViewById(R.id.layoutRegister);
     }
 
     private void initEventHandlers() {
@@ -155,17 +150,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                                 System.out.println(image[i]);
                             }
 
-                            InsertUserTask insertUserTask = new InsertUserTask(this);
+                            InsertUserTask insertUserTask = new InsertUserTask(getActivity());
                             insertUserTask.execute(txtUsername.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString(), image);
                             String ret = insertUserTask.get();
 
-                            SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(this);
+                            SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(getActivity());
                             selectAllUsersTask.execute();
                             ret = selectAllUsersTask.get();
 
-                            this.finish();
+                            userRegistered();
                         } else {
-                          txtEmail.setError("Email already exists");
+                            txtEmail.setError("Email already exists");
                         }
                     } else {
                         txtUsername.setError("Username already exists");
@@ -177,5 +172,13 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
                 Snackbar.make(mRoot, "Your passwords are not equal!", Snackbar.LENGTH_LONG).show();
             }
         }
+    }
+
+    private void userRegistered() {
+        txtUsername.setText("");
+        txtPassword.setText("");
+        txtEmail.setText("");
+        txtConfirmPassword.setText("");
+        Toast.makeText(getActivity(), "Account has been registered successfully!", Toast.LENGTH_LONG).show();
     }
 }

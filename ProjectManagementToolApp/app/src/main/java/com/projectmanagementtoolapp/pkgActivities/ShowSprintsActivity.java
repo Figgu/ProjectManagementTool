@@ -25,6 +25,7 @@ import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.Sprint;
 import com.projectmanagementtoolapp.pkgData.User;
+import com.projectmanagementtoolapp.pkgFragments.AddRoleToUserFragment;
 import com.projectmanagementtoolapp.pkgFragments.AddSprintFragment;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllSprintsTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectUsersOfProjectTask;
@@ -138,13 +139,12 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Set Roles of Users");
-        builder.setMessage("In this activity you are able to add roles to the users of this project")
+        builder.setMessage("You are able to add roles to the user by clicking on his name!")
                 .setPositiveButton("Ok cool", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
                     }
                 });
-        // Create the AlertDialog object and return it
         builder.create().show();
     }
 
@@ -193,6 +193,20 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             Intent intent = new Intent(this, ShowIssuesActivity.class);
             intent.putExtra("sprint", selectedSprint);
             startActivity(intent);
+        } else {
+            txtNoSprintsFound.setVisibility(View.INVISIBLE);
+            listSprints.setVisibility(View.INVISIBLE);
+            fab.setVisibility(View.INVISIBLE);
+
+            User user = (User) listSprints.getItemAtPosition(position);
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("selectedUser", user);
+            AddRoleToUserFragment fragment = new AddRoleToUserFragment();
+            fragment.setArguments(bundle);
+            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.layoutShowSprints, fragment);
+            transaction.commit();
         }
     }
 
@@ -201,6 +215,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
         if (v == fab) {
             txtNoSprintsFound.setVisibility(View.INVISIBLE);
             listSprints.setVisibility(View.INVISIBLE);
+            fab.setVisibility(View.INVISIBLE);
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("currentProject", currentProject);
@@ -209,7 +224,6 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.layoutShowSprints, fragment);
             transaction.commit();
-
         }
     }
 }

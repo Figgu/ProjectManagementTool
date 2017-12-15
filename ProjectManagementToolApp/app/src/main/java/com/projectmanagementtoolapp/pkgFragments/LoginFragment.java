@@ -1,15 +1,16 @@
-package com.projectmanagementtoolapp.pkgActivities;
+package com.projectmanagementtoolapp.pkgFragments;
 
-import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,19 +19,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.projectmanagementtoolapp.R;
+import com.projectmanagementtoolapp.pkgActivities.ForgotPasswordActivity;
+import com.projectmanagementtoolapp.pkgActivities.MainActivity;
 import com.projectmanagementtoolapp.pkgData.Database;
+import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.OpenConnectionTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
-import com.projectmanagementtoolapp.pkgData.User;
 
-import java.util.concurrent.ExecutionException;
-
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginFragment extends Fragment implements View.OnClickListener {
 
     //GUI elements
     private AutoCompleteTextView txtUsername;
     private EditText txtPassword;
-    private TextView txtRegister;
     private TextView txtForogtPw;
     private Button btnLogin;
     private RelativeLayout mRoot;
@@ -38,35 +38,45 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     //Non gui elements
     private Database db;
 
+    public LoginFragment() {
+        // Required empty public constructor
+    }
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         db = Database.getInstance();
-        setTitle("Login");
-        getAllViews();
+        getAllViews(view);
         initEventHandlers();
 
         OpenConnectionTask openConnectionTask = new OpenConnectionTask();
         openConnectionTask.execute();
 
-        SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(this);
+        SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(getActivity());
         selectAllUsersTask.execute();
+
+        return view;
     }
 
-    private void getAllViews() {
-        txtUsername = (AutoCompleteTextView) findViewById(R.id.txtUsernameLogin);
-        txtPassword = (EditText) findViewById(R.id.txtPasswordLogin);
-        txtRegister = (TextView) findViewById(R.id.txtRegisterLogin);
-        txtForogtPw = (TextView) findViewById(R.id.txtForogtPwLogin);
-        btnLogin = (Button) findViewById(R.id.btnLogin);
-        mRoot = (RelativeLayout) findViewById(R.id.layoutLogin);
+    private void getAllViews(View view) {
+        txtUsername = (AutoCompleteTextView) view.findViewById(R.id.txtUsernameLogin);
+        txtPassword = (EditText) view.findViewById(R.id.txtPasswordLogin);
+        txtForogtPw = (TextView) view.findViewById(R.id.txtForogtPwLogin);
+        btnLogin = (Button) view.findViewById(R.id.btnLogin);
+        mRoot = (RelativeLayout) view.findViewById(R.id.layoutLogin);
     }
 
     private void initEventHandlers() {
         btnLogin.setOnClickListener(this);
-        txtRegister.setOnClickListener(this);
         txtForogtPw.setOnClickListener(this);
     }
 
@@ -76,24 +86,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (view == btnLogin) {
                 doLogin();
             } else if(view == txtForogtPw) {
-                Intent intent = new Intent(this, ForgotPasswordActivity.class);
-                startActivity(intent);
-            } else if(view == txtRegister) {
-                Intent intent = new Intent(this, RegisterActivity.class);
+                Intent intent = new Intent(getActivity(), ForgotPasswordActivity.class);
                 startActivity(intent);
             }
         } catch (Exception ex) {
-            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_SHORT);
+            Toast.makeText(getActivity(), "Error: " + ex.getMessage(), Toast.LENGTH_SHORT);
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        closeAppDialog();
-    }
-
     private void closeAppDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         builder.setTitle("Exit");
         builder.setMessage("Do you want to exit the Project Management Tool?");
@@ -141,7 +143,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             if (user != null) {
                 if (user.getUsername().equals(txtUsername.getText().toString()) && user.getPassword().equals(txtPassword.getText().toString())) {
                     db.setCurrentUser(user);
-                    Intent intent = new Intent(this, MainActivity.class);
+                    Intent intent = new Intent(getActivity(), MainActivity.class);
                     startActivity(intent);
                 } else {
                     Snackbar.make(mRoot, "Password wrong", Snackbar.LENGTH_LONG).show();
@@ -152,4 +154,3 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 }
-

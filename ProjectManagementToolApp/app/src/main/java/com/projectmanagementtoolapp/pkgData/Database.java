@@ -34,7 +34,6 @@ public class Database {
     private ArrayList<Project> projects;
     private ArrayList<Project> myProjects;
     private ArrayList<Role> roles;
-    private ArrayList<Right> rights;
     private Connection conn;
     private User currentUser;       //Current logged in user
 
@@ -55,7 +54,7 @@ public class Database {
     //212.152.179.117
     //192.168.128.152
     private Connection createConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:oracle:thin:@212.152.179.117:1521:ora11g", user, pwd);
+        return DriverManager.getConnection("jdbc:oracle:thin:@192.168.128.152:1521:ora11g", user, pwd);
     }
 
     //Only called by the async task
