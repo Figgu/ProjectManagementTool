@@ -21,15 +21,17 @@ namespace ProjectManagementTool
     public partial class Main : Window
     {
         private Kontext ktx = Kontext.GetInstance();
-        private User currentUser;
+        private static User currentUser;
         private List<Project> projects;
         private char charForNameWorkaround = 'x';
+        private static Main instance = null;
 
         public Main(User user)
         {
             InitializeComponent();
-            this.currentUser = user;
+            currentUser = user;
             LoadGUI();
+            instance = this;
         }
 
         private ListBoxItem GenerateListItem(Project p)
@@ -68,7 +70,7 @@ namespace ProjectManagementTool
         private void LoadProjectList()
         {
             projectList.Items.Clear();
-            projects = ktx.GetAllProjectsOfUser(this.currentUser.Id);
+            projects = ktx.GetAllProjectsOfUser(currentUser.Id);
             foreach(Project p in projects)
             {
                 projectList.Items.Add(GenerateListItem(p));
@@ -111,8 +113,23 @@ namespace ProjectManagementTool
 
         private void lblProfile_Click(object sender, RoutedEventArgs e)
         {
-            ProfileWindow profileWindow = new ProfileWindow();
-            profileWindow.Show();
+            if (ProfileWindow.GetInstance() == null)
+            {
+                ProfileWindow profileWindow = new ProfileWindow();
+                ProfileWindow.SetInstance(profileWindow);
+                profileWindow.Show();
+            }
+            else
+            {
+                ProfileWindow.GetInstance().Focus(); 
+            }
+        }
+
+        public static void SetUser(User u)
+        {
+            currentUser = u;
+            instance.lblProfile.Inlines.Clear();
+            instance.lblProfile.Inlines.Add(currentUser.Username);
         }
     }
 }
