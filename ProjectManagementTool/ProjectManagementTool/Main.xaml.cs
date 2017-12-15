@@ -91,24 +91,21 @@ namespace ProjectManagementTool
 
         private void btnAddProject_Click(object sender, RoutedEventArgs e)
         {
-            // ... Get DatePicker reference.
-            DatePicker dp = dpProjectDate;
-
-            // ... Get nullable DateTime from SelectedDate.
-            DateTime? date = dp.SelectedDate;
-            if (date == null || date <= DateTime.Now)
+            try
             {
-                // ... A null object.
-                MessageBox.Show("Select a valid date please");
+                DateTime date = dpProjectDate.SelectedDate ?? DateTime.MinValue;
+                if (date != DateTime.MinValue)
+                {
+                    ktx.AddProject(new Project(txtProjectName.Text, "no description", date));
+                    LoadProjectList();
+                }
+                else
+                {
+                    MessageBox.Show("Select a valid date!");
+                }
+            }catch(Exception ex){
+                MessageBox.Show("Project already exists/Not a valid project.");
             }
-            else
-            {
-                DateTime UpdatedTime = date ?? DateTime.Now;
-                //MessageBox.Show(UpdatedTime.ToString());
-                ktx.InsertProject(new Project(txtProjectName.Text, "no description", UpdatedTime));
-                LoadProjectList();
-            }
-            
         }
 
         private void lblProfile_Click(object sender, RoutedEventArgs e)

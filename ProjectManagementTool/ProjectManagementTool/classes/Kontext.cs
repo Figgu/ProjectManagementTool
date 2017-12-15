@@ -47,7 +47,7 @@ namespace ProjectManagementTool.classes
 
         #endregion
         #region methods
-        public void InsertUser(User user)
+        public void AddUser(User user)
         {
             OleDbCommand cmd = null;
             string commandText = "";
@@ -64,7 +64,7 @@ namespace ProjectManagementTool.classes
             }
         }
 
-        public void InsertProject(Project project)
+        public void AddProject(Project project)
         {
             OleDbCommand cmd = null;
             OleDbTransaction transaction = null;
@@ -246,7 +246,8 @@ namespace ProjectManagementTool.classes
             using(OleDbConnection conn = new OleDbConnection(this.connectionString))
             {
                 conn.Open();
-                da = new OleDbDataAdapter("select distinct p.projectid, p.name, p.description, p.projectbeginn from userisinprojectwithrole03 up join project03 p on up.PROJECTID = p.PROJECTID where up.USERID = "+userId,conn);
+                da = new OleDbDataAdapter("select distinct p.projectid, p.name, p.description, p.projectbeginn " +
+                    "from userisinprojectwithrole03 up join project03 p on up.PROJECTID = p.PROJECTID where up.USERID = "+userId,conn);
                 da.Fill(dt);
                 foreach(DataRow r in dt.Rows)
                 {

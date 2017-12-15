@@ -19,7 +19,8 @@ namespace ProjectManagementTool.interfaces
         User GetUser(int id);
         User GetUser(string email);
         User GetUser(string username, string password);
-        void InsertUser(User user);
+        void AddUser(User user);
+        void AddProject(Project project);
         void UpdateUser(User user);
         DataTable GetAllUsers();
     }
