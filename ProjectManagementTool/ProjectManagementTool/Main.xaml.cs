@@ -89,25 +89,6 @@ namespace ProjectManagementTool
             }
         }
 
-        private void btnAddProject_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                DateTime date = dpProjectDate.SelectedDate ?? DateTime.MinValue;
-                if (date != DateTime.MinValue)
-                {
-                    ktx.AddProject(new Project(txtProjectName.Text, "no description", date));
-                    LoadProjectList();
-                }
-                else
-                {
-                    MessageBox.Show("Select a valid date!");
-                }
-            }catch(Exception ex){
-                MessageBox.Show("Project already exists/Not a valid project.");
-            }
-        }
-
         private void lblProfile_Click(object sender, RoutedEventArgs e)
         {
             if (ProfileWindow.GetInstance() == null)
@@ -127,6 +108,25 @@ namespace ProjectManagementTool
             currentUser = u;
             instance.lblProfile.Inlines.Clear();
             instance.lblProfile.Inlines.Add(currentUser.Username);
+        }
+
+        public static void RefreshProjects()
+        {
+            instance.LoadProjectList();
+        }
+
+        private void AddProjectClick(object sender, RoutedEventArgs e)
+        {
+            if (AddProjectWindow.GetInstance() == null)
+            {
+                AddProjectWindow a = new AddProjectWindow();
+                AddProjectWindow.SetInstance(a);
+                a.Show();
+            }
+            else
+            {
+                AddProjectWindow.GetInstance().Focus();
+            }
         }
     }
 }

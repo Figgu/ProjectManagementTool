@@ -25,12 +25,16 @@
             </Label>
         </Grid>
 
-        <Grid Margin="10, 95, 10, 10">
-            <ListBox x:Name="projectList" Background="DarkGray" Margin="0,0,0,35">
+        <Grid Margin="10,107,10,10">
+            <ListBox x:Name="projectList" Background="DarkGray" Margin="0,0,0,0">
             </ListBox>
-            <Button x:Name="btnAddProject" Content="Add Project" HorizontalAlignment="Left" Margin="268,304,0,0" Width="86" Height="30" VerticalAlignment="Top" Click="btnAddProject_Click"/>
-            <TextBox x:Name="txtProjectName" HorizontalAlignment="Left" Height="30" Margin="0,304,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="258"/>
-            <DatePicker x:Name="dpProjectDate" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="359,304,0,0" Height="30" Width="138"/>
+        </Grid>
+        <Grid Margin="10,85,10,10" VerticalAlignment="Top">
+            <Menu Background="LightGray">
+                <MenuItem Header="Options" Height="22">
+                    <MenuItem Header="Add Project" Click="AddProjectClick" Background="LightGray"/>
+                </MenuItem>
+            </Menu>
         </Grid>
     </Grid>
 </Window>
