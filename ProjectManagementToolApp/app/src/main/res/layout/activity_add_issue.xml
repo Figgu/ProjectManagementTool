@@ -1,9 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.projectmanagementtoolapp.pkgActivities.AddIssueActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="100dp"
+        app:cardBackgroundColor="@color/cardview_shadow_end_color"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <EditText
+                    android:id="@+id/txtIssueName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Name of the Issue"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"/>
+
+                <EditText
+                    android:id="@+id/txtIssueDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Description of the Issue..."
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@+id/txtIssueName"
+                    android:inputType="textMultiLine"
+                    android:lines="5"
+                    android:gravity="top|left"
+                    android:maxLines="100"
+                    android:scrollbars="vertical"/>
+
+                <EditText
+                    android:id="@+id/txtContributorNameIssue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Add new Contributor"
+                    android:layout_below="@+id/txtIssueDescription"
+                    android:layout_alignLeft="@+id/txtIssueDescription"
+                    android:layout_alignStart="@+id/txtIssueDescription"
+                    android:layout_toLeftOf="@+id/imgAddButton"
+                    android:layout_toStartOf="@+id/imgAddButton"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"/>
+
+                <ImageView
+                    android:id="@+id/imgAddButtonIssue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:srcCompat="@android:drawable/ic_input_add"
+                    android:layout_alignTop="@+id/txtContributorNameIssue"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_below="@id/txtContributorNameIssue"
+                    android:id="@+id/linearLayoutContributorsIssue"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp">
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnCreateIssue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Create Issue"
+                    android:layout_below="@+id/linearLayoutContributorsIssue"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"/>
+            </RelativeLayout>
+        </ScrollView>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>

@@ -438,6 +438,18 @@ public class Database {
         projects.remove(project);
     }
 
+    public Role getRoleByName(String name) {
+        Role foundRole = null;
+
+        for (Role role : roles) {
+            if (role.getName().equals(name)) {
+                foundRole = role;
+            }
+        }
+
+        return foundRole;
+    }
+
     public ArrayList<Role> getRoles() {
         return roles;
     }

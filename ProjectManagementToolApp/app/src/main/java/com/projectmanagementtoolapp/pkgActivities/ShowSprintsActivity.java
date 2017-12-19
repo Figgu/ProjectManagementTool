@@ -57,7 +57,6 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
         db = Database.getInstance();
         currentProject = (Project) getIntent().getSerializableExtra("project");
         setTitle("Sprints of " + currentProject);
-        System.out.println("currentProject: " +currentProject.getSprints());
         getAllViews();
         initEventHandlers();
 
@@ -202,6 +201,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("selectedUser", user);
+            bundle.putSerializable("currentProject", currentProject);
             AddRoleToUserFragment fragment = new AddRoleToUserFragment();
             fragment.setArguments(bundle);
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
