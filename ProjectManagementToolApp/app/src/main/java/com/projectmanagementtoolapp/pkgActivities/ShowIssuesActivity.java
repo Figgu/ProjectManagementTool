@@ -1,5 +1,6 @@
 package com.projectmanagementtoolapp.pkgActivities;
 
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -84,6 +85,10 @@ public class ShowIssuesActivity extends AppCompatActivity implements AdapterView
 
     @Override
     public void onClick(View v) {
-
+        if (v == fab) {
+            Intent intent = new Intent(this, AddIssueActivity.class);
+            intent.putExtra("currentSprint", currentSprint);
+            startActivity(intent);
+        }
     }
 }

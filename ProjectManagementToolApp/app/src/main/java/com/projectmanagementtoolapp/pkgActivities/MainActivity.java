@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity
 
     private void logout() {
         db.setCurrentUser(null);
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, StartUpActivity.class);
         startActivity(intent);
     }
 

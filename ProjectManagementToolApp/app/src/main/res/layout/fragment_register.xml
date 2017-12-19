@@ -1,0 +1,89 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.projectmanagementtoolapp.pkgFragments.RegisterFragment">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".pkgActivities.RegisterActivity"
+        android:id="@+id/layoutRegister">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="150dp"
+            app:cardBackgroundColor="@color/cardview_shadow_end_color">
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp">
+
+                    <TextView
+                        android:id="@+id/titleRegister"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Enter all required details"
+                        android:textSize="15dp"
+                        android:layout_centerHorizontal="true"/>
+
+                    <EditText
+                        android:id="@+id/txtUsernameRegister"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:layout_below="@+id/titleRegister"
+                        android:hint="Username" />
+
+                    <EditText
+                        android:id="@+id/txtEmailRegister"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtUsernameRegister"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:hint="Email" />
+
+                    <EditText
+                        android:id="@+id/txtPasswordRegister"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtEmailRegister"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:hint="Password"
+                        android:inputType="textPassword" />
+
+                    <EditText
+                        android:id="@+id/txtConfirmPasswordRegister"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtPasswordRegister"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:hint="Confirm Password"
+                        android:inputType="textPassword" />
+
+                    <Button
+                        android:id="@+id/btnRegister"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/txtConfirmPasswordRegister"
+                        android:layout_centerHorizontal="true"
+                        android:text="Register" />
+                </RelativeLayout>
+            </ScrollView>
+        </android.support.v7.widget.CardView>
+    </RelativeLayout>
+</FrameLayout>

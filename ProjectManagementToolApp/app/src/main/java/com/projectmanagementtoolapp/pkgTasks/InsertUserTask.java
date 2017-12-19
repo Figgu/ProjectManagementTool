@@ -5,8 +5,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.projectmanagementtoolapp.pkgActivities.LoginActivity;
-import com.projectmanagementtoolapp.pkgActivities.RegisterActivity;
 import com.projectmanagementtoolapp.pkgData.Database;
 
 import java.io.ByteArrayOutputStream;
