@@ -33,6 +33,7 @@
             <Menu Background="LightGray">
                 <MenuItem Header="Options" Height="22">
                     <MenuItem Header="Add Project" Click="AddProjectClick" Background="LightGray"/>
+                    <MenuItem Header="Add Role" Click="AddRoleClick" Background="LightGray"/>
                 </MenuItem>
             </Menu>
         </Grid>
