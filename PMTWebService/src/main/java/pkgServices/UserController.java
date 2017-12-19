@@ -7,6 +7,7 @@ package pkgServices;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.FormParam;
@@ -14,6 +15,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriInfo;
@@ -23,7 +25,7 @@ import pkgData.User;
  *
  * @author Figgu
  */
-@Path("User")
+@Path("user")
 public class UserController {
    
     @Context
@@ -31,19 +33,10 @@ public class UserController {
     
     public UserController() {
     }
-
-    @POST
-    @Path("currentUser")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public String isValid(@FormParam("id") String id,
-      @FormParam("username") String username,
-      @FormParam("password") String password,
-      @FormParam("email") String email,
-      @Context HttpServletResponse servletResponse) throws IOException{
-      User user = new User(id, username, password, email);
-      
-      return user.getUsername() + " " + user.getPassword();
-    }
     
+    @Path("greet")
+    @GET
+    public String doGreet() {
+        return "Hello Stranger, the time is "+ new Date();
+    }
 }
