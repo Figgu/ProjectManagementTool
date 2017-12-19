@@ -13,7 +13,7 @@
 
         <item
             android:id="@+id/nav_createRole"
-            android:icon="@drawable/addroles"
+            android:icon="@drawable/add_roles_big"
             android:title="Create Roles" />
     </group>
 </menu>

@@ -2,6 +2,8 @@ package com.projectmanagementtoolapp.pkgData;
 
 import java.io.Serializable;
 import java.sql.Blob;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -15,21 +17,30 @@ public class User implements Serializable{
     private String email;
     private byte[] profilePicture;
     private List<Project> projects;
+    private HashMap<Project, ArrayList<Role>> rolesInProject;
 
     public User(int userID, String username, String password, String email) {
         this.userID = userID;
         this.username = username;
         this.password = password;
         this.email = email;
+
+        projects = new ArrayList<>();
+        rolesInProject =  new HashMap<>();
     }
 
     public User(String username, String password, String email) {
         this.username = username;
         this.password = password;
         this.email = email;
+
+        projects = new ArrayList<>();
+        rolesInProject =  new HashMap<>();
     }
 
     public User() {
+        projects = new ArrayList<>();
+        rolesInProject =  new HashMap<>();
     }
 
     public int getUserID() {
@@ -78,6 +89,14 @@ public class User implements Serializable{
 
     public void setProfilePicture(byte[] profilePicture) {
         this.profilePicture = profilePicture;
+    }
+
+    public HashMap<Project, ArrayList<Role>> getRolesInProject() {
+        return rolesInProject;
+    }
+
+    public void setRolesInProject(HashMap<Project, ArrayList<Role>> rolesInProject) {
+        this.rolesInProject = rolesInProject;
     }
 
     @Override
