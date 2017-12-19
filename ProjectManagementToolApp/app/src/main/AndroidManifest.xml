@@ -17,14 +17,6 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".pkgActivities.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".pkgActivities.RegisterActivity" />
         <activity android:name=".pkgActivities.ForgotPasswordActivity" />
         <activity android:name=".pkgActivities.ShowProfileActivity" />
         <activity
@@ -34,8 +26,16 @@
         <activity android:name=".pkgActivities.AddProjectActivity" />
         <activity android:name=".pkgActivities.ShowSprintsActivity" />
         <activity android:name=".pkgActivities.ShowIssuesActivity" />
-        <activity android:name=".pkgActivities.CreateRoleActivity" />
-        <activity android:name=".pkgActivities.EditProjectActivity"></activity>
+        <activity android:name=".pkgActivities.AddRoleActivity" />
+        <activity android:name=".pkgActivities.EditProjectActivity" />
+        <activity android:name=".pkgActivities.AddIssueActivity" />
+        <activity android:name=".pkgActivities.StartUpActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.projectmanagementtoolapp.pkgData.Database;
+import com.projectmanagementtoolapp.pkgData.Role;
 
 import java.sql.SQLException;
 
@@ -28,7 +29,7 @@ public class InsertRoleTask extends AsyncTask<Object, Object, String> {
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
         try {
-            db.insertRole((String) params[0], (String) params[1], (String) params[2]);
+            db.insertRole((Role) params[0]);
         } catch (SQLException e) {
             e.printStackTrace();
         }

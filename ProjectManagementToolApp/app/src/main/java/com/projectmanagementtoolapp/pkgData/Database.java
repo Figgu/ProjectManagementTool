@@ -34,7 +34,6 @@ public class Database {
     private ArrayList<Project> projects;
     private ArrayList<Project> myProjects;
     private ArrayList<Role> roles;
-    private ArrayList<Right> rights;
     private Connection conn;
     private User currentUser;       //Current logged in user
 
@@ -55,7 +54,7 @@ public class Database {
     //212.152.179.117
     //192.168.128.152
     private Connection createConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:oracle:thin:@212.152.179.117:1521:ora11g", user, pwd);
+        return DriverManager.getConnection("jdbc:oracle:thin:@192.168.128.152:1521:ora11g", user, pwd);
     }
 
     //Only called by the async task
@@ -393,11 +392,11 @@ public class Database {
         return projects;
     }
 
-    public void insertRole(String roleName, String description, String isUnique) throws SQLException {
+    public void insertRole(Role role) throws SQLException {
         PreparedStatement statement = conn.prepareStatement("insert into role03 (name, description, ISUNIQUE) values (?, ?, ?)");
-        statement.setString(1, roleName);
-        statement.setString(2, description);
-        statement.setString(3, isUnique);
+        statement.setString(1, role.getName());
+        statement.setString(2, role.getDescription());
+        statement.setString(3, String.valueOf(role.isUnique()));
         statement.executeQuery();
         statement.close();
     }
@@ -420,12 +419,35 @@ public class Database {
         return roles;
     }
 
-    public void removeRole(String roleId) throws SQLException {
+    public void removeRole(Role role) throws SQLException {
         PreparedStatement statement = conn.prepareStatement("delete from role03 where roleid = ?");
-        statement.setString(1, roleId);
+        statement.setInt(1, role.getRoleID());
         ResultSet rs = statement.executeQuery();
         statement.close();
         rs.close();
+    }
+
+    public void deleteProject(Project project) throws SQLException {
+        PreparedStatement statement = conn.prepareStatement("delete from project03 where projectid = ?");
+        statement.setInt(1, project.getProjectID());
+        ResultSet rs = statement.executeQuery();
+        statement.close();
+        rs.close();
+
+        myProjects.remove(project);
+        projects.remove(project);
+    }
+
+    public Role getRoleByName(String name) {
+        Role foundRole = null;
+
+        for (Role role : roles) {
+            if (role.getName().equals(name)) {
+                foundRole = role;
+            }
+        }
+
+        return foundRole;
     }
 
     public ArrayList<Role> getRoles() {

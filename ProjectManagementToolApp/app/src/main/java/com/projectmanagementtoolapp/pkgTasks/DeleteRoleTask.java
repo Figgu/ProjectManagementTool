@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.projectmanagementtoolapp.pkgData.Database;
+import com.projectmanagementtoolapp.pkgData.Role;
 
 import java.sql.SQLException;
 
@@ -13,13 +14,13 @@ import java.sql.SQLException;
  * Created by Figgu on 17.11.2017.
  */
 
-public class RemoveRoleTask extends AsyncTask<Object, Object, String> {
+public class DeleteRoleTask extends AsyncTask<Object, Object, String> {
 
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    public RemoveRoleTask (Activity activity) {
+    public DeleteRoleTask(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -30,7 +31,7 @@ public class RemoveRoleTask extends AsyncTask<Object, Object, String> {
         Database db = Database.getInstance();
 
         try {
-            db.removeRole((String) params[0]);
+            db.removeRole((Role) params[0]);
         } catch (SQLException e) {
             e.printStackTrace();
         }

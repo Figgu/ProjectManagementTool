@@ -3,10 +3,12 @@ package com.projectmanagementtoolapp.pkgActivities;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +25,7 @@ import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.Sprint;
 import com.projectmanagementtoolapp.pkgData.User;
+import com.projectmanagementtoolapp.pkgFragments.AddRoleToUserFragment;
 import com.projectmanagementtoolapp.pkgFragments.AddSprintFragment;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllSprintsTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectUsersOfProjectTask;
@@ -43,6 +46,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
     private MenuItem allUsers;
     private MenuItem allSprints;
     private boolean showingSprints = true;
+    private boolean infoShown = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +57,6 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
         db = Database.getInstance();
         currentProject = (Project) getIntent().getSerializableExtra("project");
         setTitle("Sprints of " + currentProject);
-        System.out.println("currentProject: " +currentProject.getSprints());
         getAllViews();
         initEventHandlers();
 
@@ -81,6 +84,11 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
                 this.finish();
                 return true;
             case R.id.show_all_users:
+                //Display dialog of
+                if (!infoShown) {
+                    showInfoDialog();
+                }
+
                 fab.setVisibility(View.INVISIBLE);
                 showingSprints = false;
 
@@ -124,6 +132,19 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showInfoDialog() {
+        // Use the Builder class for convenient dialog construction
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Set Roles of Users");
+        builder.setMessage("You are able to add roles to the user by clicking on his name!")
+                .setPositiveButton("Ok cool", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+
+                    }
+                });
+        builder.create().show();
     }
 
     @Override
@@ -171,6 +192,21 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             Intent intent = new Intent(this, ShowIssuesActivity.class);
             intent.putExtra("sprint", selectedSprint);
             startActivity(intent);
+        } else {
+            txtNoSprintsFound.setVisibility(View.INVISIBLE);
+            listSprints.setVisibility(View.INVISIBLE);
+            fab.setVisibility(View.INVISIBLE);
+
+            User user = (User) listSprints.getItemAtPosition(position);
+
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("selectedUser", user);
+            bundle.putSerializable("currentProject", currentProject);
+            AddRoleToUserFragment fragment = new AddRoleToUserFragment();
+            fragment.setArguments(bundle);
+            android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.replace(R.id.layoutShowSprints, fragment);
+            transaction.commit();
         }
     }
 
@@ -179,6 +215,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
         if (v == fab) {
             txtNoSprintsFound.setVisibility(View.INVISIBLE);
             listSprints.setVisibility(View.INVISIBLE);
+            fab.setVisibility(View.INVISIBLE);
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("currentProject", currentProject);
@@ -187,7 +224,6 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.layoutShowSprints, fragment);
             transaction.commit();
-
         }
     }
 }

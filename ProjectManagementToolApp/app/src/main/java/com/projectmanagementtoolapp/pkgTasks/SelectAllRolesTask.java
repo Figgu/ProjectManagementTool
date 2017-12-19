@@ -26,15 +26,14 @@ public class SelectAllRolesTask extends AsyncTask<Object, Object, String> {
     @Override
     protected String doInBackground(Object... params) {
         Database db = Database.getInstance();
-        System.out.println("check2");
-            try {
-                db.getAllRoles();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
 
-            return null;
+        try {
+            db.getAllRoles();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
+        return null;
     }
 
     protected void onPreExecute() {
