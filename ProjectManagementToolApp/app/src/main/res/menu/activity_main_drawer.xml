@@ -1,11 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:id="@+id/groupOne">
         <item
             android:id="@+id/nav_showProfile"
             android:icon="@drawable/profile"
             android:title="Show Profile" />
+
+
+        <item
+            android:id="@+id/nav_createRole"
+            android:icon="@drawable/add_roles_big"
+            android:title="Create Roles" />
+    </group>
+
+    <group android:checkableBehavior="single"
+        android:id="@+id/groupLayout">
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/logout"

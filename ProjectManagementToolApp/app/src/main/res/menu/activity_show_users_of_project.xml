@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/show_all_users"
+        android:icon="@drawable/users"
+        android:title="Show all Users"
+        app:showAsAction="ifRoom"></item>
+
+    <item
+        android:id="@+id/show_all_sprints"
+        android:icon="@drawable/sprint"
+        android:title="Show all Sprints"
+        app:showAsAction="ifRoom"></item>
+</menu>
