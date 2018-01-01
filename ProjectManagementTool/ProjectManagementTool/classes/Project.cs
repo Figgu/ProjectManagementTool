@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace ProjectManagementTool.classes
 {
-    //TODO load methods
     public class Project
     {
         private int id;
@@ -48,20 +47,12 @@ namespace ProjectManagementTool.classes
             this.ProjectStart = start;
         }
 
-        private List<User> users;
-
-        public List<User> Users
+        public Project(int id, String name, String description, DateTime start)
         {
-            get { return users; }
-            set { users = value; }
-        }
-
-        private List<Group> groups;
-
-        public List<Group> Groups
-        {
-            get { return groups; }
-            set { groups = value; }
+            this.Id = id;
+            this.Name = name;
+            this.Description = description;
+            this.ProjectStart = start;
         }
 
         private List<Sprint> sprints;

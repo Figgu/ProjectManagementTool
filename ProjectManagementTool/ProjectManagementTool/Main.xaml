@@ -5,31 +5,37 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ProjectManagementTool"
         mc:Ignorable="d"
-        Title="Main" Height="350" Width="525" WindowState="Maximized" Background="Gray">
+        Title="Main" Height="469.737" Width="525" WindowState="Maximized" Background="Gray">
     <Grid>
         <Grid VerticalAlignment="Top" Height="75" Width="Auto" Background="DarkGray" Margin="10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="75" />
                 <ColumnDefinition/>
-                <ColumnDefinition Width="141*"/>
-                <ColumnDefinition Width="98*"/>
+                <ColumnDefinition Width="124*"/>
+                <ColumnDefinition Width="86*"/>
             </Grid.ColumnDefinitions>
-            
-            <Image Grid.Column="0" Source="./assets/images/logo.png" Margin="5,5,5.2,5"></Image>
 
-            <Label Content="Project Management Tool V1" FontSize="35" VerticalAlignment="Center" HorizontalAlignment="Center" Height="56" Margin="18.8,10,24.2,9" Width="141" Grid.Column="1"/>
-            <Label  Grid.Column="2" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="Black" Margin="0,16,9,16" Height="43" Width="121">
-                <Hyperlink x:Name="lblProfile" Foreground="Black">Profilename</Hyperlink>
+            <Image Grid.Column="0" Source="./assets/images/logo.png" Margin="5"></Image>
+            <Label x:Name="lblName"  Grid.Column="2" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="Black" Margin="0,16,10,16" Height="43" Width="147" >
+                <Hyperlink x:Name="lblProfile" Click="lblProfile_Click" Foreground="Black">Profilename</Hyperlink>
             </Label>
 
-            <Label  Grid.Column="3" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="Black" Margin="0,16,10.4,16" Height="43" Width="88">
-                <Hyperlink x:Name="lblLogout" Foreground="Black">Logout</Hyperlink>
+            <Label  Grid.Column="3" FontSize="25" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="Black" Margin="0,16,10,16" Height="43" Width="88">
+                <Hyperlink x:Name="lblLogout" Foreground="Black" Click="Logout">Logout</Hyperlink>
             </Label>
         </Grid>
 
-        <Grid Margin="10, 95, 10, 10">
-            <ListBox x:Name="projectList" Background="DarkGray">
+        <Grid Margin="10,107,10,10">
+            <ListBox x:Name="projectList" Background="DarkGray" Margin="0,0,0,0">
             </ListBox>
+        </Grid>
+        <Grid Margin="10,85,10,10" VerticalAlignment="Top">
+            <Menu Background="LightGray">
+                <MenuItem Header="Options" Height="22">
+                    <MenuItem Header="Add Project" Click="AddProjectClick" Background="LightGray"/>
+                    <MenuItem Header="Add Role" Click="AddRoleClick" Background="LightGray"/>
+                </MenuItem>
+            </Menu>
         </Grid>
     </Grid>
 </Window>

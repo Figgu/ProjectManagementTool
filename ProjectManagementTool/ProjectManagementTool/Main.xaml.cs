@@ -20,36 +20,127 @@ namespace ProjectManagementTool
     /// </summary>
     public partial class Main : Window
     {
-        private Kontext ktx = new Kontext();
-        private User currentUser;
+        private Kontext ktx = Kontext.GetInstance();
+        private static User currentUser;
+        private List<Project> projects;
+        private char charForNameWorkaround = 'x';
+        private static Main instance = null;
 
         public Main(User user)
         {
             InitializeComponent();
-            this.currentUser = user;
-            loadGUI();
-
-            generateListItems(20);
+            currentUser = user;
+            LoadGUI();
+            instance = this;
         }
 
-        private void generateListItems(int numberOfItems)
+        private ListBoxItem GenerateListItem(Project p)
         {
-            for (int i=0; i<numberOfItems; i++)
+            String test = ", Started On: ";
+            if(p.ProjectStart > DateTime.Now)
             {
-                ListBoxItem item = new ListBoxItem();
-                item.Content = "Item " + i;
-                item.FontSize = 30;
-                item.Height = 50;
-               
-
-                projectList.Items.Add(item);
+                test = ", Start On: ";
             }
+            ListBoxItem item = new ListBoxItem
+            {
+                //workaround, as name cant only contain numbers for some reason
+                Name = charForNameWorkaround+p.Id.ToString(),
+                Content = "Name: " + p.Name + test + p.ProjectStart.Day + "." + p.ProjectStart.Month + "." + p.ProjectStart.Year,
+                FontSize = 30,
+                Height = 50
+            };
+            return item;
         }
 
-        private void loadGUI()
+        private void LoadGUI()
         {
             lblProfile.Inlines.Clear();
             lblProfile.Inlines.Add(currentUser.Username);
+            LoadProjectList();
+            projectList.MouseDoubleClick += projectList_MouseDoubleClick;
+        }
+
+        private void Logout(object sender, RoutedEventArgs e)
+        {
+            LoginWindow login = new LoginWindow();
+            login.Show();
+            this.Close();
+        }
+
+        private void LoadProjectList()
+        {
+            projectList.Items.Clear();
+            projects = ktx.GetAllProjectsOfUser(currentUser.Id);
+            foreach(Project p in projects)
+            {
+                projectList.Items.Add(GenerateListItem(p));
+            }
+            
+        }
+        private void projectList_MouseDoubleClick(object sender, RoutedEventArgs e)
+        {
+            if (projectList.SelectedItem != null)
+            {
+                ListBoxItem selectedListBoxItem = (ListBoxItem)projectList.SelectedItem;
+                //workaround for the x added to the name
+                Project selectedProject = projects.Find(p => p.Id == Convert.ToInt32(selectedListBoxItem.Name.Replace(charForNameWorkaround,' ').Trim()));
+                SprintsWindow s = new SprintsWindow(currentUser, selectedProject);
+                s.Show();
+            }
+        }
+
+        private void lblProfile_Click(object sender, RoutedEventArgs e)
+        {
+            if (ProfileWindow.GetInstance() == null)
+            {
+                ProfileWindow profileWindow = new ProfileWindow();
+                ProfileWindow.SetInstance(profileWindow);
+                profileWindow.Show();
+            }
+            else
+            {
+                ProfileWindow.GetInstance().Focus(); 
+            }
+        }
+
+        public static void SetUser(User u)
+        {
+            currentUser = u;
+            instance.lblProfile.Inlines.Clear();
+            instance.lblProfile.Inlines.Add(currentUser.Username);
+        }
+
+        public static void RefreshProjects()
+        {
+            instance.LoadProjectList();
+        }
+
+        private void AddProjectClick(object sender, RoutedEventArgs e)
+        {
+            if (AddProjectWindow.GetInstance() == null)
+            {
+                AddProjectWindow a = new AddProjectWindow();
+                AddProjectWindow.SetInstance(a);
+                a.Show();
+            }
+            else
+            {
+                AddProjectWindow.GetInstance().Focus();
+            }
+        }
+
+        private void AddRoleClick(object sender, RoutedEventArgs e)
+        {
+            if (AddRoleWindow.GetInstance() == null)
+            {
+                AddRoleWindow r = new AddRoleWindow();
+                AddRoleWindow.SetInstance(r);
+                r.Show();
+            }
+            else
+            {
+                AddRoleWindow.GetInstance().Focus();
+            }
         }
     }
 }

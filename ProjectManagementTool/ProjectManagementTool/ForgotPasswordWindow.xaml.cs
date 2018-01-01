@@ -26,18 +26,18 @@ namespace ProjectManagementTool
         public ForgotPasswordWindow()
         {
             InitializeComponent();
-            ktx = new Kontext();
+            ktx = Kontext.GetInstance();
         }
 
         private void BtnSendEmail_Click(object sender, RoutedEventArgs e)
         {
-            User user = ktx.selectUser(txtEmail.Text);
-            sendEmail(user);
+            User user = ktx.GetUser(txtEmail.Text);
+            SendEmail(user);
             MessageBox.Show("Email with account details has been sent!");
             this.Close();
         }
 
-        private void sendEmail(User user)
+        private void SendEmail(User user)
         {
             try
             {
