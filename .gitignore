@@ -28,3 +28,7 @@ hs_err_pid*
 /ProjectManagementToolWebservice/nbproject/private/
 /ProjectManagementToolWebservice/build/
 /ProjectManagementToolWebservice/dist/
+/PMTWebService/target/
+/JPATest/nbproject/private/
+/JPATest/build/
+/JPATest/dist/

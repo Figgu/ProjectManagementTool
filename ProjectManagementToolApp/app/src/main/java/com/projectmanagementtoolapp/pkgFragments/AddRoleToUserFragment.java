@@ -1,20 +1,19 @@
 package com.projectmanagementtoolapp.pkgFragments;
 
-import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.RelativeLayout.LayoutParams;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
@@ -24,18 +23,17 @@ import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllRolesTask;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class AddRoleToUserFragment extends Fragment implements View.OnClickListener {
+public class AddRoleToUserFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     //GUI Attributes
     private TextView title;
     private Spinner spRoles;
     private LinearLayout llRoles;
-    private ImageView imgAdd;
     private Button btnSave;
+    private Button btnCancel;
+    private RelativeLayout rl;
 
     //NON-GUI Attributes
     private Database db;
@@ -78,7 +76,7 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
             e.printStackTrace();
         }
 
-        //Fill my roles for working with the linear layout
+        //Fill myRoles for working with the linear layout
         if (currentUser.getRolesInProject().get(currentProject) != null) {
             for (Role role : currentUser.getRolesInProject().get(currentProject)) {
                 myRoles.add(role.getName());
@@ -100,18 +98,26 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
         title = (TextView) view.findViewById(R.id.addRolesToUserTitle);
         spRoles = (Spinner) view.findViewById(R.id.spRoles);
         llRoles = (LinearLayout) view.findViewById(R.id.linearLayoutAddRolesToUser);
-        imgAdd = (ImageView) view.findViewById(R.id.imgAddRoleToUser);
         btnSave = (Button) view.findViewById(R.id.btnSaveRoles);
+        btnCancel = (Button) view.findViewById(R.id.btnCancelRoles);
+        rl = (RelativeLayout) view.findViewById(R.id.rlAddRolesToUser);
     }
 
     private void initEventHandlers() {
-        imgAdd.setOnClickListener(this);
         btnSave.setOnClickListener(this);
+        btnCancel.setOnClickListener(this);
+        spRoles.setOnItemSelectedListener(this);
     }
 
     private void initSpinner() {
-        for (Role role : db.getRoles()) {
-            allRoles.add(role.getName());
+        if (db.getRoles().size() > 0) {
+            allRoles.add("select role...");
+            for (Role role : db.getRoles()) {
+                allRoles.add(role.getName());
+            }
+        } else {
+            allRoles.add("no roles existing...");
+            spRoles.setEnabled(false);
         }
 
         adapter = new ArrayAdapter<>(getActivity(),
@@ -121,33 +127,48 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v == imgAdd) {
-            String roleName = (String) spRoles.getSelectedItem();
-            Role selectedRole = db.getRoleByName(roleName);
+        if (v == btnSave) {
 
-            if (currentUser.getRolesInProject().get(currentProject) != null) {
-                //Dont adding it more than 1 time
-                if (!currentUser.getRolesInProject().get(currentProject).contains(selectedRole)) {
-                    myRoles.add(roleName);
-                    currentUser.getRolesInProject().get(currentProject).add(selectedRole);
+        } else if (v == btnCancel) {
 
-                    ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_view_add_contributors, R.id.contributorNameAdd, myRoles);
+        }
+    }
 
-                    final View view = adapter.getView(spRoles.getSelectedItemPosition(), null, null);
-                    final View child = view.findViewById(R.id.imgDeleteCon);
-                    child.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            llRoles.removeView(view);
-                            TextView textView = (TextView) view.findViewById(R.id.contributorNameAdd);
-                            Role role = db.getRoleByName(textView.getText().toString());
-                            myRoles.remove(role.getRoleID());
-                        }
-                    });
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        System.out.println("clicked!");
+        String roleName = (String) spRoles.getSelectedItem();
+        Role selectedRole = db.getRoleByName(roleName);
 
-                    llRoles.addView(view);
-                }
+        //dont delete -> null pointer smh
+        if (currentUser.getRolesInProject().get(currentProject) != null) {
+            //adding it only 1 time
+            if (!currentUser.getRolesInProject().get(currentProject).contains(selectedRole)) {
+                myRoles.add(roleName);
+                currentUser.getRolesInProject().get(currentProject).add(selectedRole);
+
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_view_add_contributors, R.id.contributorNameAdd, myRoles);
+
+                final View view2 = adapter.getView(adapter.getCount()-1, null, null);
+                final View child = view2.findViewById(R.id.imgDeleteCon);
+                child.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        llRoles.removeView(view2);
+                        TextView textView = (TextView) view2.findViewById(R.id.contributorNameAdd);
+                        Role role = db.getRoleByName(textView.getText().toString());
+                        myRoles.remove(role.getRoleID());
+                    }
+                });
+
+                llRoles.addView(view2);
             }
         }
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

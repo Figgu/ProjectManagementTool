@@ -207,6 +207,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.layoutShowSprints, fragment);
             transaction.commit();
+            allSprints.setVisible(false);
         }
     }
 
@@ -224,6 +225,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.layoutShowSprints, fragment);
             transaction.commit();
+            allUsers.setVisible(false);
         }
     }
 }
