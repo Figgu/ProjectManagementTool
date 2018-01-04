@@ -31,12 +31,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "PROJECT03", catalog = "", schema = "D5B03")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Project03.findAll", query = "SELECT p FROM Project03 p")
-    , @NamedQuery(name = "Project03.findByProjectid", query = "SELECT p FROM Project03 p WHERE p.projectid = :projectid")
-    , @NamedQuery(name = "Project03.findByName", query = "SELECT p FROM Project03 p WHERE p.name = :name")
-    , @NamedQuery(name = "Project03.findByDescription", query = "SELECT p FROM Project03 p WHERE p.description = :description")
-    , @NamedQuery(name = "Project03.findByProjectbeginn", query = "SELECT p FROM Project03 p WHERE p.projectbeginn = :projectbeginn")})
-public class Project03 implements Serializable {
+    @NamedQuery(name = "Project.findAll", query = "SELECT p FROM Project p")
+    , @NamedQuery(name = "Project.findByProjectid", query = "SELECT p FROM Project p WHERE p.projectid = :projectid")
+    , @NamedQuery(name = "Project.findByName", query = "SELECT p FROM Project p WHERE p.name = :name")
+    , @NamedQuery(name = "Project.findByDescription", query = "SELECT p FROM Project p WHERE p.description = :description")
+    , @NamedQuery(name = "Project.findByProjectbeginn", query = "SELECT p FROM Project p WHERE p.projectbeginn = :projectbeginn")})
+public class Project implements Serializable {
 
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -51,15 +51,15 @@ public class Project03 implements Serializable {
     @Column(name = "PROJECTBEGINN")
     @Temporal(TemporalType.TIMESTAMP)
     private Date projectbeginn;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project03")
-    private Collection<Userisinprojectwithrole03> userisinprojectwithrole03Collection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project03")
-    private Collection<Sprint03> sprint03Collection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+    private Collection<Userisinprojectwithrole> userisinprojectwithroleCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
+    private Collection<Sprint> sprintCollection;
 
-    public Project03() {
+    public Project() {
     }
 
-    public Project03(BigDecimal projectid) {
+    public Project(BigDecimal projectid) {
         this.projectid = projectid;
     }
 
@@ -96,21 +96,21 @@ public class Project03 implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Userisinprojectwithrole03> getUserisinprojectwithrole03Collection() {
-        return userisinprojectwithrole03Collection;
+    public Collection<Userisinprojectwithrole> getUserisinprojectwithrole03Collection() {
+        return userisinprojectwithroleCollection;
     }
 
-    public void setUserisinprojectwithrole03Collection(Collection<Userisinprojectwithrole03> userisinprojectwithrole03Collection) {
-        this.userisinprojectwithrole03Collection = userisinprojectwithrole03Collection;
+    public void setUserisinprojectwithrole03Collection(Collection<Userisinprojectwithrole> userisinprojectwithrole03Collection) {
+        this.userisinprojectwithroleCollection = userisinprojectwithrole03Collection;
     }
 
     @XmlTransient
-    public Collection<Sprint03> getSprint03Collection() {
-        return sprint03Collection;
+    public Collection<Sprint> getSprint03Collection() {
+        return sprintCollection;
     }
 
-    public void setSprint03Collection(Collection<Sprint03> sprint03Collection) {
-        this.sprint03Collection = sprint03Collection;
+    public void setSprint03Collection(Collection<Sprint> sprint03Collection) {
+        this.sprintCollection = sprint03Collection;
     }
 
     @Override
@@ -123,10 +123,10 @@ public class Project03 implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Project03)) {
+        if (!(object instanceof Project)) {
             return false;
         }
-        Project03 other = (Project03) object;
+        Project other = (Project) object;
         if ((this.projectid == null && other.projectid != null) || (this.projectid != null && !this.projectid.equals(other.projectid))) {
             return false;
         }
@@ -135,7 +135,7 @@ public class Project03 implements Serializable {
 
     @Override
     public String toString() {
-        return "pkgEntities.Project03[ projectid=" + projectid + " ]";
+        return "pkgEntities.Project[ projectid=" + projectid + " ]";
     }
     
 }

@@ -31,12 +31,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "USER03", catalog = "", schema = "D5B03")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "User03.findAll", query = "SELECT u FROM User03 u")
-    , @NamedQuery(name = "User03.findByUserid", query = "SELECT u FROM User03 u WHERE u.userid = :userid")
-    , @NamedQuery(name = "User03.findByUsername", query = "SELECT u FROM User03 u WHERE u.username = :username")
-    , @NamedQuery(name = "User03.findByPassword", query = "SELECT u FROM User03 u WHERE u.password = :password")
-    , @NamedQuery(name = "User03.findByEmail", query = "SELECT u FROM User03 u WHERE u.email = :email")})
-public class User03 implements Serializable {
+    @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")
+    , @NamedQuery(name = "User.findByUserid", query = "SELECT u FROM User u WHERE u.userid = :userid")
+    , @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username")
+    , @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")
+    , @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email")})
+public class User implements Serializable {
 
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -53,15 +53,15 @@ public class User03 implements Serializable {
     @Lob
     @Column(name = "PROFILEPICTURE")
     private Byte[] profilepicture;
-    @ManyToMany(mappedBy = "user03Collection")
-    private Collection<Issue03> issue03Collection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user03")
-    private Collection<Userisinprojectwithrole03> userisinprojectwithrole03Collection;
+    @ManyToMany(mappedBy = "userCollection")
+    private Collection<Issue> issueCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<Userisinprojectwithrole> userisinprojectwithroleCollection;
 
-    public User03() {
+    public User() {
     }
 
-    public User03(BigDecimal userid) {
+    public User(BigDecimal userid) {
         this.userid = userid;
     }
 
@@ -106,21 +106,21 @@ public class User03 implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Issue03> getIssue03Collection() {
-        return issue03Collection;
+    public Collection<Issue> getIssue03Collection() {
+        return issueCollection;
     }
 
-    public void setIssue03Collection(Collection<Issue03> issue03Collection) {
-        this.issue03Collection = issue03Collection;
+    public void setIssue03Collection(Collection<Issue> issue03Collection) {
+        this.issueCollection = issue03Collection;
     }
 
     @XmlTransient
-    public Collection<Userisinprojectwithrole03> getUserisinprojectwithrole03Collection() {
-        return userisinprojectwithrole03Collection;
+    public Collection<Userisinprojectwithrole> getUserisinprojectwithrole03Collection() {
+        return userisinprojectwithroleCollection;
     }
 
-    public void setUserisinprojectwithrole03Collection(Collection<Userisinprojectwithrole03> userisinprojectwithrole03Collection) {
-        this.userisinprojectwithrole03Collection = userisinprojectwithrole03Collection;
+    public void setUserisinprojectwithrole03Collection(Collection<Userisinprojectwithrole> userisinprojectwithrole03Collection) {
+        this.userisinprojectwithroleCollection = userisinprojectwithrole03Collection;
     }
 
     @Override
@@ -133,10 +133,10 @@ public class User03 implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof User03)) {
+        if (!(object instanceof User)) {
             return false;
         }
-        User03 other = (User03) object;
+        User other = (User) object;
         if ((this.userid == null && other.userid != null) || (this.userid != null && !this.userid.equals(other.userid))) {
             return false;
         }
@@ -145,7 +145,9 @@ public class User03 implements Serializable {
 
     @Override
     public String toString() {
-        return "pkgEntities.User03[ userid=" + userid + " ]";
+        return "User{" + "userid=" + userid + ", username=" + username + ", password=" + password + ", email=" + email + '}';
     }
+
+
     
 }

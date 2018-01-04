@@ -8,14 +8,14 @@ package pkgSession;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import pkgEntities.User03;
+import pkgEntities.User;
 
 /**
  *
  * @author alexk
  */
 @Stateless
-public class User03Facade extends AbstractFacade<User03> {
+public class UserFacade extends AbstractFacade<User> {
 
     @PersistenceContext(unitName = "JPATestPU")
     private EntityManager em;
@@ -25,8 +25,8 @@ public class User03Facade extends AbstractFacade<User03> {
         return em;
     }
 
-    public User03Facade() {
-        super(User03.class);
+    public UserFacade() {
+        super(User.class);
     }
     
 }

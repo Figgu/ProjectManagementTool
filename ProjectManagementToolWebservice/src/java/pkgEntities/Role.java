@@ -27,12 +27,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "ROLE03", catalog = "", schema = "D5B03")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Role03.findAll", query = "SELECT r FROM Role03 r")
-    , @NamedQuery(name = "Role03.findByRoleid", query = "SELECT r FROM Role03 r WHERE r.roleid = :roleid")
-    , @NamedQuery(name = "Role03.findByName", query = "SELECT r FROM Role03 r WHERE r.name = :name")
-    , @NamedQuery(name = "Role03.findByDescription", query = "SELECT r FROM Role03 r WHERE r.description = :description")
-    , @NamedQuery(name = "Role03.findByIsunique", query = "SELECT r FROM Role03 r WHERE r.isunique = :isunique")})
-public class Role03 implements Serializable {
+    @NamedQuery(name = "Role.findAll", query = "SELECT r FROM Role r")
+    , @NamedQuery(name = "Role.findByRoleid", query = "SELECT r FROM Role r WHERE r.roleid = :roleid")
+    , @NamedQuery(name = "Role.findByName", query = "SELECT r FROM Role r WHERE r.name = :name")
+    , @NamedQuery(name = "Role.findByDescription", query = "SELECT r FROM Role r WHERE r.description = :description")
+    , @NamedQuery(name = "Role.findByIsunique", query = "SELECT r FROM Role r WHERE r.isunique = :isunique")})
+public class Role implements Serializable {
 
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -47,12 +47,12 @@ public class Role03 implements Serializable {
     @Column(name = "ISUNIQUE")
     private String isunique;
     @OneToMany(mappedBy = "roleid")
-    private Collection<Userisinprojectwithrole03> userisinprojectwithrole03Collection;
+    private Collection<Userisinprojectwithrole> userisinprojectwithroleCollection;
 
-    public Role03() {
+    public Role() {
     }
 
-    public Role03(BigDecimal roleid) {
+    public Role(BigDecimal roleid) {
         this.roleid = roleid;
     }
 
@@ -89,12 +89,12 @@ public class Role03 implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Userisinprojectwithrole03> getUserisinprojectwithrole03Collection() {
-        return userisinprojectwithrole03Collection;
+    public Collection<Userisinprojectwithrole> getUserisinprojectwithrole03Collection() {
+        return userisinprojectwithroleCollection;
     }
 
-    public void setUserisinprojectwithrole03Collection(Collection<Userisinprojectwithrole03> userisinprojectwithrole03Collection) {
-        this.userisinprojectwithrole03Collection = userisinprojectwithrole03Collection;
+    public void setUserisinprojectwithrole03Collection(Collection<Userisinprojectwithrole> userisinprojectwithrole03Collection) {
+        this.userisinprojectwithroleCollection = userisinprojectwithrole03Collection;
     }
 
     @Override
@@ -107,10 +107,10 @@ public class Role03 implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Role03)) {
+        if (!(object instanceof Role)) {
             return false;
         }
-        Role03 other = (Role03) object;
+        Role other = (Role) object;
         if ((this.roleid == null && other.roleid != null) || (this.roleid != null && !this.roleid.equals(other.roleid))) {
             return false;
         }
@@ -119,7 +119,7 @@ public class Role03 implements Serializable {
 
     @Override
     public String toString() {
-        return "pkgEntities.Role03[ roleid=" + roleid + " ]";
+        return "pkgEntities.Role[ roleid=" + roleid + " ]";
     }
     
 }

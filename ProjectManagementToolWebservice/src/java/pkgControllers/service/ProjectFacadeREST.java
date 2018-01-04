@@ -19,34 +19,50 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import pkgEntities.Project03;
+import org.json.JSONException;
+import org.json.JSONObject;
+import pkgEntities.Project;
 
 /**
  *
  * @author alexk
  */
 @Stateless
-@Path("pkgentities.project03")
-public class Project03FacadeREST extends AbstractFacade<Project03> {
+@Path("projects")
+public class ProjectFacadeREST extends AbstractFacade<Project> {
 
     @PersistenceContext(unitName = "JPATestPU")
     private EntityManager em;
 
-    public Project03FacadeREST() {
-        super(Project03.class);
+    public ProjectFacadeREST() {
+        super(Project.class);
     }
 
     @POST
-    @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Project03 entity) {
-        super.create(entity);
+    public String createProject(Project entity) throws JSONException {
+        JSONObject response = new JSONObject();
+        response.put("message", "Proejct created");
+        List<Project> projects = super.findAll();
+        boolean projectOK = true;
+        
+        for (Project project : projects) {
+            if (project.getName().equals(entity.getName())) {
+                response.put("message", "Project with the given name already exists");
+                projectOK = false;
+            }
+        }
+        
+        if (projectOK)
+            super.create(entity);
+        
+        return response.toString();
     }
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") BigDecimal id, Project03 entity) {
+    public void edit(@PathParam("id") BigDecimal id, Project entity) {
         super.edit(entity);
     }
 
@@ -59,21 +75,21 @@ public class Project03FacadeREST extends AbstractFacade<Project03> {
     @GET
     @Path("{id}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Project03 find(@PathParam("id") BigDecimal id) {
+    public Project find(@PathParam("id") BigDecimal id) {
         return super.find(id);
     }
 
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Project03> findAll() {
+    public List<Project> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Project03> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<Project> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 

@@ -31,12 +31,12 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "ISSUE03", catalog = "", schema = "D5B03")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Issue03.findAll", query = "SELECT i FROM Issue03 i")
-    , @NamedQuery(name = "Issue03.findByIssueid", query = "SELECT i FROM Issue03 i WHERE i.issueid = :issueid")
-    , @NamedQuery(name = "Issue03.findByName", query = "SELECT i FROM Issue03 i WHERE i.name = :name")
-    , @NamedQuery(name = "Issue03.findByDescription", query = "SELECT i FROM Issue03 i WHERE i.description = :description")
-    , @NamedQuery(name = "Issue03.findByStatus", query = "SELECT i FROM Issue03 i WHERE i.status = :status")})
-public class Issue03 implements Serializable {
+    @NamedQuery(name = "Issue.findAll", query = "SELECT i FROM Issue i")
+    , @NamedQuery(name = "Issue.findByIssueid", query = "SELECT i FROM Issue i WHERE i.issueid = :issueid")
+    , @NamedQuery(name = "Issue.findByName", query = "SELECT i FROM Issue i WHERE i.name = :name")
+    , @NamedQuery(name = "Issue.findByDescription", query = "SELECT i FROM Issue i WHERE i.description = :description")
+    , @NamedQuery(name = "Issue.findByStatus", query = "SELECT i FROM Issue i WHERE i.status = :status")})
+public class Issue implements Serializable {
 
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
@@ -54,17 +54,17 @@ public class Issue03 implements Serializable {
         @JoinColumn(name = "ISSUEID", referencedColumnName = "ISSUEID")}, inverseJoinColumns = {
         @JoinColumn(name = "USERID", referencedColumnName = "USERID")})
     @ManyToMany
-    private Collection<User03> user03Collection;
+    private Collection<User> userCollection;
     @JoinColumns({
         @JoinColumn(name = "SPRINTID", referencedColumnName = "SPRINTID")
         , @JoinColumn(name = "SPRINTPROJECTID", referencedColumnName = "PROJECTID")})
     @ManyToOne
-    private Sprint03 sprint03;
+    private Sprint sprint;
 
-    public Issue03() {
+    public Issue() {
     }
 
-    public Issue03(BigDecimal issueid) {
+    public Issue(BigDecimal issueid) {
         this.issueid = issueid;
     }
 
@@ -101,20 +101,20 @@ public class Issue03 implements Serializable {
     }
 
     @XmlTransient
-    public Collection<User03> getUser03Collection() {
-        return user03Collection;
+    public Collection<User> getUser03Collection() {
+        return userCollection;
     }
 
-    public void setUser03Collection(Collection<User03> user03Collection) {
-        this.user03Collection = user03Collection;
+    public void setUser03Collection(Collection<User> user03Collection) {
+        this.userCollection = user03Collection;
     }
 
-    public Sprint03 getSprint03() {
-        return sprint03;
+    public Sprint getSprint03() {
+        return sprint;
     }
 
-    public void setSprint03(Sprint03 sprint03) {
-        this.sprint03 = sprint03;
+    public void setSprint03(Sprint sprint03) {
+        this.sprint = sprint03;
     }
 
     @Override
@@ -127,10 +127,10 @@ public class Issue03 implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Issue03)) {
+        if (!(object instanceof Issue)) {
             return false;
         }
-        Issue03 other = (Issue03) object;
+        Issue other = (Issue) object;
         if ((this.issueid == null && other.issueid != null) || (this.issueid != null && !this.issueid.equals(other.issueid))) {
             return false;
         }
@@ -139,7 +139,7 @@ public class Issue03 implements Serializable {
 
     @Override
     public String toString() {
-        return "pkgEntities.Issue03[ issueid=" + issueid + " ]";
+        return "pkgEntities.Issue[ issueid=" + issueid + " ]";
     }
     
 }

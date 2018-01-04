@@ -16,7 +16,7 @@ import javax.persistence.Embeddable;
  * @author alexk
  */
 @Embeddable
-public class Userisinprojectwithrole03PK implements Serializable {
+public class UserisinprojectwithrolePK implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "USERID")
@@ -25,10 +25,10 @@ public class Userisinprojectwithrole03PK implements Serializable {
     @Column(name = "PROJECTID")
     private BigInteger projectid;
 
-    public Userisinprojectwithrole03PK() {
+    public UserisinprojectwithrolePK() {
     }
 
-    public Userisinprojectwithrole03PK(BigInteger userid, BigInteger projectid) {
+    public UserisinprojectwithrolePK(BigInteger userid, BigInteger projectid) {
         this.userid = userid;
         this.projectid = projectid;
     }
@@ -60,10 +60,10 @@ public class Userisinprojectwithrole03PK implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Userisinprojectwithrole03PK)) {
+        if (!(object instanceof UserisinprojectwithrolePK)) {
             return false;
         }
-        Userisinprojectwithrole03PK other = (Userisinprojectwithrole03PK) object;
+        UserisinprojectwithrolePK other = (UserisinprojectwithrolePK) object;
         if ((this.userid == null && other.userid != null) || (this.userid != null && !this.userid.equals(other.userid))) {
             return false;
         }
@@ -75,7 +75,7 @@ public class Userisinprojectwithrole03PK implements Serializable {
 
     @Override
     public String toString() {
-        return "pkgEntities.Userisinprojectwithrole03PK[ userid=" + userid + ", projectid=" + projectid + " ]";
+        return "pkgEntities.UserisinprojectwithrolePK[ userid=" + userid + ", projectid=" + projectid + " ]";
     }
     
 }

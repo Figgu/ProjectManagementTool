@@ -16,7 +16,7 @@ import javax.persistence.Embeddable;
  * @author alexk
  */
 @Embeddable
-public class Sprint03PK implements Serializable {
+public class SprintPK implements Serializable {
 
     @Basic(optional = false)
     @Column(name = "SPRINTID")
@@ -25,10 +25,10 @@ public class Sprint03PK implements Serializable {
     @Column(name = "PROJECTID")
     private BigInteger projectid;
 
-    public Sprint03PK() {
+    public SprintPK() {
     }
 
-    public Sprint03PK(BigInteger sprintid, BigInteger projectid) {
+    public SprintPK(BigInteger sprintid, BigInteger projectid) {
         this.sprintid = sprintid;
         this.projectid = projectid;
     }
@@ -60,10 +60,10 @@ public class Sprint03PK implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Sprint03PK)) {
+        if (!(object instanceof SprintPK)) {
             return false;
         }
-        Sprint03PK other = (Sprint03PK) object;
+        SprintPK other = (SprintPK) object;
         if ((this.sprintid == null && other.sprintid != null) || (this.sprintid != null && !this.sprintid.equals(other.sprintid))) {
             return false;
         }
@@ -75,7 +75,7 @@ public class Sprint03PK implements Serializable {
 
     @Override
     public String toString() {
-        return "pkgEntities.Sprint03PK[ sprintid=" + sprintid + ", projectid=" + projectid + " ]";
+        return "pkgEntities.SprintPK[ sprintid=" + sprintid + ", projectid=" + projectid + " ]";
     }
     
 }

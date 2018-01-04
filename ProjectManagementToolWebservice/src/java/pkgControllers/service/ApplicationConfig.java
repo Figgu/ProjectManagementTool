@@ -29,8 +29,8 @@ public class ApplicationConfig extends Application {
      * If required, comment out calling this method in getClasses().
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
-        resources.add(pkgControllers.service.Project03FacadeREST.class);
-        resources.add(pkgControllers.service.User03FacadeREST.class);
+        resources.add(pkgControllers.service.ProjectFacadeREST.class);
+        resources.add(pkgControllers.service.UserFacadeREST.class);
     }
     
 }

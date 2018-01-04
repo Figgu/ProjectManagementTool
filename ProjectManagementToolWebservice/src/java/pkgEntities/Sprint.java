@@ -31,16 +31,16 @@ import javax.xml.bind.annotation.XmlTransient;
 @Table(name = "SPRINT03", catalog = "", schema = "D5B03")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "Sprint03.findAll", query = "SELECT s FROM Sprint03 s")
-    , @NamedQuery(name = "Sprint03.findBySprintid", query = "SELECT s FROM Sprint03 s WHERE s.sprint03PK.sprintid = :sprintid")
-    , @NamedQuery(name = "Sprint03.findByProjectid", query = "SELECT s FROM Sprint03 s WHERE s.sprint03PK.projectid = :projectid")
-    , @NamedQuery(name = "Sprint03.findByStartdate", query = "SELECT s FROM Sprint03 s WHERE s.startdate = :startdate")
-    , @NamedQuery(name = "Sprint03.findByEnddate", query = "SELECT s FROM Sprint03 s WHERE s.enddate = :enddate")})
-public class Sprint03 implements Serializable {
+    @NamedQuery(name = "Sprint.findAll", query = "SELECT s FROM Sprint s")
+    , @NamedQuery(name = "Sprint.findBySprintid", query = "SELECT s FROM Sprint s WHERE s.sprintPK.sprintid = :sprintid")
+    , @NamedQuery(name = "Sprint.findByProjectid", query = "SELECT s FROM Sprint s WHERE s.sprintPK.projectid = :projectid")
+    , @NamedQuery(name = "Sprint.findByStartdate", query = "SELECT s FROM Sprint s WHERE s.startdate = :startdate")
+    , @NamedQuery(name = "Sprint.findByEnddate", query = "SELECT s FROM Sprint s WHERE s.enddate = :enddate")})
+public class Sprint implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @EmbeddedId
-    protected Sprint03PK sprint03PK;
+    protected SprintPK sprintPK;
     @Column(name = "STARTDATE")
     @Temporal(TemporalType.TIMESTAMP)
     private Date startdate;
@@ -49,27 +49,27 @@ public class Sprint03 implements Serializable {
     private Date enddate;
     @JoinColumn(name = "PROJECTID", referencedColumnName = "PROJECTID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-    private Project03 project03;
-    @OneToMany(mappedBy = "sprint03")
-    private Collection<Issue03> issue03Collection;
+    private Project project;
+    @OneToMany(mappedBy = "sprint")
+    private Collection<Issue> issueCollection;
 
-    public Sprint03() {
+    public Sprint() {
     }
 
-    public Sprint03(Sprint03PK sprint03PK) {
-        this.sprint03PK = sprint03PK;
+    public Sprint(SprintPK sprint03PK) {
+        this.sprintPK = sprint03PK;
     }
 
-    public Sprint03(BigInteger sprintid, BigInteger projectid) {
-        this.sprint03PK = new Sprint03PK(sprintid, projectid);
+    public Sprint(BigInteger sprintid, BigInteger projectid) {
+        this.sprintPK = new SprintPK(sprintid, projectid);
     }
 
-    public Sprint03PK getSprint03PK() {
-        return sprint03PK;
+    public SprintPK getSprint03PK() {
+        return sprintPK;
     }
 
-    public void setSprint03PK(Sprint03PK sprint03PK) {
-        this.sprint03PK = sprint03PK;
+    public void setSprint03PK(SprintPK sprint03PK) {
+        this.sprintPK = sprint03PK;
     }
 
     public Date getStartdate() {
@@ -88,38 +88,38 @@ public class Sprint03 implements Serializable {
         this.enddate = enddate;
     }
 
-    public Project03 getProject03() {
-        return project03;
+    public Project getProject03() {
+        return project;
     }
 
-    public void setProject03(Project03 project03) {
-        this.project03 = project03;
+    public void setProject03(Project project03) {
+        this.project = project03;
     }
 
     @XmlTransient
-    public Collection<Issue03> getIssue03Collection() {
-        return issue03Collection;
+    public Collection<Issue> getIssue03Collection() {
+        return issueCollection;
     }
 
-    public void setIssue03Collection(Collection<Issue03> issue03Collection) {
-        this.issue03Collection = issue03Collection;
+    public void setIssue03Collection(Collection<Issue> issue03Collection) {
+        this.issueCollection = issue03Collection;
     }
 
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (sprint03PK != null ? sprint03PK.hashCode() : 0);
+        hash += (sprintPK != null ? sprintPK.hashCode() : 0);
         return hash;
     }
 
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof Sprint03)) {
+        if (!(object instanceof Sprint)) {
             return false;
         }
-        Sprint03 other = (Sprint03) object;
-        if ((this.sprint03PK == null && other.sprint03PK != null) || (this.sprint03PK != null && !this.sprint03PK.equals(other.sprint03PK))) {
+        Sprint other = (Sprint) object;
+        if ((this.sprintPK == null && other.sprintPK != null) || (this.sprintPK != null && !this.sprintPK.equals(other.sprintPK))) {
             return false;
         }
         return true;
@@ -127,7 +127,7 @@ public class Sprint03 implements Serializable {
 
     @Override
     public String toString() {
-        return "pkgEntities.Sprint03[ sprint03PK=" + sprint03PK + " ]";
+        return "pkgEntities.Sprint[ sprint03PK=" + sprintPK + " ]";
     }
     
 }
