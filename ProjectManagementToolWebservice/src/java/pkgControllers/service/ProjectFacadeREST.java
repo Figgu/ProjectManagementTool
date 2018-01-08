@@ -28,7 +28,7 @@ import pkgEntities.Project;
  * @author alexk
  */
 @Stateless
-@Path("projects")
+@Path("project")
 public class ProjectFacadeREST extends AbstractFacade<Project> {
 
     @PersistenceContext(unitName = "JPATestPU")
@@ -39,6 +39,7 @@ public class ProjectFacadeREST extends AbstractFacade<Project> {
     }
 
     @POST
+    @Path("create")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public String createProject(Project entity) throws JSONException {
         JSONObject response = new JSONObject();
@@ -60,16 +61,52 @@ public class ProjectFacadeREST extends AbstractFacade<Project> {
     }
 
     @PUT
-    @Path("{id}")
+    @Path("update")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") BigDecimal id, Project entity) {
-        super.edit(entity);
+    public String edit(@PathParam("id") BigDecimal id, Project entity) {
+        List<Project> projects = super.findAll();
+        boolean projectExists = false;
+        JSONObject response = new JSONObject();
+        response.put("message", "Project created");
+        Project project = super.find(id);
+        for (Project p : projects) { 
+            if (p.getName().equals(project.getName())) {
+                response.put("message", "Project updated");
+                projectExists = true;
+            } 
+        }
+
+        if (projectExists) {
+            super.edit(entity);               
+        } else {
+            response.put("message", "There is no such project");
+        }
+
+        
+        return response.toString();
     }
 
     @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") BigDecimal id) {
-        super.remove(super.find(id));
+    @Path("remove")
+    public String remove(@PathParam("id") BigDecimal id) {
+        JSONObject response = new JSONObject();
+        response.put("message", "empty");
+        List<Project> projects = super.findAll();
+        Boolean projectExists = false;
+        Project project = super.find(id);
+        for (Project p : projects) {                
+            if (p.getName().equals(project.getName())) {
+                response.put("message", "Project exists");
+                projectExists = true;
+            } 
+        }
+
+        if (projectExists) {
+            super.remove(super.find(id));              
+        } else {
+            response.put("message", "There is no such project");
+        }
+        return response.toString();
     }
 
     @GET
@@ -80,6 +117,7 @@ public class ProjectFacadeREST extends AbstractFacade<Project> {
     }
 
     @GET
+    @Path("getAll")
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Project> findAll() {

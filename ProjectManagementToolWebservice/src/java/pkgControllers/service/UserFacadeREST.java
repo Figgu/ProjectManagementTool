@@ -29,7 +29,7 @@ import pkgEntities.User;
  * @author alexk
  */
 @Stateless
-@Path("users")
+@Path("user")
 public class UserFacadeREST extends AbstractFacade<User> {
 
     @PersistenceContext(unitName = "JPATestPU")
@@ -40,6 +40,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     }
 
     @POST
+    @Path("create")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public String createUser(User entity) throws JSONException {
@@ -67,13 +68,6 @@ public class UserFacadeREST extends AbstractFacade<User> {
 
         
         return response.toString();
-    }
-
-    @PUT
-    @Path("{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public void edit(@PathParam("id") BigDecimal id, User entity) {
-        super.edit(entity);
     }
     
     //For Login -> checks the given username & password
@@ -107,21 +101,69 @@ public class UserFacadeREST extends AbstractFacade<User> {
         
         return response.toString();
     }
+    
 
     @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") BigDecimal id) {
-        super.remove(super.find(id));
+    @Path("remove")
+    public String remove(@PathParam("id") BigDecimal id) {
+        JSONObject response = new JSONObject();
+        response.put("message", "empty");
+        List<User> users = super.findAll();
+        Boolean userExists = false;
+        User user = super.find(id);
+        
+        for (User u : users) {                
+            if (u.getUsername().equals(user.getUsername())) {
+                response.put("message", "User exists");
+                userExists = true;
+            } 
+        }
+
+        if (userExists) {
+            super.remove(super.find(id));              
+        } else {
+            response.put("message", "There is no such user");
+        }
+        return response.toString();
+        
+    }
+    
+    @PUT
+    @Path("update")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public String edit(@PathParam("id") BigDecimal id, User entity) {
+        List<User> users = super.findAll();
+        boolean userExists = false;
+        JSONObject response = new JSONObject();
+        User user = super.find(id);
+        
+        for (User u : users) {  
+            if (u.getUsername().equals(user.getUsername())) {
+                response.put("message", "User exists");
+                userExists = true;
+            } 
+        }
+
+        if (userExists) {
+            super.edit(entity);               
+        } else {
+            response.put("message", "There is no such user");
+        }
+
+        
+        return response.toString();
+        
     }
 
     @GET
-    @Path("{id}")
+    @Path("find")
     @Produces(MediaType.APPLICATION_JSON)
     public User find(@PathParam("id") BigDecimal id) {
         return super.find(id);
     }
 
     @GET
+    @Path("getAll")
     @Override
     @Produces(MediaType.APPLICATION_JSON)
     public List<User> findAll() {

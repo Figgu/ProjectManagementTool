@@ -30,6 +30,7 @@ public class ApplicationConfig extends Application {
      */
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(pkgControllers.service.ProjectFacadeREST.class);
+        resources.add(pkgControllers.service.RoleFacadeREST.class);
         resources.add(pkgControllers.service.UserFacadeREST.class);
     }
     
