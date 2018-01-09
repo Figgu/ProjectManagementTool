@@ -45,22 +45,22 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces(MediaType.APPLICATION_JSON)
     public String createUser(User entity) throws JSONException {
         List<User> users = super.findAll();
-        boolean usernameOK = true;
-        boolean passwordOK = true;
+        boolean emailExists = false;
+        boolean UsernameExists = false;
         JSONObject response = new JSONObject();
         response.put("message", "User created");
 
         for (User user : users) {                
             if (user.getUsername().equals(entity.getUsername())) {
                 response.put("message", "Given Username already exists");
-                passwordOK = false;
+                UsernameExists = true;
             } else if (user.getEmail().equals(entity.getEmail())) {
                 response.put("message", "Given Email already exists");
-                usernameOK = false;
+                emailExists = true;
             }
         }
 
-        if (usernameOK && passwordOK) {
+        if (!emailExists && !UsernameExists) {
             super.create(entity);                
         } else {
             response.put("message", "Given Username and Email already exists");
@@ -105,7 +105,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
 
     @DELETE
     @Path("remove")
-    public String remove(@PathParam("id") BigDecimal id) {
+    public String remove(@PathParam("id") BigDecimal id) throws JSONException{
         JSONObject response = new JSONObject();
         response.put("message", "empty");
         List<User> users = super.findAll();
@@ -131,7 +131,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @PUT
     @Path("update")
     @Consumes(MediaType.APPLICATION_JSON)
-    public String edit(@PathParam("id") BigDecimal id, User entity) {
+    public String edit(@PathParam("id") BigDecimal id, User entity) throws JSONException{
         List<User> users = super.findAll();
         boolean userExists = false;
         JSONObject response = new JSONObject();

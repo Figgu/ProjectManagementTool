@@ -1,5 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
+ * To change this license header, choose License Headers in Role Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
@@ -23,7 +23,7 @@ import javax.ws.rs.core.MediaType;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pkgEntities.Role;
-import pkgEntities.User;
+
 
 /**
  *
@@ -44,38 +44,84 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
     @Path("create")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public String createRole(User entity) throws JSONException {
-        List<Role> roles = super.findAll();
-        boolean usernameOK = true;
-        boolean passwordOK = true;
+    public String createRole(Role entity) throws JSONException {
         JSONObject response = new JSONObject();
-        response.put("message", "User created");
-
+        response.put("message", "Proejct created");
+        List<Role> roles = super.findAll();
+        boolean roleExists = true;
+        
+        for (Role role : roles) {
+            if (role.getName().equals(entity.getName())) {
+                response.put("message", "Role with the given name already exists");
+                roleExists = false;
+            }
+        }
+        
+        if (roleExists)
+            super.create(entity);
         
         return response.toString();
     }
 
     @PUT
-    @Path("{id}")
+    @Path("update")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void edit(@PathParam("id") BigDecimal id, Role entity) {
-        super.edit(entity);
+    public String edit(@PathParam("id") BigDecimal id, Role entity) throws JSONException{
+        List<Role> roles = super.findAll();
+        boolean roleExists = false;
+        JSONObject response = new JSONObject();
+        response.put("message", "Role created");
+        Role role = super.find(id);
+        for (Role p : roles) { 
+            if (p.getName().equals(role.getName())) {
+                response.put("message", "Role updated");
+                roleExists = true;
+            } 
+        }
+
+        if (roleExists) {
+            super.edit(entity);               
+        } else {
+            response.put("message", "There is no such role");
+        }
+
+        
+        return response.toString();
     }
 
     @DELETE
-    @Path("{id}")
-    public void remove(@PathParam("id") BigDecimal id) {
-        super.remove(super.find(id));
+    @Path("remove")
+    public String remove(@PathParam("id") BigDecimal id) throws JSONException{
+        JSONObject response = new JSONObject();
+        response.put("message", "empty");
+        List<Role> roles = super.findAll();
+        Boolean roleExists = false;
+        Role role = super.find(id);
+        
+        for (Role u : roles) {                
+            if (u.getName().equals(role.getName())) {
+                response.put("message", "Role exists");
+                roleExists = true;
+            } 
+        }
+
+        if (roleExists) {
+            super.remove(super.find(id));              
+        } else {
+            response.put("message", "There is no such role");
+        }
+        return response.toString();
     }
 
     @GET
-    @Path("{id}")
+    @Path("find")
     @Produces(MediaType.APPLICATION_JSON)
     public Role find(@PathParam("id") BigDecimal id) {
         return super.find(id);
     }
 
     @GET
+    @Path("getAll")
     @Override
     @Produces(MediaType.APPLICATION_JSON)
     public List<Role> findAll() {

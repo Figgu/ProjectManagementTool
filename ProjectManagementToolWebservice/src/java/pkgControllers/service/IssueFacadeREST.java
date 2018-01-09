@@ -19,61 +19,63 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
-import pkgEntities.Project;
+import pkgEntities.Issue;
 
 /**
  *
  * @author Figgu
  */
 @Stateless
-@Path("pkgentities.project")
-public class ProjectFacadeREST extends AbstractFacade<Project> {
+@Path("pkgentities.issue")
+public class IssueFacadeREST extends AbstractFacade<Issue> {
 
     @PersistenceContext(unitName = "JPATestPU")
     private EntityManager em;
 
-    public ProjectFacadeREST() {
-        super(Project.class);
+    public IssueFacadeREST() {
+        super(Issue.class);
     }
 
     @POST
+    @Path("create")
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Project entity) {
+    public void create(Issue entity) {
         super.create(entity);
     }
 
     @PUT
-    @Path("{id}")
+    @Path("update")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") BigDecimal id, Project entity) {
+    public void edit(@PathParam("id") BigDecimal id, Issue entity) {
         super.edit(entity);
     }
 
     @DELETE
-    @Path("{id}")
+    @Path("remove")
     public void remove(@PathParam("id") BigDecimal id) {
         super.remove(super.find(id));
     }
 
     @GET
-    @Path("{id}")
+    @Path("find")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public Project find(@PathParam("id") BigDecimal id) {
+    public Issue find(@PathParam("id") BigDecimal id) {
         return super.find(id);
     }
 
     @GET
+    @Path("getAll")
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Project> findAll() {
+    public List<Issue> findAll() {
         return super.findAll();
     }
 
     @GET
     @Path("{from}/{to}")
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Project> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
+    public List<Issue> findRange(@PathParam("from") Integer from, @PathParam("to") Integer to) {
         return super.findRange(new int[]{from, to});
     }
 
