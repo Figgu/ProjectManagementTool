@@ -6,10 +6,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 /**
  * Created by alexk on 09.10.2017.
  */
 
+@XmlRootElement
 public class User implements Serializable{
     private int userID;
     private String username;
@@ -33,6 +36,14 @@ public class User implements Serializable{
         this.username = username;
         this.password = password;
         this.email = email;
+
+        projects = new ArrayList<>();
+        rolesInProject =  new HashMap<>();
+    }
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
 
         projects = new ArrayList<>();
         rolesInProject =  new HashMap<>();

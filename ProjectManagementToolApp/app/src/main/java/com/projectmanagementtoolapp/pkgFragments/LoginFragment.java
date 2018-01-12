@@ -21,8 +21,10 @@ import android.widget.Toast;
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgActivities.ForgotPasswordActivity;
 import com.projectmanagementtoolapp.pkgActivities.MainActivity;
+import com.projectmanagementtoolapp.pkgData.Controller;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.User;
+import com.projectmanagementtoolapp.pkgTasks.CheckLoginTask;
 import com.projectmanagementtoolapp.pkgTasks.OpenConnectionTask;
 import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
 
@@ -37,6 +39,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     //Non gui elements
     private Database db;
+    private Controller controller;
+
 
     public LoginFragment() {
         // Required empty public constructor
@@ -55,14 +59,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         db = Database.getInstance();
+        controller = Controller.getInstance();
         getAllViews(view);
         initEventHandlers();
-
-        OpenConnectionTask openConnectionTask = new OpenConnectionTask();
-        openConnectionTask.execute();
-
-        SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(getActivity());
-        selectAllUsersTask.execute();
 
         return view;
     }
@@ -122,7 +121,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
     //Check the given account details
     private void doLogin() {
-        User user = null;
         boolean usernameOK = true;
         boolean passwordOK = true;
 
@@ -137,20 +135,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         }
 
         if (usernameOK && passwordOK) {
-            user = db.getUserByUsername(txtUsername.getText().toString());
+            User user = new User(txtUsername.getText().toString(), txtPassword.getText().toString());
             System.out.println(user);
 
-            if (user != null) {
-                if (user.getUsername().equals(txtUsername.getText().toString()) && user.getPassword().equals(txtPassword.getText().toString())) {
-                    db.setCurrentUser(user);
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    startActivity(intent);
-                } else {
-                    Snackbar.make(mRoot, "Password wrong", Snackbar.LENGTH_LONG).show();
-                }
-            } else {
-                Snackbar.make(mRoot, "Username not correct", Snackbar.LENGTH_LONG).show();
-            }
+            CheckLoginTask checkLoginTask = new CheckLoginTask(getActivity());
+            checkLoginTask.execute(user);
+
+
+
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
         }
     }
 }
