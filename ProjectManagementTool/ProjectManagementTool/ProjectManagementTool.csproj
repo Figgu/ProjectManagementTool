@@ -66,6 +66,7 @@
     <Compile Include="classes\IssueStatus.cs" />
     <Compile Include="classes\Kontext.cs" />
     <Compile Include="classes\Issue.cs" />
+    <Compile Include="classes\Role.cs" />
     <Compile Include="classes\User.cs" />
     <Compile Include="classes\Project.cs" />
     <Compile Include="classes\Sprint.cs" />

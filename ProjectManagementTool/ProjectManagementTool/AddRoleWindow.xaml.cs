@@ -40,5 +40,23 @@ namespace ProjectManagementTool
         {
             return instance;
         }
+
+        private void ButtonCancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
+
+        private void ButtonCreate_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                Boolean isUnique = (bool)RadioButtonYes.IsChecked;
+                ktx.AddRole(new Role(TextBoxName.Text, TextBoxDescription.Text, isUnique));
+                this.Close();
+            }catch(Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+        }
     }
 }

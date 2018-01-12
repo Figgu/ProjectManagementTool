@@ -6,16 +6,16 @@
         xmlns:local="clr-namespace:ProjectManagementTool"
         mc:Ignorable="d"
         Title="Profile" Height="300" Width="300" Closing="Window_Closing">
-    <Grid Background="DarkGray">
+    <Grid Background="Gray">
         <Label x:Name="lblName" Content="Name" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,41,0,0"/>
         <Label x:Name="lblPassword" Content="Password" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,93,0,0"/>
         <Label x:Name="lblEmail" Content="Email" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,147,0,0"/>
         <Button x:Name="btnProfileEdit" Content="Edit" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,186,0,0" Click="btnProfileEdit_Click" RenderTransformOrigin="0.867,0.5"/>
         <Image x:Name="imgProfilBild" HorizontalAlignment="Left" Height="100" VerticalAlignment="Top" Width="100" Margin="182,41,0,0" OpacityMask="White"/>
         <Button x:Name="btnEditPicture" Content="Change" VerticalAlignment="Top" Margin="193,186,24,0" Click="btnEditPicture_Click"/>
-        <TextBox x:Name="txtName" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtEmail" HorizontalAlignment="Left" Height="23" Margin="10,147,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
-        <TextBox x:Name="txtPassword" HorizontalAlignment="Left" Height="23" Margin="10,93,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox Background="DarkGray" x:Name="txtName" HorizontalAlignment="Left" Height="23" Margin="10,41,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox Background="DarkGray" x:Name="txtEmail" HorizontalAlignment="Left" Height="23" Margin="10,147,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox Background="DarkGray" x:Name="txtPassword" HorizontalAlignment="Left" Height="23" Margin="10,93,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
         <Button x:Name="btnSave" Content="Save" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="10,186,0,0" Click="btnSave_Click"/>
         <Button Content="Cancel" x:Name="btnCancel" HorizontalAlignment="Left" Margin="90,186,0,0" VerticalAlignment="Top" Width="75" Click="btnCancel_Click"/>
         <Label Content="Username:" HorizontalAlignment="Left" Margin="10,15,0,0" VerticalAlignment="Top"/>

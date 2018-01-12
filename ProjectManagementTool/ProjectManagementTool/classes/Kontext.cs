@@ -50,17 +50,45 @@ namespace ProjectManagementTool.classes
         public void AddUser(User user)
         {
             OleDbCommand cmd = null;
+            OleDbTransaction transaction = null;
             string commandText = "";
-            int anzahl = -1;
             using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
             {
                 conn.Open();
+                transaction = conn.BeginTransaction();
                 commandText = "INSERT INTO User03(Username, Password, Email) VALUES (?, ?, ?)";
-                cmd = new OleDbCommand(commandText, conn);
+                cmd = new OleDbCommand(commandText, conn)
+                {
+                    Transaction = transaction
+                };
                 cmd.Parameters.AddWithValue("?", user.Username);
                 cmd.Parameters.AddWithValue("?", user.Password);
                 cmd.Parameters.AddWithValue("?", user.Email);
-                anzahl = Convert.ToInt32(cmd.ExecuteNonQuery());
+                cmd.ExecuteNonQuery();
+                transaction.Commit();
+            }
+        }
+
+        public void AddRole(Role role)
+        {
+            OleDbCommand cmd = null;
+            string commandText = "";
+            OleDbTransaction transaction = null;
+            using(OleDbConnection conn = new OleDbConnection(this.connectionString))
+            {
+                conn.Open();
+                transaction = conn.BeginTransaction();
+                commandText = "Insert Into Role03(Name, Description,IsUnique) Values (?, ?, ?)";
+                cmd = new OleDbCommand(commandText, conn)
+                {
+                    Transaction = transaction
+                };
+                cmd.Parameters.AddWithValue("?", role.Name);
+                cmd.Parameters.AddWithValue("?", role.Description);
+                //DB Trigger checks if "true" or "false", toString() returns "True" or "False"
+                cmd.Parameters.AddWithValue("?", role.IsUnique.ToString().ToLowerInvariant());
+                cmd.ExecuteNonQuery();
+                transaction.Commit();
             }
         }
 
