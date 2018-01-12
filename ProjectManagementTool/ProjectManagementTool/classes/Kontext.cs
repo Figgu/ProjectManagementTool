@@ -309,6 +309,23 @@ namespace ProjectManagementTool.classes
             return new List<Issue>();
         }
 
+        public List<Role> GetAllRoles()
+        {
+            DataTable dt = new DataTable();
+            OleDbDataAdapter da = null;
+            List<Role> roles = new List<Role>();
+            using (OleDbConnection conn = new OleDbConnection(this.connectionString))
+            {
+                conn.Open();
+                da = new OleDbDataAdapter("select roleid, name, description, isunique from role03",conn);
+                da.Fill(dt);
+                foreach (DataRow r in dt.Rows)
+                {
+                    roles.Add(new Role(Convert.ToInt32(r[0]), Convert.ToString(r[1]), Convert.ToString(r[2]),Convert.ToBoolean(r[3])));
+                }
+            }
+            return roles;
+        }
         #endregion
     }
 

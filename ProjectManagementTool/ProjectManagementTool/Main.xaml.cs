@@ -142,5 +142,19 @@ namespace ProjectManagementTool
                 AddRoleWindow.GetInstance().Focus();
             }
         }
+
+        private void ShowRoles_Click(object sender, RoutedEventArgs e)
+        {
+            if (ShowRolesWindow.GetInstance() == null)
+            {
+                ShowRolesWindow r = new ShowRolesWindow();
+                ShowRolesWindow.SetInstance(r);
+                r.Show();
+            }
+            else
+            {
+                ShowRolesWindow.GetInstance().Focus();
+            }
+        }
     }
 }
