@@ -36,6 +36,7 @@ namespace ProjectManagementTool
                 {
                     ktx.AddProject(new Project(txtProjectName.Text, "no description", date));
                     Main.RefreshProjects();
+                    this.Close();
                 }
                 else
                 {
@@ -60,6 +61,11 @@ namespace ProjectManagementTool
         public static AddProjectWindow GetInstance()
         {
             return instance;
+        }
+
+        private void btnCancel_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

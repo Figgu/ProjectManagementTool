@@ -66,9 +66,10 @@ namespace ProjectManagementTool
             this.Close();
         }
 
-        private void LoadSprintList()
+        public void LoadSprintList()
         {
             sprints = ktx.GetAllSprintsFromProject(this.currentProject.Id);
+            sprintList.Items.Clear();
             foreach (Sprint s in sprints)
             {
                 sprintList.Items.Add(GenerateListItem(s));
@@ -84,6 +85,20 @@ namespace ProjectManagementTool
                 Sprint selectedSprint = sprints.Find(s => s.Id == Convert.ToInt32(selectedListBoxItem.Name.Replace(charForNameWorkaround, ' ').Trim()));
                 IssuesWindow i = new IssuesWindow(currentUser, currentProject, selectedSprint);
                 i.Show();
+            }
+        }
+
+        private void AddSprintClick(object sender, RoutedEventArgs e)
+        {
+            if (AddSprintWindow.GetInstance() == null)
+            {
+                AddSprintWindow s = new AddSprintWindow(currentProject,this);
+                AddSprintWindow.SetInstance(s);
+                s.Show();
+            }
+            else
+            {
+                AddSprintWindow.GetInstance().Focus();
             }
         }
     }

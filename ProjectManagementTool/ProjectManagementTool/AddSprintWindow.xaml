@@ -1,0 +1,17 @@
+﻿<Window x:Class="ProjectManagementTool.AddSprintWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProjectManagementTool"
+        mc:Ignorable="d"
+        Title="AddSprintWindow" Height="300" Width="300" Closing="Window_Closing">
+    <Grid Background="Gray">
+        <DatePicker x:Name="dpSprintStart" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="138" Margin="130,34,0,0" RenderTransformOrigin="0.452,0.393"/>
+        <DatePicker x:Name="dpSprintEnd" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="138" Margin="130,126,0,0" RenderTransformOrigin="0.452,0.393"/>
+        <Button x:Name="btnAdd" Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Width="75" Margin="193,226,0,0" Click="btnAdd_Click"/>
+        <Button Content="Cancel" x:Name="btnCancel" HorizontalAlignment="Left" Margin="95,226,0,0" VerticalAlignment="Top" Width="75" Click="btnCancel_Click"/>
+        <Label Content="Sprint Start:" HorizontalAlignment="Left" Margin="36,33,0,0" VerticalAlignment="Top"/>
+        <Label Content="Sprint End:" HorizontalAlignment="Left" Margin="36,125,0,0" VerticalAlignment="Top"/>
+    </Grid>
+</Window>

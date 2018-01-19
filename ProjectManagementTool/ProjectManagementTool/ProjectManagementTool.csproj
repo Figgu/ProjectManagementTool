@@ -57,11 +57,17 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddIssueWindow.xaml.cs">
+      <DependentUpon>AddIssueWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddProjectWindow.xaml.cs">
       <DependentUpon>AddProjectWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="AddRoleWindow.xaml.cs">
       <DependentUpon>AddRoleWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddSprintWindow.xaml.cs">
+      <DependentUpon>AddSprintWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="classes\IssueStatus.cs" />
     <Compile Include="classes\Kontext.cs" />
@@ -89,11 +95,19 @@
     <Compile Include="RegisterWindow.xaml.cs">
       <DependentUpon>RegisterWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="AddIssueWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddProjectWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AddRoleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddSprintWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

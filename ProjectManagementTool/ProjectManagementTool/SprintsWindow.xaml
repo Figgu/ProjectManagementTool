@@ -26,9 +26,15 @@
                 <Hyperlink x:Name="lblLogout" Foreground="Black" Click="Logout">Logout</Hyperlink>
             </Label>
         </Grid>
-
+        <Grid Margin="10,85,10,10" VerticalAlignment="Top">
+            <Menu Background="LightGray">
+                <MenuItem Header="Options" Height="22">
+                    <MenuItem Header="Add Sprint" Click="AddSprintClick" Background="LightGray"/>
+                </MenuItem>
+            </Menu>
+        </Grid>
         <Grid Margin="10, 95, 10, 10">
-            <ListBox x:Name="sprintList" Background="DarkGray">
+            <ListBox x:Name="sprintList" Background="DarkGray" Margin="0,10,0,0">
             </ListBox>
         </Grid>
     </Grid>

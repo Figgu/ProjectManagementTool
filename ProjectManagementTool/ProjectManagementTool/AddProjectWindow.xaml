@@ -6,12 +6,17 @@
         xmlns:local="clr-namespace:ProjectManagementTool"
         mc:Ignorable="d"
         Title="AddProjectWindow" Height="166.845" Width="518.182" Closing="Window_Closing">
-    <Grid Background="DarkGray">
-        <Button x:Name="btnAddProject" Content="Add Project" HorizontalAlignment="Left" Width="86" Height="30" VerticalAlignment="Top" Click="btnAddProject_Click" Margin="414,96,0,0"/>
+    <Grid Background="Gray">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="133*"/>
+            <ColumnDefinition Width="377*"/>
+        </Grid.ColumnDefinitions>
+        <Button x:Name="btnAddProject" Content="Add Project" HorizontalAlignment="Left" Width="86" Height="30" VerticalAlignment="Top" Click="btnAddProject_Click" Margin="281.49,96,0,0" Grid.Column="1"/>
         <TextBox x:Name="txtProjectName" HorizontalAlignment="Left" Height="20
-                 " TextWrapping="Wrap" VerticalAlignment="Top" Width="258" Margin="59,36,0,0"/>
-        <DatePicker x:Name="dpProjectDate" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="138" Margin="364,36,0,0" RenderTransformOrigin="0.452,0.393"/>
-        <Label Content="Name:" HorizontalAlignment="Left" Margin="10,30,0,0" VerticalAlignment="Top"/>
-        <Label Content="Date:" HorizontalAlignment="Left" Margin="322,35,0,0" VerticalAlignment="Top"/>
+                 " TextWrapping="Wrap" VerticalAlignment="Top" Width="258" Margin="59,41,0,0" Background="DarkGray" Grid.ColumnSpan="2"/>
+        <DatePicker x:Name="dpProjectDate" HorizontalAlignment="Left" VerticalAlignment="Top" Height="30" Width="138" Margin="231.49,36,0,0" RenderTransformOrigin="0.452,0.393" Grid.Column="1"/>
+        <Label Content="Name:" HorizontalAlignment="Left" Margin="10,35,0,0" VerticalAlignment="Top"/>
+        <Label Content="Date:" HorizontalAlignment="Left" Margin="189.49,35,0,0" VerticalAlignment="Top" Grid.Column="1"/>
+        <Button x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Margin="189.49,96,0,0" VerticalAlignment="Top" Width="87" Height="30" Click="btnCancel_Click" Grid.Column="1"/>
     </Grid>
 </Window>

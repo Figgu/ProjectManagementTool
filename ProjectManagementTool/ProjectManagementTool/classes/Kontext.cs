@@ -113,7 +113,52 @@ namespace ProjectManagementTool.classes
                 transaction.Commit();
                 ConnectProjectWithUser(project, currentUser);
             }
+        }
 
+        public void AddSprint(int projectId, DateTime start, DateTime end)
+        {
+            OleDbCommand cmd = null;
+            OleDbTransaction transaction = null;
+            string commandText = "";
+            using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
+            {
+                conn.Open();
+                transaction = conn.BeginTransaction();
+                commandText = "INSERT INTO Sprint03(Projectid, StartDate, EndDate) VALUES (?, ?, ?)";
+                cmd = new OleDbCommand(commandText, conn)
+                {
+                    Transaction = transaction
+                };
+                cmd.Parameters.AddWithValue("?", projectId);
+                cmd.Parameters.AddWithValue("?", start);
+                cmd.Parameters.AddWithValue("?", end);
+                cmd.ExecuteNonQuery();
+                transaction.Commit();
+            }
+        }
+
+        public void AddIssue(int projectId, int sprintId, String name, String description, IssueStatus status)
+        {
+            OleDbCommand cmd = null;
+            OleDbTransaction transaction = null;
+            string commandText = "";
+            using (OleDbConnection conn = new OleDbConnection(this.ConnectionString))
+            {
+                conn.Open();
+                transaction = conn.BeginTransaction();
+                commandText = "INSERT INTO Issue03(SprintProjectid, Sprintid, Name, Description, Status) VALUES (?, ?, ?, ?, ?)";
+                cmd = new OleDbCommand(commandText, conn)
+                {
+                    Transaction = transaction
+                };
+                cmd.Parameters.AddWithValue("?", projectId);
+                cmd.Parameters.AddWithValue("?", sprintId);
+                cmd.Parameters.AddWithValue("?", name);
+                cmd.Parameters.AddWithValue("?", description);
+                cmd.Parameters.AddWithValue("?", status.ToString());
+                cmd.ExecuteNonQuery();
+                transaction.Commit();
+            }
         }
 
         public void ConnectProjectWithUser(Project project, User user)
