@@ -23,14 +23,8 @@ import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.User;
-import com.projectmanagementtoolapp.pkgTasks.DeleteProjectTask;
-import com.projectmanagementtoolapp.pkgTasks.DeleteUsersFromProject;
-import com.projectmanagementtoolapp.pkgTasks.InsertProjectTask;
-import com.projectmanagementtoolapp.pkgTasks.InsertUsersInProject;
-import com.projectmanagementtoolapp.pkgTasks.SelectAllProjectsTask;
-import com.projectmanagementtoolapp.pkgTasks.SelectMyProjectsTask;
-import com.projectmanagementtoolapp.pkgTasks.SelectUsersOfProjectTask;
-import com.projectmanagementtoolapp.pkgTasks.UpdateProjectTask;
+import com.projectmanagementtoolapp.pkgData.Userisinprojectwithrole;
+import com.projectmanagementtoolapp.pkgTasks.GetUsersOfProjectTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,9 +52,10 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
     private ArrayList<User> contributors;
     private Database db;
     private Calendar cal = Calendar.getInstance(TimeZone.getDefault()); // Get current date
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd. MMM. yyyy");
     private ArrayAdapter<User> adapter;
     private Project currentProject;
+    private ArrayList<User> users = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,18 +70,8 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
         initEventhandlers();
         db = Database.getInstance();
 
-        SelectUsersOfProjectTask selectUsersOfProjectTask = new SelectUsersOfProjectTask(this);
-        selectUsersOfProjectTask.execute(currentProject);
-
-        try {
-            String result = selectUsersOfProjectTask.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        fillGUI();
+        GetUsersOfProjectTask getUsersOfProjectTask = new GetUsersOfProjectTask(this);
+        getUsersOfProjectTask.execute("projects/users", currentProject.getProjectid());
     }
 
     /*
@@ -132,26 +117,26 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
 
     //TODO DELETE SPRINTS/ISSUES
     private void deleteProject() {
-        DeleteUsersFromProject deleteUsersFromProject = new DeleteUsersFromProject(this);
-        deleteUsersFromProject.execute(currentProject.getProjectID());
-        try {
-            String result = deleteUsersFromProject.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        //DeleteUsersFromProject deleteUsersFromProject = new DeleteUsersFromProject(this);
+        //deleteUsersFromProject.execute(currentProject.getProjectid());
+        //try {
+           // String result = deleteUsersFromProject.get();
+       // } catch (InterruptedException e) {
+       //     e.printStackTrace();
+       // } catch (ExecutionException e) {
+       //     e.printStackTrace();
+       // }
 
 
-        DeleteProjectTask deleteProjectTask = new DeleteProjectTask(this);
-        deleteProjectTask.execute(currentProject);
-        try {
-            String result = deleteProjectTask.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        //DeleteProjectTask deleteProjectTask = new DeleteProjectTask(this);
+        //deleteProjectTask.execute(currentProject);
+        //try {
+        //    String result = deleteProjectTask.get();
+        //} catch (InterruptedException e) {
+        //    e.printStackTrace();
+       // } catch (ExecutionException e) {
+       //     e.printStackTrace();
+        //}
         this.finish();
     }
 
@@ -193,10 +178,10 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
     public void onClick(View v) {
         if (v == imgAddButton) {
             if (txtContributorName.getText().length() > 1) {
-                User user = db.getUserByUsername(txtContributorName.getText().toString());
-                if (user != null) {
+                User user = db.getUserByName(txtContributorName.getText().toString());
+                if (db.getUsers().contains(user)) {
                     if (!contributors.contains(user)) {
-                        contributors.add(db.getUserByUsername(txtContributorName.getText().toString()));
+                        contributors.add(db.getUserByName(txtContributorName.getText().toString()));
                         System.out.println(contributors);
                         adapter = new ArrayAdapter<>(this, R.layout.list_view_add_contributors, R.id.contributorNameAdd, contributors);
 
@@ -208,7 +193,7 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
                             public void onClick(View v) {
                                 linearLayout.removeView(view);
                                 TextView textView = (TextView) view.findViewById(R.id.contributorNameAdd);
-                                User user = db.getUserByUsername(textView.getText().toString());
+                                User user = db.getUserByName(textView.getText().toString());
 
                                 if(!user.equals(db.getCurrentUser()))
                                     contributors.remove(user);
@@ -247,34 +232,40 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private void fillGUI() {
+    public void fillUsers(ArrayList<Userisinprojectwithrole> userWithRoles) {
+        for (Userisinprojectwithrole user : userWithRoles) {
+            users.add(user.getUser());
+        }
+    }
+
+    public void fillGUI() {
         txtProjectName.setText(currentProject.getName());
         txtProjectDescription.setText(currentProject.getDescription());
-        txtProjectStart.setText(dateFormat.format(currentProject.getStartDate()));
+        txtProjectStart.setText(dateFormat.format(currentProject.getProjectbeginn()));
 
-        adapter = new ArrayAdapter<>(this, R.layout.list_view_add_contributors, R.id.contributorNameAdd, currentProject.getContributors());
+        adapter = new ArrayAdapter<>(this, R.layout.list_view_add_contributors, R.id.contributorNameAdd, users);
 
-        for (int i=0; i<currentProject.getContributors().size(); i++) {
+        for (int i=0; i<users.size(); i++) {
             final View view = adapter.getView(i, null, null);
             final View child = view.findViewById(R.id.imgDeleteCon);
             child.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     TextView textView = (TextView) view.findViewById(R.id.contributorNameAdd);
-                    User user = db.getUserByUsername(textView.getText().toString());
+                    User user = db.getUserByName(textView.getText().toString());
 
-                    if(!user.equals(db.getCurrentUser())) {
+                    if(!user.getUsername().equals(db.getCurrentUser().getUsername())) {
                         linearLayout.removeView(view);
                         deleteFromListByName(user.getUsername());
                         System.out.println(contributors.contains(user));
-                        System.out.println("IN ONCLICK: " + contributors.get(0).getUserID());
+                        System.out.println("IN ONCLICK: " + contributors.get(0).getUserid());
                     } else {
                         Snackbar.make(mRoot, "You cant remove yourself from the project!", Snackbar.LENGTH_LONG).show();
                     }
                 }
             });
 
-            contributors.add(currentProject.getContributors().get(i));
+            contributors.add(users.get(i));
             linearLayout.addView(view);
         }
     }
@@ -335,22 +326,23 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
 
         if (everythingOK) {
             Date date = dateFormat.parse(txtProjectStart.getText().toString());
-            Project project = new Project(currentProject.getProjectID(), txtProjectName.getText().toString(), txtProjectDescription.getText().toString(), contributors, date);
+            //Project project = new Project(currentProject.getProjectid(), txtProjectName.getText().toString(), txtProjectDescription.getText().toString(), contributors, date);
 
+            /*
             DeleteUsersFromProject deleteUsersFromProject = new DeleteUsersFromProject(this);
-            deleteUsersFromProject.execute(currentProject.getProjectID());
+            deleteUsersFromProject.execute(currentProject.getProjectid());
             String result = deleteUsersFromProject.get();
 
             UpdateProjectTask updateProjectTask = new UpdateProjectTask(this);
-            updateProjectTask.execute(project);
+            //updateProjectTask.execute(project);
             result = updateProjectTask.get();
 
             System.out.println("HERE: " + contributors);
             //Add the users to the project
             InsertUsersInProject insertUsersInProject = new InsertUsersInProject(this);
-            insertUsersInProject.execute(contributors, currentProject.getProjectID());
+            insertUsersInProject.execute(contributors, currentProject.getProjectid());
             result = insertUsersInProject.get();
-
+*/
             this.finish();
         }
     }

@@ -15,20 +15,23 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.User;
-import com.projectmanagementtoolapp.pkgTasks.SelectAllProjectsTask;
-import com.projectmanagementtoolapp.pkgTasks.InsertProjectTask;
-import com.projectmanagementtoolapp.pkgTasks.InsertUsersInProject;
-import com.projectmanagementtoolapp.pkgTasks.SelectMyProjectsTask;
+import com.projectmanagementtoolapp.pkgData.Userisinprojectwithrole;
+import com.projectmanagementtoolapp.pkgTasks.AddUserToProjectTask;
+import com.projectmanagementtoolapp.pkgTasks.CreateProjectTask;
+import com.projectmanagementtoolapp.pkgTasks.GetAllRolesTask;
+import com.projectmanagementtoolapp.pkgTasks.GetAllUsersTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
@@ -48,7 +51,7 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
     private ArrayList<User> contributors;
     private Database db;
     private Calendar cal = Calendar.getInstance(TimeZone.getDefault()); // Get current date
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd. MMM. yyyy");
     private ArrayAdapter<User> adapter;
 
     // Listener
@@ -58,12 +61,7 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
                               int selectedMonth, int selectedDay) {
             Calendar calendar = Calendar.getInstance();
             calendar.set(selectedYear, selectedMonth, selectedDay);
-
-            if (!isDateOK(calendar.getTime())) {
-                Snackbar.make(mRoot, "Project start cant be in the past!", Snackbar.LENGTH_LONG).show();
-            } else {
-                txtProjectStart.setText(dateFormat.format(calendar.getTime()));
-            }
+            txtProjectStart.setText(dateFormat.format(calendar.getTime()));
         }
     };
 
@@ -78,6 +76,9 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
         getAllViews();
         initEventhandlers();
         db = Database.getInstance();
+
+        GetAllUsersTask getAllUsersTask = new GetAllUsersTask(this);
+        getAllUsersTask.execute("users");
     }
 
     /*
@@ -117,26 +118,32 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
     public void onClick(View v) {
         if (v == imgAddButton) {
             if (txtContributorName.getText().length() > 1) {
-                User user = db.getUserByUsername(txtContributorName.getText().toString());
-                if (user != null) {
-                    if (!contributors.contains(user)) {
-                        contributors.add(db.getUserByUsername(txtContributorName.getText().toString()));
-                        System.out.println(contributors);
-                        adapter = new ArrayAdapter<>(this, R.layout.list_view_add_contributors, R.id.contributorNameAdd, contributors);
-                        final View view = adapter.getView(adapter.getCount()-1, null, null);
-                        final View child = view.findViewById(R.id.imgDeleteCon);
-                        child.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                linearLayout.removeView(view);
-                                TextView textView = (TextView) view.findViewById(R.id.contributorNameAdd);
-                                User user = db.getUserByUsername(textView.getText().toString());
-                                contributors.remove(user);
-                            }
-                        });
+                String enteredUsername = txtContributorName.getText().toString();
+                User user = db.getUserByName(enteredUsername);
 
-                        linearLayout.addView(view);
-                        txtContributorName.setText("");
+                if (db.getUsers().contains(user)) {
+                    if (!contributors.contains(user)) {
+                        if(!user.equals(db.getCurrentUser())) {
+                            contributors.add(user);
+                            System.out.println(contributors);
+                            adapter = new ArrayAdapter<>(this, R.layout.list_view_add_contributors, R.id.contributorNameAdd, contributors);
+                            final View view = adapter.getView(adapter.getCount()-1, null, null);
+                            final View child = view.findViewById(R.id.imgDeleteCon);
+                            child.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    linearLayout.removeView(view);
+                                    TextView textView = (TextView) view.findViewById(R.id.contributorNameAdd);
+                                    User user = db.getUserByName(textView.getText().toString());
+                                    contributors.remove(user);
+                                }
+                            });
+
+                            linearLayout.addView(view);
+                            txtContributorName.setText("");
+                        } else {
+                            Snackbar.make(mRoot, "You cant add yourself into the project!", Snackbar.LENGTH_LONG).show();
+                        }
                     } else {
                         Snackbar.make(mRoot, "User already in project!", Snackbar.LENGTH_LONG).show();
                     }
@@ -144,7 +151,7 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
                     Snackbar.make(mRoot, "User not found!", Snackbar.LENGTH_LONG).show();
                 }
             } else {
-                Snackbar.make(mRoot, "Please add an contributor!", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(mRoot, "Input not valid!", Snackbar.LENGTH_LONG).show();
             }
         } else if (v == btnAddProject) {
             try {
@@ -163,16 +170,7 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
                     cal.get(Calendar.MONTH),
                     cal.get(Calendar.DAY_OF_MONTH)).show();
         }
-    }
 
-    private boolean isDateOK(Date date) {
-        boolean retVal = true;
-        Date currentTime = Calendar.getInstance().getTime();
-
-        if (date.before(currentTime))
-            retVal = false;
-
-        return retVal;
     }
 
     private void createProject() throws ParseException, InterruptedException, ExecutionException {
@@ -199,25 +197,29 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
         }
 
         if (everythingOK) {
-            contributors.add(db.getCurrentUser());
+            List<Userisinprojectwithrole> userisinprojectwithroleList = new ArrayList<>();
             Date date = dateFormat.parse(txtProjectStart.getText().toString());
-            Project project = new Project(txtProjectName.getText().toString(), txtProjectDescription.getText().toString(), contributors, date);
-            //Create the basic project
-            InsertProjectTask insertProjectTask = new InsertProjectTask(this);
-            insertProjectTask.execute(project);
-            String result = insertProjectTask.get();
+            Project project = new Project(txtProjectName.getText().toString(), txtProjectDescription.getText().toString(), date);
 
-            SelectAllProjectsTask selectAllProjectsTask = new SelectAllProjectsTask(this);
-            selectAllProjectsTask.execute();
-            result = selectAllProjectsTask.get();
-            System.out.println(db.getProjects());
+            GetAllRolesTask getAllRolesTask = new GetAllRolesTask(this);
+            getAllRolesTask.execute("roles");
+            String result = getAllRolesTask.get();
 
-            //Add the users to the project
-            InsertUsersInProject insertUsersInProject = new InsertUsersInProject(this);
-            insertUsersInProject.execute(contributors, db.getProjectByName(txtProjectName.getText().toString()).getProjectID());
-            result = insertUsersInProject.get();
+            CreateProjectTask createProjectTask = new CreateProjectTask(this);
+            createProjectTask.execute("projects", project);
+            String projectStr = createProjectTask.get();
+            Project projectWithId = new Gson().fromJson(projectStr, Project.class);
 
-            this.finish();
+            for (User user : contributors) {
+
+                    userisinprojectwithroleList.add(new Userisinprojectwithrole(projectWithId, user));
+            }
+
+            userisinprojectwithroleList.add(new Userisinprojectwithrole(projectWithId, db.getRoleByName("ProjectManager"), db.getCurrentUser()));
+
+
+            AddUserToProjectTask addUserToProjectTask = new AddUserToProjectTask(this);
+            addUserToProjectTask.execute("upr", userisinprojectwithroleList);
         }
     }
 }

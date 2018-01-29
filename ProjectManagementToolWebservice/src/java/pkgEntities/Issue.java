@@ -101,19 +101,19 @@ public class Issue implements Serializable {
     }
 
     @XmlTransient
-    public Collection<User> getUser03Collection() {
+    public Collection<User> getUserCollection() {
         return userCollection;
     }
 
-    public void setUser03Collection(Collection<User> user03Collection) {
+    public void setUserCollection(Collection<User> user03Collection) {
         this.userCollection = user03Collection;
     }
 
-    public Sprint getSprint03() {
+    public Sprint getSprint() {
         return sprint;
     }
 
-    public void setSprint03(Sprint sprint03) {
+    public void setSprint(Sprint sprint03) {
         this.sprint = sprint03;
     }
 

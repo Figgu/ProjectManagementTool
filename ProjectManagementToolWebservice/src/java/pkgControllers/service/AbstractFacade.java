@@ -7,11 +7,7 @@ package pkgControllers.service;
 
 import java.util.List;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
-import javax.persistence.metamodel.Metamodel;
-import pkgEntities.User;
+
 
 /**
  *
@@ -29,6 +25,10 @@ public abstract class AbstractFacade<T> {
 
     public void create(T entity) {
         getEntityManager().persist(entity);
+    }
+    
+    public void refresh(T entity) {
+        getEntityManager().refresh(entity);
     }
 
     public void edit(T entity) {

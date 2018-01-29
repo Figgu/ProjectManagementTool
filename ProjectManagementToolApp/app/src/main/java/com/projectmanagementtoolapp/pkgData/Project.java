@@ -10,37 +10,45 @@ import java.util.List;
  */
 
 public class Project implements Serializable{
-    private int projectID;
+    private int projectid;
     private String name;
     private String description;
-    private List<User> contributors;
-    private Date startDate;
+    private List<Userisinprojectwithrole> users;
+    private Date projectbeginn;
     private List<Sprint> sprints;
 
-    public Project(String name, String description, List<User> contributors, Date startDate) {
+    public Project(String name, String description, List<Userisinprojectwithrole> users, Date projectbeginn) {
         this.name = name;
         this.description = description;
-        this.contributors = contributors;
-        this.startDate = startDate;
+        this.users = users;
+        this.projectbeginn = projectbeginn;
 
         sprints = new ArrayList<>();
     }
 
-    public Project(int projectID, String name, String description, Date startDate) {
-        this.projectID = projectID;
+    public Project(int projectid, String name, String description, Date projectbeginn) {
+        this.projectid = projectid;
         this.name = name;
         this.description = description;
-        this.startDate = startDate;
+        this.projectbeginn = projectbeginn;
 
         sprints = new ArrayList<>();
     }
 
-    public Project(int projectID, String name, String description, List<User> contributors, Date startDate) {
-        this.projectID = projectID;
+    public Project(String name, String description, Date projectbeginn) {
         this.name = name;
         this.description = description;
-        this.contributors = contributors;
-        this.startDate = startDate;
+        this.projectbeginn = projectbeginn;
+
+        sprints = new ArrayList<>();
+    }
+
+    public Project(int projectid, String name, String description, List<Userisinprojectwithrole> users, Date projectbeginn) {
+        this.projectid = projectid;
+        this.name = name;
+        this.description = description;
+        this.users = users;
+        this.projectbeginn = projectbeginn;
 
         sprints = new ArrayList<>();
     }
@@ -49,12 +57,12 @@ public class Project implements Serializable{
         sprints = new ArrayList<>();
     }
 
-    public int getProjectID() {
-        return projectID;
+    public int getProjectid() {
+        return projectid;
     }
 
-    public void setProjectID(int projectID) {
-        this.projectID = projectID;
+    public void setProjectid(int projectid) {
+        this.projectid = projectid;
     }
 
     public String getName() {
@@ -73,20 +81,20 @@ public class Project implements Serializable{
         this.description = description;
     }
 
-    public List<User> getContributors() {
-        return contributors;
+    public List<Userisinprojectwithrole> getUsers() {
+        return users;
     }
 
-    public void setContributors(List<User> contributors) {
-        this.contributors = contributors;
+    public void setUsers(List<Userisinprojectwithrole> users) {
+        this.users = users;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public Date getProjectbeginn() {
+        return projectbeginn;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setProjectbeginn(Date projectbeginn) {
+        this.projectbeginn = projectbeginn;
     }
 
     public List<Sprint> getSprints() {

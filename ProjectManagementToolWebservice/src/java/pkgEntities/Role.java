@@ -47,7 +47,7 @@ public class Role implements Serializable {
     @Column(name = "ISUNIQUE")
     private String isunique;
     @OneToMany(mappedBy = "roleid")
-    private Collection<Userisinprojectwithrole> userisinprojectwithroleCollection;
+    private transient Collection<Userisinprojectwithrole> userisinprojectwithroleCollection;
 
     public Role() {
     }
@@ -89,11 +89,11 @@ public class Role implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Userisinprojectwithrole> getUserisinprojectwithrole03Collection() {
+    public Collection<Userisinprojectwithrole> getUserisinprojectwithroleCollection() {
         return userisinprojectwithroleCollection;
     }
 
-    public void setUserisinprojectwithrole03Collection(Collection<Userisinprojectwithrole> userisinprojectwithrole03Collection) {
+    public void setUserisinprojectwithroleCollection(Collection<Userisinprojectwithrole> userisinprojectwithrole03Collection) {
         this.userisinprojectwithroleCollection = userisinprojectwithrole03Collection;
     }
 

@@ -2,8 +2,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/cancel_role"
+        android:icon="@drawable/ic_cancel"
+        android:title="Cancel"
+        app:showAsAction="ifRoom"></item>
+
+    <item
         android:id="@+id/delete_roles"
-        android:icon="@drawable/delete_bin"
+        android:icon="@drawable/ic_delete"
         android:title="Delete this roles"
+        app:showAsAction="ifRoom"></item>
+
+    <item
+        android:id="@+id/edit_role"
+        android:icon="@drawable/ic_edit_profile"
+        android:title="Edit this role"
         app:showAsAction="ifRoom"></item>
 </menu>

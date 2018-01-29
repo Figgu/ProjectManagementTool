@@ -1,13 +1,9 @@
 package com.projectmanagementtoolapp.pkgActivities;
 
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -25,11 +21,14 @@ import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.Sprint;
 import com.projectmanagementtoolapp.pkgData.User;
+import com.projectmanagementtoolapp.pkgData.Userisinprojectwithrole;
 import com.projectmanagementtoolapp.pkgFragments.AddRoleToUserFragment;
 import com.projectmanagementtoolapp.pkgFragments.AddSprintFragment;
-import com.projectmanagementtoolapp.pkgTasks.SelectAllSprintsTask;
-import com.projectmanagementtoolapp.pkgTasks.SelectUsersOfProjectTask;
+import com.projectmanagementtoolapp.pkgTasks.GetAllRolesTask;
+import com.projectmanagementtoolapp.pkgTasks.GetAllSprintsFromProject;
+import com.projectmanagementtoolapp.pkgTasks.GetUsersOfProjectTask;
 
+import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
 public class ShowSprintsActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
@@ -46,7 +45,8 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
     private MenuItem allUsers;
     private MenuItem allSprints;
     private boolean showingSprints = true;
-    private boolean infoShown = false;
+    private ArrayList<Sprint> sprints = new ArrayList<>();
+    private ArrayList<Userisinprojectwithrole> users = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,20 +60,24 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
         getAllViews();
         initEventHandlers();
 
-        SelectAllSprintsTask selectAllSprintsTask = new SelectAllSprintsTask(this);
-        selectAllSprintsTask.execute(currentProject);
-        try {
-            String result = selectAllSprintsTask.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
+        GetAllSprintsFromProject getAllSprintsFromProject = new GetAllSprintsFromProject(this);
+        getAllSprintsFromProject.execute("projects/sprints", currentProject.getProjectid());
+    }
 
-        System.out.println("currentProject: " +currentProject.getSprints());
-
+    public void setSprintFromTask(ArrayList<Sprint> sprints) {
+        this.sprints = sprints;
+        currentProject.setSprints(sprints);
         initList();             //Showing sprints
     }
+
+    public void setUsersFromTask(ArrayList<Userisinprojectwithrole> users) {
+        this.users = users;
+        initList();
+
+        allUsers.setVisible(false);
+        allSprints.setVisible(true);
+    }
+
     /*
     For back navigation to parent activity
     */
@@ -84,45 +88,27 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
                 this.finish();
                 return true;
             case R.id.show_all_users:
-                //Display dialog of
-                if (!infoShown) {
-                    showInfoDialog();
-                }
-
                 fab.setVisibility(View.INVISIBLE);
                 showingSprints = false;
 
-                SelectUsersOfProjectTask selectUsersOfProjectTask = new SelectUsersOfProjectTask(this);
-                selectUsersOfProjectTask.execute(currentProject);
-
-                try {
-                    String result = selectUsersOfProjectTask.get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
+                if (users.size() == 0) {
+                    GetUsersOfProjectTask getUsersOfProjectTask = new GetUsersOfProjectTask(this);
+                    getUsersOfProjectTask.execute("projects/users", currentProject.getProjectid());
+                } else {
+                    initList();
                 }
 
-                setTitle("Users of " + currentProject);
-                initList();
-                allUsers.setVisible(false);
                 allSprints.setVisible(true);
+                allUsers.setVisible(false);
+
+                setTitle("Users of " + currentProject);
+
                 return true;
 
             case R.id.show_all_sprints:
                 fab.setVisibility(View.VISIBLE);
                 showingSprints = true;
                 setTitle("Sprints of " + currentProject);
-
-                SelectAllSprintsTask selectAllSprintsTask = new SelectAllSprintsTask(this);
-                selectAllSprintsTask.execute(currentProject);
-                try {
-                    String result = selectAllSprintsTask.get();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
 
                 initList();         //Showing sprints
                 allSprints.setVisible(false);
@@ -132,19 +118,6 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    private void showInfoDialog() {
-        // Use the Builder class for convenient dialog construction
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Set Roles of Users");
-        builder.setMessage("You are able to add roles to the user by clicking on his name!")
-                .setPositiveButton("Ok cool", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
-                    }
-                });
-        builder.create().show();
     }
 
     @Override
@@ -171,8 +144,8 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
 
     private void initList() {
         if (showingSprints) {
-            ArrayAdapter<Sprint> adapter = new ArrayAdapter<>(this, R.layout.list_view_sprints, currentProject.getSprints());
-            if (currentProject.getSprints().size() > 0) {
+            ArrayAdapter<Sprint> adapter = new ArrayAdapter<>(this, R.layout.list_view_sprints, sprints);
+            if (sprints.size() > 0) {
                 listSprints.setAdapter(adapter);
             } else {
                 listSprints.setAdapter(null);
@@ -180,7 +153,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             }
         } else {
             txtNoSprintsFound.setVisibility(View.INVISIBLE);
-            ArrayAdapter<User> adapter = new ArrayAdapter<>(this, R.layout.list_view_sprints, currentProject.getContributors());
+            ArrayAdapter<Userisinprojectwithrole> adapter = new ArrayAdapter<>(this, R.layout.list_view_sprints, users);
             listSprints.setAdapter(adapter);
         }
     }
@@ -197,18 +170,26 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             listSprints.setVisibility(View.INVISIBLE);
             fab.setVisibility(View.INVISIBLE);
 
-            User user = (User) listSprints.getItemAtPosition(position);
+            Userisinprojectwithrole user = (Userisinprojectwithrole) listSprints.getItemAtPosition(position);
 
             Bundle bundle = new Bundle();
             bundle.putSerializable("selectedUser", user);
             bundle.putSerializable("currentProject", currentProject);
-            AddRoleToUserFragment fragment = new AddRoleToUserFragment();
             fragment.setArguments(bundle);
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.layoutShowSprints, fragment);
             transaction.commit();
             allSprints.setVisible(false);
+
+            GetAllRolesTask getAllRolesTask = new GetAllRolesTask(this);
+            getAllRolesTask.execute("roles");
         }
+    }
+
+    private AddRoleToUserFragment fragment = new AddRoleToUserFragment();
+
+    public void fillSpinnerInFragment() {
+        fragment.initSpinner();
     }
 
     @Override
@@ -225,6 +206,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.replace(R.id.layoutShowSprints, fragment);
             transaction.commit();
+
             allUsers.setVisible(false);
         }
     }

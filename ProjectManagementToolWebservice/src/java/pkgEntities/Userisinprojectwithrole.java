@@ -45,27 +45,32 @@ public class Userisinprojectwithrole implements Serializable {
     public Userisinprojectwithrole() {
     }
 
-    public Userisinprojectwithrole(UserisinprojectwithrolePK userisinprojectwithrole03PK) {
-        this.userisinprojectwithrolePK = userisinprojectwithrole03PK;
+    public Userisinprojectwithrole(UserisinprojectwithrolePK userisinprojectwithrolePK) {
+        this.userisinprojectwithrolePK = userisinprojectwithrolePK;
+    }
+    
+    public Userisinprojectwithrole(User user, Role role) {
+        this.user = user;
+        this.roleid = role;
     }
 
     public Userisinprojectwithrole(BigInteger userid, BigInteger projectid) {
         this.userisinprojectwithrolePK = new UserisinprojectwithrolePK(userid, projectid);
     }
 
-    public UserisinprojectwithrolePK getUserisinprojectwithrole03PK() {
+    public UserisinprojectwithrolePK getUserisinprojectwithrolePK() {
         return userisinprojectwithrolePK;
     }
 
-    public void setUserisinprojectwithrole03PK(UserisinprojectwithrolePK userisinprojectwithrole03PK) {
-        this.userisinprojectwithrolePK = userisinprojectwithrole03PK;
+    public void setUserisinprojectwithrolePK(UserisinprojectwithrolePK userisinprojectwithrolePK) {
+        this.userisinprojectwithrolePK = userisinprojectwithrolePK;
     }
 
-    public Project getProject03() {
+    public Project getProject() {
         return project;
     }
 
-    public void setProject03(Project project03) {
+    public void setProject(Project project03) {
         this.project = project03;
     }
 

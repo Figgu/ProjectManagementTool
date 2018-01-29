@@ -56,20 +56,20 @@ public class Sprint implements Serializable {
     public Sprint() {
     }
 
-    public Sprint(SprintPK sprint03PK) {
-        this.sprintPK = sprint03PK;
+    public Sprint(SprintPK sprintPK) {
+        this.sprintPK = sprintPK;
     }
 
     public Sprint(BigInteger sprintid, BigInteger projectid) {
         this.sprintPK = new SprintPK(sprintid, projectid);
     }
 
-    public SprintPK getSprint03PK() {
+    public SprintPK getSprintPK() {
         return sprintPK;
     }
 
-    public void setSprint03PK(SprintPK sprint03PK) {
-        this.sprintPK = sprint03PK;
+    public void setSprintPK(SprintPK sprintPK) {
+        this.sprintPK = sprintPK;
     }
 
     public Date getStartdate() {
@@ -88,21 +88,21 @@ public class Sprint implements Serializable {
         this.enddate = enddate;
     }
 
-    public Project getProject03() {
+    public Project getProject() {
         return project;
     }
 
-    public void setProject03(Project project03) {
+    public void setProject(Project project03) {
         this.project = project03;
     }
 
     @XmlTransient
-    public Collection<Issue> getIssue03Collection() {
+    public Collection<Issue> getIssueCollection() {
         return issueCollection;
     }
 
-    public void setIssue03Collection(Collection<Issue> issue03Collection) {
-        this.issueCollection = issue03Collection;
+    public void setIssueCollection(Collection<Issue> issueCollection) {
+        this.issueCollection = issueCollection;
     }
 
     @Override
@@ -127,7 +127,7 @@ public class Sprint implements Serializable {
 
     @Override
     public String toString() {
-        return "pkgEntities.Sprint[ sprint03PK=" + sprintPK + " ]";
+        return "pkgEntities.Sprint[ sprintPK=" + sprintPK + " ]";
     }
     
 }

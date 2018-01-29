@@ -1,32 +1,40 @@
 package com.projectmanagementtoolapp.pkgData;
 
 import java.io.Serializable;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * Created by alexk on 09.10.2017.
  */
 
-@XmlRootElement
 public class User implements Serializable{
-    private int userID;
+    private int userid;
     private String username;
     private String password;
     private String email;
-    private byte[] profilePicture;
+    private byte[] profilepicture;
     private List<Project> projects;
     private HashMap<Project, ArrayList<Role>> rolesInProject;
 
-    public User(int userID, String username, String password, String email) {
-        this.userID = userID;
+    public User(int userid, String username, String password, String email) {
+        this.userid = userid;
         this.username = username;
         this.password = password;
         this.email = email;
+
+        projects = new ArrayList<>();
+        rolesInProject =  new HashMap<>();
+    }
+
+    public User(int userid, String username, String password, String email, byte[] profilepicture) {
+        this.userid = userid;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.profilepicture = profilepicture;
 
         projects = new ArrayList<>();
         rolesInProject =  new HashMap<>();
@@ -41,9 +49,26 @@ public class User implements Serializable{
         rolesInProject =  new HashMap<>();
     }
 
+    public User(String username, String password, String email, byte[] profilePicture) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.profilepicture = profilePicture;
+
+        projects = new ArrayList<>();
+        rolesInProject =  new HashMap<>();
+    }
+
     public User(String username, String password) {
         this.username = username;
         this.password = password;
+
+        projects = new ArrayList<>();
+        rolesInProject =  new HashMap<>();
+    }
+
+    public User(String username) {
+        this.username = username;
 
         projects = new ArrayList<>();
         rolesInProject =  new HashMap<>();
@@ -54,12 +79,12 @@ public class User implements Serializable{
         rolesInProject =  new HashMap<>();
     }
 
-    public int getUserID() {
-        return userID;
+    public int getUserid() {
+        return userid;
     }
 
-    public void setUserID(int userID) {
-        this.userID = userID;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
     public String getUsername() {
@@ -94,12 +119,12 @@ public class User implements Serializable{
         this.projects = projects;
     }
 
-    public byte[] getProfilePicture() {
-        return profilePicture;
+    public byte[] getProfilepicture() {
+        return profilepicture;
     }
 
-    public void setProfilePicture(byte[] profilePicture) {
-        this.profilePicture = profilePicture;
+    public void setProfilepicture(byte[] profilePicture) {
+        this.profilepicture = profilePicture;
     }
 
     public HashMap<Project, ArrayList<Role>> getRolesInProject() {

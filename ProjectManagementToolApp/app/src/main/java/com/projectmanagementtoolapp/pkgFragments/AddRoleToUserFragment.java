@@ -8,19 +8,17 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.RelativeLayout.LayoutParams;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.Role;
 import com.projectmanagementtoolapp.pkgData.User;
-import com.projectmanagementtoolapp.pkgTasks.SelectAllRolesTask;
+import com.projectmanagementtoolapp.pkgData.Userisinprojectwithrole;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -39,6 +37,7 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
     private Database db;
     private User currentUser;
     private Project currentProject;
+    private Userisinprojectwithrole upr;
     //These are for working with the spinner and the linear layout
     private ArrayList<String> allRoles = new ArrayList<>();
     private ArrayList<String> myRoles = new ArrayList<>();
@@ -62,34 +61,15 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
 
         db = Database.getInstance();
         //Get arguments needed
-        currentUser = (User) this.getArguments().getSerializable("selectedUser");
+        upr = (Userisinprojectwithrole) this.getArguments().getSerializable("selectedUser");
+        currentUser = upr.getUser();
         currentProject = (Project) this.getArguments().getSerializable("currentProject");
-
-        //Get all roles from db
-        SelectAllRolesTask selectRolesTask = new SelectAllRolesTask(getActivity());
-        selectRolesTask.execute();
-        try {
-            String result = selectRolesTask.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        //Fill myRoles for working with the linear layout
-        if (currentUser.getRolesInProject().get(currentProject) != null) {
-            for (Role role : currentUser.getRolesInProject().get(currentProject)) {
-                myRoles.add(role.getName());
-            }
-        }
-
 
         getAllViews(view);
         //Set the text of the label and activity
         getActivity().setTitle("Add roles to " + currentUser.getUsername());
         title.setText(title.getText() + currentUser.getUsername());
         initEventHandlers();
-        initSpinner();
 
         return view;
     }
@@ -109,14 +89,14 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
         spRoles.setOnItemSelectedListener(this);
     }
 
-    private void initSpinner() {
+    public void initSpinner() {
         if (db.getRoles().size() > 0) {
-            allRoles.add("select role...");
+            allRoles.add("Select a role to add...");
             for (Role role : db.getRoles()) {
                 allRoles.add(role.getName());
             }
         } else {
-            allRoles.add("no roles existing...");
+            allRoles.add("No roles existing yet...");
             spRoles.setEnabled(false);
         }
 
@@ -141,11 +121,11 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
         Role selectedRole = db.getRoleByName(roleName);
 
         //dont delete -> null pointer smh
-        if (currentUser.getRolesInProject().get(currentProject) != null) {
+        //if (currentUser.getRolesInProject().get(currentProject) != null) {
             //adding it only 1 time
-            if (!currentUser.getRolesInProject().get(currentProject).contains(selectedRole)) {
+            //if (!currentUser.getRolesInProject().get(currentProject).contains(selectedRole)) {
                 myRoles.add(roleName);
-                currentUser.getRolesInProject().get(currentProject).add(selectedRole);
+                //currentUser.getRolesInProject().get(currentProject).add(selectedRole);
 
                 ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_view_add_contributors, R.id.contributorNameAdd, myRoles);
 
@@ -157,14 +137,13 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
                         llRoles.removeView(view2);
                         TextView textView = (TextView) view2.findViewById(R.id.contributorNameAdd);
                         Role role = db.getRoleByName(textView.getText().toString());
-                        myRoles.remove(role.getRoleID());
+                        myRoles.remove(role.getRoleid());
                     }
                 });
 
                 llRoles.addView(view2);
-            }
-        }
-
+            //}
+        //}
     }
 
     @Override

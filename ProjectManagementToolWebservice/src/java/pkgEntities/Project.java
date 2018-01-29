@@ -13,6 +13,8 @@ import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -49,10 +51,10 @@ public class Project implements Serializable {
     @Column(name = "DESCRIPTION")
     private String description;
     @Column(name = "PROJECTBEGINN")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(javax.persistence.TemporalType.DATE)
     private Date projectbeginn;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
-    private Collection<Userisinprojectwithrole> userisinprojectwithroleCollection;
+    private Collection<Userisinprojectwithrole> users;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "project")
     private Collection<Sprint> sprintCollection;
 
@@ -96,20 +98,20 @@ public class Project implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Userisinprojectwithrole> getUserisinprojectwithrole03Collection() {
-        return userisinprojectwithroleCollection;
+    public Collection<Userisinprojectwithrole> getUserisinprojectwithroleCollection() {
+        return users;
     }
 
-    public void setUserisinprojectwithrole03Collection(Collection<Userisinprojectwithrole> userisinprojectwithrole03Collection) {
-        this.userisinprojectwithroleCollection = userisinprojectwithrole03Collection;
+    public void setUserisinprojectwithroleCollection(Collection<Userisinprojectwithrole> userisinprojectwithrole03Collection) {
+        this.users = userisinprojectwithrole03Collection;
     }
 
     @XmlTransient
-    public Collection<Sprint> getSprint03Collection() {
+    public Collection<Sprint> getSprintCollection() {
         return sprintCollection;
     }
 
-    public void setSprint03Collection(Collection<Sprint> sprint03Collection) {
+    public void setSprintCollection(Collection<Sprint> sprint03Collection) {
         this.sprintCollection = sprint03Collection;
     }
 
@@ -135,7 +137,9 @@ public class Project implements Serializable {
 
     @Override
     public String toString() {
-        return "pkgEntities.Project[ projectid=" + projectid + " ]";
+        return "Project{" + "projectid=" + projectid + ", name=" + name + ", description=" + description + ", projectbeginn=" + projectbeginn + '}';
     }
+
+
     
 }

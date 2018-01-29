@@ -5,28 +5,35 @@ package com.projectmanagementtoolapp.pkgData;
  */
 
 public class Role {
-    private int roleID;
+    private int roleid;
     private String name;
     private String description;
-    private boolean isUnique;
+    private String isunique;
 
     public Role()
     {
 
     }
 
-    public Role(String name, String description, boolean isUnique) {
+    public Role(String name, String description, String isunique) {
         this.name = name;
         this.description = description;
-        this.isUnique = isUnique;
+        this.isunique = isunique;
     }
 
-    public int getRoleID() {
-        return roleID;
+    public Role(int roleid, String name, String description, String isunique) {
+        this.roleid = roleid;
+        this.name = name;
+        this.description = description;
+        this.isunique = isunique;
     }
 
-    public void setRoleID(int roleID) {
-        this.roleID = roleID;
+    public int getRoleid() {
+        return roleid;
+    }
+
+    public void setRoleid(int roleid) {
+        this.roleid = roleid;
     }
 
     public String getName() {
@@ -45,16 +52,19 @@ public class Role {
         this.description = description;
     }
 
-    public boolean isUnique() {
-        return isUnique;
+    public String isUnique() {
+        return isunique;
     }
 
-    public void setUnique(boolean unique) {
-        isUnique = unique;
+    public void setUnique(String unique) {
+        isunique = unique;
     }
 
     @Override
     public String toString() {
-        return getName() + "\n" + getDescription();
+        if (isunique.equals("true"))
+            return getName() + "\n" + getDescription() + "\n" + "Unique role in project!";
+        else
+            return getName() + "\n" + getDescription();
     }
 }

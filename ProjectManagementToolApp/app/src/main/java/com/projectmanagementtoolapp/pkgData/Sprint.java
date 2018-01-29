@@ -1,8 +1,8 @@
 package com.projectmanagementtoolapp.pkgData;
 
-import android.support.annotation.NonNull;
-
 import java.io.Serializable;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -13,14 +13,14 @@ import java.util.Date;
 public class Sprint implements Serializable{
     private int sprintID;
     private Project project;
-    private Date startDate;
-    private Date endDate;
+    private Date startdate;
+    private Date enddate;
     private ArrayList<Issue> issues;
 
-    public Sprint(Project project, Date startDate, Date endDate) {
+    public Sprint(Project project, Date startdate, Date enddate) {
         this.project = project;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.startdate = startdate;
+        this.enddate = enddate;
 
         this.issues = new ArrayList<>();
     }
@@ -45,20 +45,20 @@ public class Sprint implements Serializable{
         this.project = project;
     }
 
-    public Date getStartDate() {
-        return startDate;
+    public Date getStartdate() {
+        return startdate;
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public void setStartdate(Date startdate) {
+        this.startdate = startdate;
     }
 
-    public Date getEndDate() {
-        return endDate;
+    public Date getEnddate() {
+        return enddate;
     }
 
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
+    public void setEnddate(Date enddate) {
+        this.enddate = enddate;
     }
 
     public ArrayList<Issue> getIssues() {
@@ -71,6 +71,7 @@ public class Sprint implements Serializable{
 
     @Override
     public String toString() {
-        return "Sprint from " + startDate + " to " + endDate;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd. MMM. yyyy");
+        return "Sprint from " + dateFormat.format(startdate) + " to " + dateFormat.format(enddate);
     }
 }

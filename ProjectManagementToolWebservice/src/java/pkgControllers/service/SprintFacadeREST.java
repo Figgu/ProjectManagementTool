@@ -5,6 +5,9 @@
  */
 package pkgControllers.service;
 
+import com.google.gson.Gson;
+import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,8 +22,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
-import org.json.JSONException;
-import org.json.JSONObject;
+import javax.ws.rs.core.Response;
+import pkgEntities.Project;
 import pkgEntities.Sprint;
 import pkgEntities.SprintPK;
 
@@ -29,7 +32,7 @@ import pkgEntities.SprintPK;
  * @author Figgu
  */
 @Stateless
-@Path("pkgentities.sprint")
+@Path("sprints")
 public class SprintFacadeREST extends AbstractFacade<Sprint> {
 
     @PersistenceContext(unitName = "JPATestPU")
@@ -59,59 +62,17 @@ public class SprintFacadeREST extends AbstractFacade<Sprint> {
     public SprintFacadeREST() {
         super(Sprint.class);
     }
-
+    
     @POST
-    @Path("create")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public String createSprint(Sprint entity) throws JSONException{
-        JSONObject response = new JSONObject();
-        response.put("message", "Proejct created");
-        List<Sprint> sprints = super.findAll();
-        boolean sprintDateOK = true;
-        boolean projectExists = false;
-        
-        for (Sprint sprint : sprints) {
-            if (sprint.getStartdate().compareTo(entity.getEnddate()) > 0) {
-                response.put("message", "New Sprint can't be before ended Sprint");
-                sprintDateOK = false;
-            }
-            if(sprint.getProject03().getName().equals(entity.getProject03().getName()))
-            {
-                projectExists = true;
-            }
-        }
-        
-        if (sprintDateOK)
-            super.create(entity);
-        
-        return response.toString();
-    }
+    public Response createSprint(String sprintStr) {
+        Response response = Response.ok().build();      
+        Sprint sprint = new Gson().fromJson(sprintStr, Sprint.class);
+        System.out.println("--project: " + sprint.getProject());
+        sprint.setSprintPK(new SprintPK(null, sprint.getProject().getProjectid().toBigInteger()));
+        super.create(sprint);            
 
-    @PUT
-    @Path("update")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") PathSegment id, Sprint entity) {
-        /*List<Sprint> sprints = super.findAll();
-        boolean sprintExists = false;
-        JSONObject response = new JSONObject();
-        response.put("message", "Sprint created");
-        Sprint role = super.find(id);
-        for (Sprint p : sprints) { 
-            if (p.getName().equals(sprint.getName())) {
-                response.put("message", "Sprint updated");
-                sprintExists = true;
-            } 
-        }
-
-        if (sprintExists) {
-            super.edit(entity);               
-        } else {
-            response.put("message", "There is no such sprint");
-        }
-
-        
-        return response.toString();*/
+        return Response.ok().build();
     }
 
     @DELETE
@@ -131,8 +92,7 @@ public class SprintFacadeREST extends AbstractFacade<Sprint> {
 
     @GET
     @Override
-    @Path("getAll")
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    @Produces(MediaType.APPLICATION_JSON)
     public List<Sprint> findAll() {
         return super.findAll();
     }

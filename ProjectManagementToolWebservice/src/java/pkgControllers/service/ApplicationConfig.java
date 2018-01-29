@@ -34,6 +34,7 @@ public class ApplicationConfig extends Application {
         resources.add(pkgControllers.service.RoleFacadeREST.class);
         resources.add(pkgControllers.service.SprintFacadeREST.class);
         resources.add(pkgControllers.service.UserFacadeREST.class);
+        resources.add(pkgControllers.service.UserisinprojectwithroleFacadeREST.class);
     }
     
 }

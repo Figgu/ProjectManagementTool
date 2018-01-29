@@ -37,7 +37,6 @@ public class IssueFacadeREST extends AbstractFacade<Issue> {
     }
 
     @POST
-    @Path("create")
     @Override
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void create(Issue entity) {
@@ -45,14 +44,12 @@ public class IssueFacadeREST extends AbstractFacade<Issue> {
     }
 
     @PUT
-    @Path("update")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") BigDecimal id, Issue entity) {
         super.edit(entity);
     }
 
     @DELETE
-    @Path("remove")
     public void remove(@PathParam("id") BigDecimal id) {
         super.remove(super.find(id));
     }
@@ -65,7 +62,6 @@ public class IssueFacadeREST extends AbstractFacade<Issue> {
     }
 
     @GET
-    @Path("getAll")
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Issue> findAll() {

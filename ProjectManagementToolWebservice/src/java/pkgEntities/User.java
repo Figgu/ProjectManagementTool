@@ -19,7 +19,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -52,11 +51,11 @@ public class User implements Serializable {
     private String email;
     @Lob
     @Column(name = "PROFILEPICTURE")
-    private Byte[] profilepicture;
+    private byte[] profilepicture;
     @ManyToMany(mappedBy = "userCollection")
-    private Collection<Issue> issueCollection;
+    private transient Collection<Issue> issueCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Collection<Userisinprojectwithrole> userisinprojectwithroleCollection;
+    private transient Collection<Userisinprojectwithrole> userisinprojectwithroleCollection;
 
     public User() {
     }
@@ -97,29 +96,29 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public Byte[] getProfilepicture() {
+    public byte[] getProfilepicture() {
         return profilepicture;
     }
 
-    public void setProfilepicture(Byte[] profilepicture) {
+    public void setProfilepicture(byte[] profilepicture) {
         this.profilepicture = profilepicture;
     }
 
     @XmlTransient
-    public Collection<Issue> getIssue03Collection() {
+    public Collection<Issue> getIssueCollection() {
         return issueCollection;
     }
 
-    public void setIssue03Collection(Collection<Issue> issue03Collection) {
+    public void setIssueCollection(Collection<Issue> issue03Collection) {
         this.issueCollection = issue03Collection;
     }
 
     @XmlTransient
-    public Collection<Userisinprojectwithrole> getUserisinprojectwithrole03Collection() {
+    public Collection<Userisinprojectwithrole> getUserisinprojectwithroleCollection() {
         return userisinprojectwithroleCollection;
     }
 
-    public void setUserisinprojectwithrole03Collection(Collection<Userisinprojectwithrole> userisinprojectwithrole03Collection) {
+    public void setUserisinprojectwithroleCollection(Collection<Userisinprojectwithrole> userisinprojectwithrole03Collection) {
         this.userisinprojectwithroleCollection = userisinprojectwithrole03Collection;
     }
 
@@ -147,7 +146,6 @@ public class User implements Serializable {
     public String toString() {
         return "User{" + "userid=" + userid + ", username=" + username + ", password=" + password + ", email=" + email + '}';
     }
-
 
     
 }
