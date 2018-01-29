@@ -20,9 +20,11 @@ namespace ProjectManagementTool
     /// </summary>
     public partial class IssuesWindow : Window
     {
+        private static IssuesWindow instance = null;
         public IssuesWindow(User user, Project p, Sprint s)
         {
             InitializeComponent();
+            instance = this;
             this.currentUser = user;
             this.currentProject = p;
             this.currentSprint = s;
@@ -41,8 +43,7 @@ namespace ProjectManagementTool
             ListBoxItem item = new ListBoxItem
             {
                 Name = charForNameWorkaround + i.Id.ToString(),
-                //TODO: UPDATE THIS FOR ISSUES
-                Content = "",//"Started On: " + s.Start.Day + "." + s.Start.Month + "." + s.Start.Year,
+                Content = i.Name + " (" + i.Status.ToString() + ")",
                 FontSize = 30,
                 Height = 50
             };
@@ -64,9 +65,15 @@ namespace ProjectManagementTool
             this.Close();
         }
 
+        public static void RefreshIssues()
+        {
+            instance.LoadIssueList();
+        }
+
         private void LoadIssueList()
         {
-            issues = ktx.GetAllIssuesFromUserInSprint(this.currentUser.Id,this.currentSprint.Id);
+            issueList.Items.Clear();
+            issues = ktx.GetAllIssuesInSprint(this.currentSprint.Id,this.currentProject.Id);
             foreach (Issue i in issues)
             {
                 issueList.Items.Add(GenerateListItem(i));
@@ -83,6 +90,20 @@ namespace ProjectManagementTool
                 //TODO: OPEN WINDOW WITH ISSUE INFO HERE
                 //IssuesWindow i = new IssuesWindow(currentUser, currentProject, selectedSprint);
                 //i.Show();
+            }
+        }
+
+        private void AddIssueClick(object sender, RoutedEventArgs e)
+        {
+            if (AddIssueWindow.GetInstance() == null)
+            {
+                AddIssueWindow r = new AddIssueWindow(this,currentSprint,currentProject);
+                AddIssueWindow.SetInstance(r);
+                r.Show();
+            }
+            else
+            {
+                AddIssueWindow.GetInstance().Focus();
             }
         }
     }

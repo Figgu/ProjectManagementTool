@@ -14,5 +14,10 @@
         <Label Content="Status:" HorizontalAlignment="Left" Margin="10,121,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="txtBoxName" Background="DarkGray" HorizontalAlignment="Left" Height="23" Margin="10,44,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="256"/>
         <TextBox x:Name="txtBoxDesc" Background="DarkGray" HorizontalAlignment="Left" Height="23" Margin="10,93,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="256"/>
+        <RadioButton x:Name="Todo" Content="To Do" HorizontalAlignment="Left" Margin="93,132,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="InProcess" Content="In Process" HorizontalAlignment="Left" Margin="93,152,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="InReview" Content="In Review" HorizontalAlignment="Left" Margin="93,174,0,0" VerticalAlignment="Top"/>
+        <RadioButton x:Name="Done" Content="Done" HorizontalAlignment="Left" Margin="93,194,0,0" VerticalAlignment="Top"/>
+        <GroupBox Header="GroupBox" Visibility="Hidden" HorizontalAlignment="Left" Height="100" Margin="69,116,0,0" VerticalAlignment="Top" Width="178"/>
     </Grid>
 </Window>

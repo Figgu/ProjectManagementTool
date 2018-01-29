@@ -24,7 +24,7 @@ namespace ProjectManagementTool.classes
         private Kontext ()
         {
             //Use 192.168.128.152 for connection in htl, use 212.152.179.117 for external use
-            this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 192.168.128.152:1521/ora11g;User Id = d5b03; Password=d5b;";
+            this.connectionString = "Provider = OraOLEDB.Oracle; OLEDB.NET=True;Data Source = 212.152.179.117:1521/ora11g;User Id = d5b03; Password=d5b;";
         }
 
         
@@ -347,12 +347,33 @@ namespace ProjectManagementTool.classes
             }
             return sprints;
         }
-
-        //TODO: IMPLEMENT THIS METHOD WHEN ISSUES ARE IN THE DATABASE
-        public List<Issue> GetAllIssuesFromUserInSprint(int userId, int sprintId)
+        
+        public List<Issue> GetAllIssuesInSprint(int sprintId, int projectId)
         {
-            return new List<Issue>();
+            DataTable dt = new DataTable();
+            OleDbDataAdapter da = null;
+            List<Issue> issues = new List<Issue>();
+            using (OleDbConnection conn = new OleDbConnection(this.connectionString))
+            {
+                conn.Open();
+                da = new OleDbDataAdapter("select distinct issueid, name, description, status from issue03 where sprintid = "+ sprintId +" AND sprintprojectid = " + projectId, conn);
+                da.Fill(dt);
+                foreach (DataRow r in dt.Rows)
+                {
+                    String isString = Convert.ToString(r[3]);
+                    IssueStatus iS = IssueStatus.TODO;
+                    switch (isString)
+                    {
+                        case "INPROCESS": iS = IssueStatus.INPROCESS;break;
+                        case "INREVIEW": iS = IssueStatus.INREVIEW;break;
+                        case "DONE": iS = IssueStatus.DONE;break;
+                    }
+                    issues.Add(new Issue(Convert.ToInt32(r[0]), Convert.ToString(r[1]), Convert.ToString(r[2]), iS));
+                }
+            }
+            return issues;
         }
+    
 
         public List<Role> GetAllRoles()
         {

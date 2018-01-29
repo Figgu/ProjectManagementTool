@@ -32,6 +32,7 @@ namespace ProjectManagementTool
             currentProject = p;
             currentSprint = s;
             InitializeComponent();
+            Todo.IsChecked = true;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -56,7 +57,30 @@ namespace ProjectManagementTool
 
         private void btnAdd_Click(object sender, RoutedEventArgs e)
         {
+            try
+            {
+                String name = txtBoxName.Text;
+                String desc = txtBoxDesc.Text;
+                IssueStatus Is = IssueStatus.TODO;
+                if ((bool)InProcess.IsChecked)
+                {
+                    Is = IssueStatus.INPROCESS;
+                }
+                else if((bool)InReview.IsChecked)
+                {
+                    Is = IssueStatus.INREVIEW;
+                }else if ((bool)Done.IsChecked)
+                {
+                    Is = IssueStatus.DONE;
+                }
+                ktx.AddIssue(currentProject.Id, currentSprint.Id, name, desc, Is);
+                IssuesWindow.RefreshIssues();
+                this.Close();
 
+            }catch(Exception ex)
+            {
+                MessageBox.Show("Couldn't add Issue to Sprint");
+            }
         }
     }
 }
