@@ -60,8 +60,21 @@ namespace ProjectManagementTool
 
         private void Logout(object sender, RoutedEventArgs e)
         {
+            Window w = null;
+            for (int intCounter = App.Current.Windows.Count - 1; intCounter >= 0; intCounter--)
+            {
+                if (intCounter == 0)
+                {
+                    w = App.Current.Windows[intCounter];
+                }
+                else
+                {
+                    App.Current.Windows[intCounter].Close();
+                }
+            }
             LoginWindow login = new LoginWindow();
             login.Show();
+            w.Close();
             this.Close();
         }
 
