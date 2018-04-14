@@ -45,7 +45,6 @@ public class UserFacadeREST extends AbstractFacade<User> {
     @Produces(MediaType.APPLICATION_JSON)
     public Response createUser(String entity) {
         User user = new Gson().fromJson(entity, User.class);
-        System.out.println(user.getProfilepicture());
         List<User> users = super.findAll();
         boolean emailExists = false;
         boolean UsernameExists = false;
@@ -112,7 +111,6 @@ public class UserFacadeREST extends AbstractFacade<User> {
     public Response userExists(@PathParam("username") String username) {
         List<User> users = super.findAll();
         Response response = Response.status(400).build();
-;
         
         for (User user : users) {
             if(user.getUsername().equals(username)) {

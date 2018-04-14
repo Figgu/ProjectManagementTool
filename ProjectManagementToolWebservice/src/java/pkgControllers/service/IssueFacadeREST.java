@@ -26,7 +26,7 @@ import pkgEntities.Issue;
  * @author Figgu
  */
 @Stateless
-@Path("pkgentities.issue")
+@Path("issues")
 public class IssueFacadeREST extends AbstractFacade<Issue> {
 
     @PersistenceContext(unitName = "JPATestPU")

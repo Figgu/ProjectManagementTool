@@ -27,6 +27,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import pkgEntities.Project;
+import pkgEntities.Role;
 import pkgEntities.Sprint;
 import pkgEntities.Userisinprojectwithrole;
 import pkgEntities.UserisinprojectwithrolePK;
@@ -74,10 +75,24 @@ public class ProjectFacadeREST extends AbstractFacade<Project>{
     }
 
     @PUT
-    @Path("{id}")
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void edit(@PathParam("id") BigDecimal id, Project entity) {
-        super.edit(entity);
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response editProject(String strEntity) {
+        Project entity = new Gson().fromJson(strEntity, Project.class);
+        List<Project> projects = super.findAll();
+        Response response = Response.ok().entity("Project successfully updated").build();
+        boolean nameOK = true;
+        
+        for (Project project : projects) { 
+            if (entity.getName().equals(project.getName()) && !project.getProjectid().toPlainString().equals(entity.getProjectid().toPlainString())) {
+                response = Response.status(400).entity("A project with the given name already existst").build();
+                nameOK = false;
+            } 
+        }
+
+        if (nameOK)
+            super.edit(entity);               
+      
+        return response;
     }
 
     @DELETE

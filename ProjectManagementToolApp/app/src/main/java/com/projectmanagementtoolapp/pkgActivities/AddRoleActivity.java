@@ -74,46 +74,53 @@ public class AddRoleActivity extends AppCompatActivity implements View.OnClickLi
     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
+        try {
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    this.finish();
+                    return true;
 
-            case R.id.delete_roles:
-                try {
-                    DeleteRoleTask deleteRoleTask = new DeleteRoleTask(this);
-                    deleteRoleTask.execute("roles", selectedItems);
-                } catch (Exception ex) {
-                    Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
-                }
+                case R.id.delete_roles:
+                    try {
+                        DeleteRoleTask deleteRoleTask = new DeleteRoleTask(this);
+                        deleteRoleTask.execute("roles", selectedItems);
+                    } catch (Exception ex) {
+                        Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+                    }
 
-                return true;
+                    return true;
 
-            case R.id.cancel_role:
-                selectedItems = new ArrayList<>();
+                case R.id.cancel_role:
+                    selectedItems = new ArrayList<>();
 
-                for (View view :  selectedViews) {
-                    view.setBackgroundColor(Color.TRANSPARENT);
-                }
+                    for (View view : selectedViews) {
+                        view.setBackgroundColor(Color.TRANSPARENT);
+                    }
 
-                for (Role role : selectedItems) {
-                    selectedItems.remove(role);
-                }
+                    for (Role role : selectedItems) {
+                        selectedItems.remove(role);
+                    }
 
-                mDelete.setVisible(false);
-                mCancel.setVisible(false);
-                mEdit.setVisible(false);
+                    mDelete.setVisible(false);
+                    mCancel.setVisible(false);
+                    mEdit.setVisible(false);
 
-                return true;
+                    return true;
 
-            case R.id.edit_role:
-                editDialog();
+                case R.id.edit_role:
+                    editDialog();
 
-                return true;
+                    return true;
 
-            default:
-                return super.onOptionsItemSelected(item);
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        } catch (Exception ex) {
+                Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+
         }
+
+        return true;
     }
 
     //Also called after update haha
@@ -251,36 +258,43 @@ public class AddRoleActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        selectedItems.add((Role) listViewRoles.getItemAtPosition(position));
-        view.setBackgroundColor(Color.LTGRAY);
-        selectedViews.add(view);
+        try {
+            selectedItems.add((Role) listViewRoles.getItemAtPosition(position));
+            view.setBackgroundColor(Color.LTGRAY);
+            selectedViews.add(view);
 
-        mEdit.setVisible(true);
+            mEdit.setVisible(true);
 
-        if (selectedItems.size() > 1)
-            mEdit.setVisible(false);
+            if (selectedItems.size() > 1)
+                mEdit.setVisible(false);
 
-        mDelete.setVisible(true);
-        mCancel.setVisible(true);
+            mDelete.setVisible(true);
+            mCancel.setVisible(true);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
         return true;
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        selectedItems.remove(listViewRoles.getItemAtPosition(position));
-        selectedViews.remove(view);
-        view.setBackgroundColor(Color.TRANSPARENT);
+        try {
+            selectedItems.remove(listViewRoles.getItemAtPosition(position));
+            selectedViews.remove(view);
+            view.setBackgroundColor(Color.TRANSPARENT);
 
-        if (selectedItems.size() == 0){
-            mDelete.setVisible(false);
-            mCancel.setVisible(false);
-            mEdit.setVisible(false);
+            if (selectedItems.size() == 0){
+                mDelete.setVisible(false);
+                mCancel.setVisible(false);
+                mEdit.setVisible(false);
+            }
+
+            if (selectedItems.size() < 2 && selectedItems.size() > 0) {
+                mEdit.setVisible(true);
+            }
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
-
-        if (selectedItems.size() < 2 && selectedItems.size() > 0) {
-            mEdit.setVisible(true);
-        }
-
     }
 }

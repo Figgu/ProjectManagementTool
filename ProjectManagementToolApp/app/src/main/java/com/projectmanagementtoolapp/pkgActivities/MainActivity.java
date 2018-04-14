@@ -27,6 +27,7 @@ import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgTasks.GetMyProjectsTask;
+import com.sun.jersey.server.impl.model.parameter.multivalued.ExtractorContainerException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
@@ -139,28 +140,37 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        try {
+            int id = item.getItemId();
 
-        if (id == R.id.nav_showProfile) {
-            Intent intent = new Intent(this, ShowProfileActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_logout) {
-            showLogoutDialog();
-        } else if (id == R.id.nav_createRole) {
-            Intent intent = new Intent(this, AddRoleActivity.class);
-            startActivity(intent);
+            if (id == R.id.nav_showProfile) {
+                Intent intent = new Intent(this, ShowProfileActivity.class);
+                startActivity(intent);
+            } else if (id == R.id.nav_logout) {
+                showLogoutDialog();
+            } else if (id == R.id.nav_createRole) {
+                Intent intent = new Intent(this, AddRoleActivity.class);
+                startActivity(intent);
+            }
+
+            drawer.closeDrawer(GravityCompat.START);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
     public void addList() {
-        if  (db.getCurrentUser().getProjects().size() > 0) {
-            ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, R.id.projectName, db.getCurrentUser().getProjects());
-            projectsList.setAdapter(adapter);
-        } else {
-            txtNoProjectsFound.setVisibility(View.VISIBLE);
+        try {
+            if  (db.getCurrentUser().getProjects().size() > 0) {
+                ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, R.id.projectName, db.getCurrentUser().getProjects());
+                projectsList.setAdapter(adapter);
+            } else {
+                txtNoProjectsFound.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -173,35 +183,50 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setUpNavigation() {
-        View hView =  navigationView.getHeaderView(0);
-        TextView nav_username = (TextView)hView.findViewById(R.id.txtUsernameInNav);
-        nav_username.setText(db.getCurrentUser().getUsername());
+        try {
+            View hView =  navigationView.getHeaderView(0);
+            TextView nav_username = (TextView)hView.findViewById(R.id.txtUsernameInNav);
+            nav_username.setText(db.getCurrentUser().getUsername());
 
-        TextView nav_email = (TextView)hView.findViewById(R.id.txtEmailInNav);
-        nav_email.setText(db.getCurrentUser().getEmail());
+            TextView nav_email = (TextView)hView.findViewById(R.id.txtEmailInNav);
+            nav_email.setText(db.getCurrentUser().getEmail());
 
-        ImageView imgNav = (ImageView) hView.findViewById(R.id.imgUserNav);
+            ImageView imgNav = (ImageView) hView.findViewById(R.id.imgUserNav);
 
-        Bitmap bmp = BitmapFactory.decodeByteArray(db.getCurrentUser().getProfilepicture(), 0, db.getCurrentUser().getProfilepicture().length);
-        imgNav.setImageBitmap(bmp);
+            Bitmap bmp = BitmapFactory.decodeByteArray(db.getCurrentUser().getProfilepicture(), 0, db.getCurrentUser().getProfilepicture().length);
+            imgNav.setImageBitmap(bmp);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Project project = (Project) projectsList.getItemAtPosition(position);
-        Intent intent = new Intent(this, ShowSprintsActivity.class);
-        intent.putExtra("project", project);
-        startActivity(intent);
+        try {
+            Project project = (Project) projectsList.getItemAtPosition(position);
+            Intent intent = new Intent(this, ShowSprintsActivity.class);
+            intent.putExtra("project", project);
+            startActivity(intent);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Project project = (Project) projectsList.getItemAtPosition(position);
-        System.out.println("---projec: " + project);
-        System.out.println("---project users: " + project.getUsers());
-        Intent intent = new Intent(this, EditProjectActivity.class);
-        intent.putExtra("project", project);
-        startActivity(intent);
+        try {
+            Project project = (Project) projectsList.getItemAtPosition(position);
+            System.out.println("---projec: " + project);
+            System.out.println("---project users: " + project.getUsers());
+            Intent intent = new Intent(this, EditProjectActivity.class);
+            intent.putExtra("project", project);
+            startActivity(intent);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
         return true;
     }
 }

@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -86,19 +87,28 @@ public class UserisinprojectwithroleFacadeREST extends AbstractFacade<Userisinpr
             super.create(user);
         }
     }
+    
+    @DELETE
+    @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void deleteUsersInProject(@PathParam("id")int id) {
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<Userisinprojectwithrole>>() {}.getType();
+        Collection<Userisinprojectwithrole> users = super.findAll();              
+      
+        for (Userisinprojectwithrole user : users) {
+            if(user.getProject().getProjectid().toPlainString().equals(String.valueOf(id))) {
+                super.remove(user);
+            }
+        }
+    }
+    
 
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") PathSegment id, Userisinprojectwithrole entity) {
         super.edit(entity);
-    }
-
-    @DELETE
-    @Path("{id}")
-    public void removeUser(@PathParam("id") PathSegment id) {
-        pkgEntities.UserisinprojectwithrolePK key = getPrimaryKey(id);
-        super.remove(super.find(key));
     }
 
     @GET

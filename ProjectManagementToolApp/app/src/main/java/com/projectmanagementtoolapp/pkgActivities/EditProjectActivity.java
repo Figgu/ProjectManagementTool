@@ -24,7 +24,11 @@ import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgData.Userisinprojectwithrole;
+import com.projectmanagementtoolapp.pkgTasks.AddUserToProjectTask;
+import com.projectmanagementtoolapp.pkgTasks.DeleteUsersFromProject;
+import com.projectmanagementtoolapp.pkgTasks.GetAllUsersTask;
 import com.projectmanagementtoolapp.pkgTasks.GetUsersOfProjectTask;
+import com.projectmanagementtoolapp.pkgTasks.UpdateProjectTask;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
 
@@ -56,6 +61,7 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
     private ArrayAdapter<User> adapter;
     private Project currentProject;
     private ArrayList<User> users = new ArrayList<>();
+    private ArrayList<Userisinprojectwithrole> uprs = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +75,9 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
         getAllViews();
         initEventhandlers();
         db = Database.getInstance();
+
+        GetAllUsersTask getAllUsersTask = new GetAllUsersTask(this);
+        getAllUsersTask.execute("users");
 
         GetUsersOfProjectTask getUsersOfProjectTask = new GetUsersOfProjectTask(this);
         getUsersOfProjectTask.execute("projects/users", currentProject.getProjectid());
@@ -325,25 +334,24 @@ public class EditProjectActivity extends AppCompatActivity implements View.OnCli
         }
 
         if (everythingOK) {
+            List<Userisinprojectwithrole> userisinprojectwithroleList = new ArrayList<>();
             Date date = dateFormat.parse(txtProjectStart.getText().toString());
-            //Project project = new Project(currentProject.getProjectid(), txtProjectName.getText().toString(), txtProjectDescription.getText().toString(), contributors, date);
+            Project project = new Project(currentProject.getProjectid(), txtProjectName.getText().toString(), txtProjectDescription.getText().toString(), date);
 
-            /*
+            for (User user : contributors) {
+                userisinprojectwithroleList.add(new Userisinprojectwithrole(project, user));
+            }
+
+            if (!currentProject.getName().equals(project.getName()) || !currentProject.getDescription().equals(project.getDescription()) || !currentProject.getProjectbeginn().equals(project.getProjectbeginn())) {
+                UpdateProjectTask updateProjectTask = new UpdateProjectTask(this);
+                updateProjectTask.execute("projects", project);
+            }
+
             DeleteUsersFromProject deleteUsersFromProject = new DeleteUsersFromProject(this);
-            deleteUsersFromProject.execute(currentProject.getProjectid());
-            String result = deleteUsersFromProject.get();
+            deleteUsersFromProject.execute("upr", currentProject.getProjectid());
 
-            UpdateProjectTask updateProjectTask = new UpdateProjectTask(this);
-            //updateProjectTask.execute(project);
-            result = updateProjectTask.get();
-
-            System.out.println("HERE: " + contributors);
-            //Add the users to the project
-            InsertUsersInProject insertUsersInProject = new InsertUsersInProject(this);
-            insertUsersInProject.execute(contributors, currentProject.getProjectid());
-            result = insertUsersInProject.get();
-*/
-            this.finish();
+            AddUserToProjectTask addUserToProjectTask = new AddUserToProjectTask(this);
+            addUserToProjectTask.execute("upr", userisinprojectwithroleList);
         }
     }
 }

@@ -8,7 +8,7 @@ import java.util.ArrayList;
 
 public class Database {
     private static Database db;
-    public static String url = "http://10.0.0.110:64634/ProjectManagementToolWebservice/webresources/";
+    public static String url = "http://192.168.101.1:64634/ProjectManagementToolWebservice/webresources/";
     private User currentUser;
     private ArrayList<User> users = new ArrayList<>();
     private ArrayList<Role> roles = new ArrayList<>();

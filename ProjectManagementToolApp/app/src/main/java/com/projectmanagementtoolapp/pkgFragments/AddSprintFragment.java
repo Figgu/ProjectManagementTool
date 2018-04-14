@@ -194,7 +194,7 @@ public class AddSprintFragment extends Fragment implements View.OnClickListener 
                 }
             }
         } catch (ParseException e) {
-            Snackbar.make(layoutFragment, "Error: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Error: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -202,7 +202,7 @@ public class AddSprintFragment extends Fragment implements View.OnClickListener 
         boolean retValue = true;
 
         for (Sprint sp : currentProject.getSprints()) {
-            if (sp.getEnddate().before(sprint.getStartdate())) {
+            if (sprint.getStartdate().before(sp.getEnddate())) {
                 retValue = false;
             }
         }

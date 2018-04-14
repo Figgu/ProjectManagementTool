@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
@@ -131,69 +132,75 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                this.finish();
-                return true;
-            case R.id.edit_profile:
-                mCancel.setVisible(true);
-                if (shownAsPassword)
-                    txtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                else
-                    txtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
-
-                txtPassword.setCursorVisible(true);
-
-                mSave.setVisible(true);
-                mEdit.setVisible(false);
-                lblName.setVisibility(View.INVISIBLE);
-                lblEmail.setVisibility(View.INVISIBLE);
-                lblPassword.setVisibility(View.INVISIBLE);
-                txtName.setVisibility(View.VISIBLE);
-                txtPassword.setVisibility(View.VISIBLE);
-                txtEmail.setVisibility(View.VISIBLE);
-                return true;
-            case R.id.save_profile:
-                boolean usernameOK = true,
-                        emailOK = true,
-                        passwordOK = true;
-
-                if (txtName.getText().length() < 4) {
-                    usernameOK = false;
-                    txtName.setError("Username needs to be at least 4 characters long!");
-                }
-
-                if (!txtEmail.getText().toString().contains("@") || txtEmail.getText().length() < 4 || !txtEmail.getText().toString().contains(".")) {
-                    emailOK = false;
-                    txtEmail.setError("Email address not valid!");
-                }
-                if (txtPassword.getText().length() < 4) {
-                    passwordOK = false;
-                    txtPassword.setError("Password needs to be at least 4 characters long!");
-                }
-
-                if (usernameOK && emailOK && passwordOK) {
+        try {
+            switch (item.getItemId()) {
+                case android.R.id.home:
+                    this.finish();
+                    return true;
+                case R.id.edit_profile:
+                    mCancel.setVisible(true);
                     if (shownAsPassword)
-                        lblPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        txtPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     else
-                        lblPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+                        txtPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
 
-                    User newUser = new User(db.getCurrentUser().getUserid(), txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString());
-                    System.out.println("--id: " +newUser.getUserid());
-                    System.out.println("--name: "+newUser.getUsername());
-                    System.out.println("--email: "+newUser.getEmail());
+                    txtPassword.setCursorVisible(true);
 
-                    UpdateUserTask updateUserTask = new UpdateUserTask(this);
-                    updateUserTask.execute("users", newUser);
-                }
+                    mSave.setVisible(true);
+                    mEdit.setVisible(false);
+                    lblName.setVisibility(View.INVISIBLE);
+                    lblEmail.setVisibility(View.INVISIBLE);
+                    lblPassword.setVisibility(View.INVISIBLE);
+                    txtName.setVisibility(View.VISIBLE);
+                    txtPassword.setVisibility(View.VISIBLE);
+                    txtEmail.setVisibility(View.VISIBLE);
+                    return true;
+                case R.id.save_profile:
+                    boolean usernameOK = true,
+                            emailOK = true,
+                            passwordOK = true;
 
-                return true;
+                    if (txtName.getText().length() < 4) {
+                        usernameOK = false;
+                        txtName.setError("Username needs to be at least 4 characters long!");
+                    }
 
-            case R.id.cancel_edit:
-                changeView();
-            default:
-                return super.onOptionsItemSelected(item);
+                    if (!txtEmail.getText().toString().contains("@") || txtEmail.getText().length() < 4 || !txtEmail.getText().toString().contains(".")) {
+                        emailOK = false;
+                        txtEmail.setError("Email address not valid!");
+                    }
+                    if (txtPassword.getText().length() < 4) {
+                        passwordOK = false;
+                        txtPassword.setError("Password needs to be at least 4 characters long!");
+                    }
+
+                    if (usernameOK && emailOK && passwordOK) {
+                        if (shownAsPassword)
+                            lblPassword.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                        else
+                            lblPassword.setInputType(InputType.TYPE_TEXT_VARIATION_NORMAL);
+
+                        User newUser = new User(db.getCurrentUser().getUserid(), txtName.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString());
+                        System.out.println("--id: " +newUser.getUserid());
+                        System.out.println("--name: "+newUser.getUsername());
+                        System.out.println("--email: "+newUser.getEmail());
+
+                        UpdateUserTask updateUserTask = new UpdateUserTask(this);
+                        updateUserTask.execute("users", newUser);
+                    }
+
+                    return true;
+
+                case R.id.cancel_edit:
+                    changeView();
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
+
+        return true;
     }
 
     @Override
@@ -226,16 +233,20 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if (requestCode == PICK_IMAGE) {
-            Uri selectedImage = data.getData();
-            InputStream imageStream = null;
-            try {
-                imageStream = getContentResolver().openInputStream(selectedImage);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+        try {
+            if (requestCode == PICK_IMAGE) {
+                Uri selectedImage = data.getData();
+                InputStream imageStream = null;
+                try {
+                    imageStream = getContentResolver().openInputStream(selectedImage);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
+                profilePicture.setImageBitmap(yourSelectedImage);
             }
-            Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
-            profilePicture.setImageBitmap(yourSelectedImage);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }
