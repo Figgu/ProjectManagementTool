@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 
 namespace ProjectManagementTool.classes
 {
-    //TODO loading
     public class Sprint
     {
         private int id;
@@ -27,10 +26,17 @@ namespace ProjectManagementTool.classes
 
         private DateTime end;
 
-        public DateTime MyProperty
+        public DateTime End
         {
             get { return end; }
             set { end = value; }
+        }
+
+        public Sprint(int id, DateTime start, DateTime end)
+        {
+            this.Id = id;
+            this.Start = start;
+            this.End = end;
         }
 
         private List<Issue> issues;

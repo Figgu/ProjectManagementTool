@@ -21,14 +21,14 @@ namespace ProjectManagementTool
     /// <summary>
     /// Interaction logic for LoginWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class LoginWindow : Window
     {
         private Kontext ktx;
 
-        public MainWindow()
+        public LoginWindow()
         {
             InitializeComponent();
-            ktx = new Kontext();
+            ktx = Kontext.GetInstance();
   
         }
 
@@ -53,7 +53,6 @@ namespace ProjectManagementTool
             {
                 MessageBox.Show("Username or password not correct!");
             }
-
         }
 
         //Opens register window
@@ -76,7 +75,7 @@ namespace ProjectManagementTool
             User retVal = null;
             if (!username.Equals("") && !password.Equals(""))
             {
-                retVal = ktx.selectUser(username, password);
+                retVal = ktx.GetUser(username, password);
             }
             return retVal;
         }

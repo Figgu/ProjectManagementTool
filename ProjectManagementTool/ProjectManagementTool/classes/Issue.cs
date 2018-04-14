@@ -33,5 +33,19 @@ namespace ProjectManagementTool.classes
         }
 
         private IssueStatus status;
+
+        public IssueStatus Status
+        {
+            get { return status; }
+            set { status = value; }
+        }
+
+        public Issue(int id, string name, string description, IssueStatus status)
+        {
+            this.Id = id;
+            this.Name = name;
+            this.Description = description;
+            this.Status = status;
+        }
     }
 }

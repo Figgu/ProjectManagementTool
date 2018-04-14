@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProjectManagementTool.classes
 {
-    public class Project
+    class Role
     {
         private int id;
 
@@ -32,35 +32,28 @@ namespace ProjectManagementTool.classes
             set { description = value; }
         }
 
-        private DateTime projectStart;
+        private bool isUnique;
 
-        public DateTime ProjectStart
+        public bool IsUnique
         {
-            get { return projectStart; }
-            set { projectStart = value; }
+            get { return isUnique; }
+            set { isUnique = value; }
         }
 
-        public Project(String name,String description, DateTime start)
-        {
-            this.Name = name;
-            this.Description = description;
-            this.ProjectStart = start;
-        }
-
-        public Project(int id, String name, String description, DateTime start)
+        public Role(int id, string name, string description, bool isunique)
         {
             this.Id = id;
             this.Name = name;
             this.Description = description;
-            this.ProjectStart = start;
+            this.IsUnique = isunique;
         }
 
-        private List<Sprint> sprints;
-
-        public List<Sprint> Sprint
+        public Role(string name, string description, bool isunique)
         {
-            get { return sprints; }
-            set { sprints = value; }
+            this.Name = name;
+            this.Description = description;
+            this.IsUnique = isunique;
         }
+
     }
 }
