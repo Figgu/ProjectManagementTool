@@ -1,9 +1,7 @@
 package com.projectmanagementtoolapp.pkgFragments;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.RequiresApi;
@@ -19,8 +17,8 @@ import android.widget.Toast;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
-import com.projectmanagementtoolapp.pkgTasks.InsertUserTask;
-import com.projectmanagementtoolapp.pkgTasks.SelectAllUsersTask;
+import com.projectmanagementtoolapp.pkgData.User;
+import com.projectmanagementtoolapp.pkgTasks.CreateUserTask;
 
 import java.io.ByteArrayOutputStream;
 import java.util.concurrent.ExecutionException;
@@ -35,8 +33,8 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     private Button btnRegister;
     private RelativeLayout mRoot;
 
-    //non gui elements
-    private Database db;
+    //Other Attributes
+    private Database db = null;
 
     public RegisterFragment() {
         // Required empty public constructor
@@ -51,11 +49,17 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_register, container, false);
+        View view =  null;
 
-        getAllViews(view);
-        initEventHandlers();
-        db = Database.getInstance();
+        try {
+            view = inflater.inflate(R.layout.fragment_register, container, false);
+
+            getAllViews(view);
+            initEventHandlers();
+            db = Database.getInstance();
+        } catch (Exception ex) {
+            Toast.makeText(getActivity(), "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
 
         return view;
     }
@@ -77,108 +81,86 @@ public class RegisterFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if(v == btnRegister) {
-            try {
-                doRegister();
-            } catch (ExecutionException e) {
-                Snackbar.make(mRoot, "Your passwords are not equal!", Snackbar.LENGTH_LONG).show();
-            } catch (InterruptedException e) {
-                Snackbar.make(mRoot, "Your passwords are not equal!", Snackbar.LENGTH_LONG).show();
-            }
+            doRegister();
         }
     }
 
     //Checking the given account details
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    private void doRegister() throws ExecutionException, InterruptedException {
-        boolean usernameEntered = true;
-        boolean emailEntered = true;
-        boolean passwordEntered = true;
-        boolean passwordConfirmedEntered = true;
+    private void doRegister() {
+        try {
+            boolean usernameEntered = true;
+            boolean emailEntered = true;
+            boolean passwordEntered = true;
+            boolean passwordConfirmedEntered = true;
 
-        boolean usernameOK = true;
-        boolean emailOK =true;
-        boolean passwordOK =true;
+            boolean usernameOK = true;
+            boolean emailOK =true;
+            boolean passwordOK =true;
 
-        if (txtUsername.getText().length() < 1) {
-            usernameEntered = false;
-            txtUsername.setError("Enter Username!");
-        }
-
-        if (txtEmail.getText().length() < 1) {
-            usernameEntered = false;
-            txtEmail.setError("Enter Email!");
-        }
-
-        if (txtPassword.getText().length() < 1) {
-            passwordEntered = false;
-            txtPassword.setError("Enter Password!");
-        }
-
-        if (txtConfirmPassword.getText().length() < 1) {
-            passwordConfirmedEntered = false;
-            txtConfirmPassword.setError("You need to confirm your Password!");
-        }
-
-        //Check if everything got entered
-        if (usernameEntered && emailEntered && passwordEntered && passwordConfirmedEntered) {
-            //Check if the passwords are equal
-            if (txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString())) {
-                //Check if they given details are ok
-                if (txtUsername.getText().length() < 3) {
-                    usernameOK = false;
-                    txtUsername.setError("Username needs to be at least 3 characters long!");
-                }
-
-                if (!txtEmail.getText().toString().contains("@") || txtEmail.getText().length() < 3) {
-                    emailOK = false;
-                    txtEmail.setError("Email address not valid!");
-                }
-                if (txtPassword.getText().length() < 3) {
-                    passwordOK = false;
-                    txtPassword.setError("Password needs to be at least 3 characters long!");
-                }
-
-                if (usernameOK && emailOK && passwordOK) {
-                    if (!db.usernameExists(txtUsername.getText().toString())) {
-                        if (!db.emailExists(txtEmail.getText().toString())) {
-                            Bitmap bitmap= BitmapFactory.decodeResource(getResources(), R.drawable.add);
-                            ByteArrayOutputStream stream=new ByteArrayOutputStream();
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                            byte[] image=stream.toByteArray();
-
-                            for (int i=0; i<image.length; i++) {
-                                System.out.println(image[i]);
-                            }
-
-                            InsertUserTask insertUserTask = new InsertUserTask(getActivity());
-                            insertUserTask.execute(txtUsername.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString(), image);
-                            String ret = insertUserTask.get();
-
-                            SelectAllUsersTask selectAllUsersTask = new SelectAllUsersTask(getActivity());
-                            selectAllUsersTask.execute();
-                            ret = selectAllUsersTask.get();
-
-                            userRegistered();
-                        } else {
-                            txtEmail.setError("Email already exists");
-                        }
-                    } else {
-                        txtUsername.setError("Username already exists");
-                    }
-                }
-            } else {
-                txtPassword.setText("");
-                txtConfirmPassword.setText("");
-                Snackbar.make(mRoot, "Your passwords are not equal!", Snackbar.LENGTH_LONG).show();
+            if (txtUsername.getText().length() < 1) {
+                usernameEntered = false;
+                txtUsername.setError("Enter Username!");
             }
-        }
-    }
 
-    private void userRegistered() {
-        txtUsername.setText("");
-        txtPassword.setText("");
-        txtEmail.setText("");
-        txtConfirmPassword.setText("");
-        Toast.makeText(getActivity(), "Account has been registered successfully!", Toast.LENGTH_LONG).show();
+            if (txtEmail.getText().length() < 1) {
+                usernameEntered = false;
+                txtEmail.setError("Enter Email!");
+            }
+
+            if (txtPassword.getText().length() < 1) {
+                passwordEntered = false;
+                txtPassword.setError("Enter Password!");
+            }
+
+            if (txtConfirmPassword.getText().length() < 1) {
+                passwordConfirmedEntered = false;
+                txtConfirmPassword.setError("You need to confirm your Password!");
+            }
+
+            //Check if everything got entered
+            if (usernameEntered && emailEntered && passwordEntered && passwordConfirmedEntered) {
+                //Check if the passwords are equal
+                if (txtPassword.getText().toString().equals(txtConfirmPassword.getText().toString())) {
+                    //Check if they given details are ok
+                    if (txtUsername.getText().length() < 4) {
+                        usernameOK = false;
+                        txtUsername.setError("Username needs to be at least 4 characters long!");
+                    }
+
+                    if (!txtEmail.getText().toString().contains("@") || txtEmail.getText().length() < 4 || !txtEmail.getText().toString().contains(".")) {
+                        emailOK = false;
+                        txtEmail.setError("Email address not valid!");
+                    }
+                    if (txtPassword.getText().length() < 4) {
+                        passwordOK = false;
+                        txtPassword.setError("Password needs to be at least 4 characters long!");
+                    }
+
+                    if (usernameOK && emailOK && passwordOK) {
+                        Bitmap bitmap= BitmapFactory.decodeResource(getResources(), R.drawable.standard_profile_picuture);
+                        ByteArrayOutputStream stream=new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 80, stream);
+                        byte[] image=stream.toByteArray();
+
+                        User user = new User(txtUsername.getText().toString(), txtPassword.getText().toString(), txtEmail.getText().toString(), image);
+
+                        CreateUserTask createUserTask = new CreateUserTask(getActivity());
+                        createUserTask.execute("users", user);
+
+                        txtUsername.setText("");
+                        txtPassword.setText("");
+                        txtEmail.setText("");
+                        txtConfirmPassword.setText("");
+                    }
+                } else {
+                    txtPassword.setText("");
+                    txtConfirmPassword.setText("");
+                    Snackbar.make(mRoot, "Your passwords are not equal!", Snackbar.LENGTH_LONG).show();
+                }
+            }
+        } catch (Exception ex) {
+            Toast.makeText(getActivity(), "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
     }
 }

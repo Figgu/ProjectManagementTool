@@ -8,8 +8,16 @@
         app:showAsAction="ifRoom"/>
 
     <item
+        android:id="@+id/cancel_edit"
+        android:icon="@drawable/ic_cancel"
+        android:title="save_profile"
+        app:showAsAction="ifRoom" />
+
+    <item
         android:id="@+id/save_profile"
         android:icon="@drawable/ic_save_profile"
         android:title="save_profile"
         app:showAsAction="ifRoom" />
+
+
 </menu>

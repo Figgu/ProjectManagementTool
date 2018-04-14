@@ -63,6 +63,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
 
     @Override
     public void onClick(View v) {
+        /*
         if (v == btnSendEmail) {
             if(isEmailValid()) {
                 sendEmail(db.getUserByEmail(txtEmail.getText().toString()));
@@ -70,6 +71,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
                 txtEmail.setError("Email not valid");
             }
         }
+        */
     }
 
     private boolean isEmailValid() {

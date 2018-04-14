@@ -2,8 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/delete_project"
-        android:icon="@drawable/delete_bin"
-        android:title="Delete this project"
-        app:showAsAction="ifRoom"></item>
+    android:id="@+id/delete_project"
+    android:icon="@drawable/ic_delete"
+    android:title="Delete this project"
+    app:showAsAction="ifRoom"></item>
+
+
 </menu>

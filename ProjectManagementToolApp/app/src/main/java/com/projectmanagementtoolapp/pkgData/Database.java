@@ -1,26 +1,6 @@
 package com.projectmanagementtoolapp.pkgData;
 
-import android.content.Intent;
-import android.widget.Toast;
-
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.lang.reflect.Array;
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.Properties;
-
-import static java.sql.Connection.TRANSACTION_SERIALIZABLE;
 
 /**
  * Created by alexk on 09.10.2017.
@@ -28,14 +8,10 @@ import static java.sql.Connection.TRANSACTION_SERIALIZABLE;
 
 public class Database {
     private static Database db;
-    private String user = "d5b03";
-    private String pwd = "d5b";
-    private ArrayList<User> users;
-    private ArrayList<Project> projects;
-    private ArrayList<Project> myProjects;
-    private ArrayList<Role> roles;
-    private Connection conn;
-    private User currentUser;       //Current logged in user
+    public static String url = "http://192.168.101.1:64634/ProjectManagementToolWebservice/webresources/";
+    private User currentUser;
+    private ArrayList<User> users = new ArrayList<>();
+    private ArrayList<Role> roles = new ArrayList<>();
 
     public static Database getInstance() {
         if (db == null) {
@@ -43,7 +19,6 @@ public class Database {
         }
         return db;
     }
-
     //Only called by the async task
     public void openConnection() throws SQLException, ClassNotFoundException {
         Class.forName("oracle.jdbc.driver.OracleDriver");
@@ -380,74 +355,45 @@ public class Database {
         currentUser = user;
     }
 
+
     public User getCurrentUser() {
         return currentUser;
+    }
+
+    public void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 
     public ArrayList<User> getUsers() {
         return users;
     }
 
-    public ArrayList<Project> getProjects() {
-        return projects;
+    public void setUsers(ArrayList<User> users) {
+        this.users = users;
     }
 
-    public void insertRole(Role role) throws SQLException {
-        PreparedStatement statement = conn.prepareStatement("insert into role03 (name, description, ISUNIQUE) values (?, ?, ?)");
-        statement.setString(1, role.getName());
-        statement.setString(2, role.getDescription());
-        statement.setString(3, String.valueOf(role.isUnique()));
-        statement.executeQuery();
-        statement.close();
-    }
+    public User getUserByName(String username) {
+        User retValue = null;
 
-    public ArrayList<Role> getAllRoles() throws SQLException {
-        PreparedStatement statement = conn.prepareStatement("select * from role03");
-        ResultSet rs = statement.executeQuery();
-        roles = new ArrayList<>();
-
-        while(rs.next()) {
-            Role role = new Role();
-            role.setRoleID(rs.getInt("roleID"));
-            role.setName(rs.getString("name"));
-            role.setDescription(rs.getString("description"));
-            role.setUnique(Boolean.parseBoolean(rs.getString("isunique")));
-            roles.add(role);
-        }
-        statement.close();
-        rs.close();
-        return roles;
-    }
-
-    public void removeRole(Role role) throws SQLException {
-        PreparedStatement statement = conn.prepareStatement("delete from role03 where roleid = ?");
-        statement.setInt(1, role.getRoleID());
-        ResultSet rs = statement.executeQuery();
-        statement.close();
-        rs.close();
-    }
-
-    public void deleteProject(Project project) throws SQLException {
-        PreparedStatement statement = conn.prepareStatement("delete from project03 where projectid = ?");
-        statement.setInt(1, project.getProjectID());
-        ResultSet rs = statement.executeQuery();
-        statement.close();
-        rs.close();
-
-        myProjects.remove(project);
-        projects.remove(project);
-    }
-
-    public Role getRoleByName(String name) {
-        Role foundRole = null;
-
-        for (Role role : roles) {
-            if (role.getName().equals(name)) {
-                foundRole = role;
+        for (User user : users ) {
+            if (user.getUsername().equals(username)) {
+                retValue = user;
             }
         }
 
-        return foundRole;
+        return retValue;
+    }
+
+    public Role getRoleByName(String name) {
+        Role retValue = null;
+
+        for (Role role : roles ) {
+            if (role.getName().equals(name)) {
+                retValue = role;
+            }
+        }
+
+        return retValue;
     }
 
     public ArrayList<Role> getRoles() {
@@ -456,9 +402,5 @@ public class Database {
 
     public void setRoles(ArrayList<Role> roles) {
         this.roles = roles;
-    }
-
-    public ArrayList<Project> getMyProjects() {
-        return myProjects;
     }
 }

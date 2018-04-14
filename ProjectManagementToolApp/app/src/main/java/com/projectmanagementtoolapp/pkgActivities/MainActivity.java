@@ -2,6 +2,8 @@ package com.projectmanagementtoolapp.pkgActivities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -16,15 +18,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.projectmanagementtoolapp.R;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
-import com.projectmanagementtoolapp.pkgTasks.SelectMyProjectsTask;
-
-import java.util.concurrent.ExecutionException;
+import com.projectmanagementtoolapp.pkgTasks.GetMyProjectsTask;
+import com.sun.jersey.server.impl.model.parameter.multivalued.ExtractorContainerException;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
@@ -37,35 +40,30 @@ public class MainActivity extends AppCompatActivity
     private NavigationView navigationView;
     private Toolbar toolbar;
     private TextView txtNoProjectsFound;
-
-    //Non gui elements
-    private Database db;
+    //NON-GUI
+    private Database db = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-
-        db = Database.getInstance();
-
-        setTitle("Your projects");
-        getAllViews();
-        setSupportActionBar(toolbar);
-        initEventlisteners();
-
-        //Get all projects
-        SelectMyProjectsTask getMyProjectsTask = new SelectMyProjectsTask(this);
-        getMyProjectsTask.execute(db.getCurrentUser());
         try {
-            String result = getMyProjectsTask.get();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (ExecutionException e) {
-            e.printStackTrace();
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+
+            setTitle("Your projects");
+            getAllViews();
+            setSupportActionBar(toolbar);
+            initEventlisteners();
+            db = Database.getInstance();
+
+            System.out.println("id in main: " + db.getCurrentUser().getUserid());
+            GetMyProjectsTask getMyProjectsTask = new GetMyProjectsTask(this);
+            getMyProjectsTask.execute("projects/fromUser", db.getCurrentUser().getUserid());
+
+            setUpNavigation();
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-        addList();
-        setUpNavigation();
     }
 
     @Override
@@ -136,35 +134,43 @@ public class MainActivity extends AppCompatActivity
 
     private void logout() {
         db.setCurrentUser(null);
-        Intent intent = new Intent(this, StartUpActivity.class);
-        startActivity(intent);
+        this.finish();
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        int id = item.getItemId();
+        try {
+            int id = item.getItemId();
 
-        if (id == R.id.nav_showProfile) {
-            Intent intent = new Intent(this, ShowProfileActivity.class);
-            startActivity(intent);
-        } else if (id == R.id.nav_logout) {
-            showLogoutDialog();
-        } else if (id == R.id.nav_createRole) {
-            Intent intent = new Intent(this, AddRoleActivity.class);
-            startActivity(intent);
+            if (id == R.id.nav_showProfile) {
+                Intent intent = new Intent(this, ShowProfileActivity.class);
+                startActivity(intent);
+            } else if (id == R.id.nav_logout) {
+                showLogoutDialog();
+            } else if (id == R.id.nav_createRole) {
+                Intent intent = new Intent(this, AddRoleActivity.class);
+                startActivity(intent);
+            }
+
+            drawer.closeDrawer(GravityCompat.START);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
 
-        drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private void addList() {
-        if  (db.getMyProjects().size() > 0) {
-            ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, R.id.projectName, db.getMyProjects());
-            projectsList.setAdapter(adapter);
-        } else {
-            txtNoProjectsFound.setVisibility(View.VISIBLE);
+    public void addList() {
+        try {
+            if  (db.getCurrentUser().getProjects().size() > 0) {
+                ArrayAdapter adapter = new ArrayAdapter<>(this, R.layout.list_view_main, R.id.projectName, db.getCurrentUser().getProjects());
+                projectsList.setAdapter(adapter);
+            } else {
+                txtNoProjectsFound.setVisibility(View.VISIBLE);
+            }
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -177,28 +183,50 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void setUpNavigation() {
-        View hView =  navigationView.getHeaderView(0);
-        TextView nav_username = (TextView)hView.findViewById(R.id.txtUsernameInNav);
-        nav_username.setText(db.getCurrentUser().getUsername());
+        try {
+            View hView =  navigationView.getHeaderView(0);
+            TextView nav_username = (TextView)hView.findViewById(R.id.txtUsernameInNav);
+            nav_username.setText(db.getCurrentUser().getUsername());
 
-        TextView nav_email = (TextView)hView.findViewById(R.id.txtEmailInNav);
-        nav_email.setText(db.getCurrentUser().getEmail());
+            TextView nav_email = (TextView)hView.findViewById(R.id.txtEmailInNav);
+            nav_email.setText(db.getCurrentUser().getEmail());
+
+            ImageView imgNav = (ImageView) hView.findViewById(R.id.imgUserNav);
+
+            Bitmap bmp = BitmapFactory.decodeByteArray(db.getCurrentUser().getProfilepicture(), 0, db.getCurrentUser().getProfilepicture().length);
+            imgNav.setImageBitmap(bmp);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Project project = (Project) projectsList.getItemAtPosition(position);
-        Intent intent = new Intent(this, ShowSprintsActivity.class);
-        intent.putExtra("project", project);
-        startActivity(intent);
+        try {
+            Project project = (Project) projectsList.getItemAtPosition(position);
+            Intent intent = new Intent(this, ShowSprintsActivity.class);
+            intent.putExtra("project", project);
+            startActivity(intent);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-        Project project = (Project) projectsList.getItemAtPosition(position);
-        Intent intent = new Intent(this, EditProjectActivity.class);
-        intent.putExtra("project", project);
-        startActivity(intent);
+        try {
+            Project project = (Project) projectsList.getItemAtPosition(position);
+            System.out.println("---projec: " + project);
+            System.out.println("---project users: " + project.getUsers());
+            Intent intent = new Intent(this, EditProjectActivity.class);
+            intent.putExtra("project", project);
+            startActivity(intent);
+        } catch (Exception ex) {
+            Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
         return true;
     }
 }

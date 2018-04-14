@@ -5,21 +5,32 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.google.gson.Gson;
 import com.projectmanagementtoolapp.pkgData.Database;
-import com.projectmanagementtoolapp.pkgData.User;
+import com.projectmanagementtoolapp.pkgData.Userisinprojectwithrole;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
- * Created by alexk on 30.11.2017.
+ * Created by alexk on 01.02.2018.
  */
 
 public class DeleteUsersFromProject extends AsyncTask<Object, Object, String> {
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
+
+    private Database db = Database.getInstance();
+
+    private String responseStr = null;
+    private Response response = null;
 
     public DeleteUsersFromProject(Activity activity) {
         this.activity = activity;
@@ -29,17 +40,26 @@ public class DeleteUsersFromProject extends AsyncTask<Object, Object, String> {
 
     @Override
     protected String doInBackground(Object... params) {
-        Database db = Database.getInstance();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .build();
+
+
+        Request request = new Request.Builder()
+                .url(db.url + (String) params[0] + "/" + (int) params[1])
+                .delete()
+                .build();
 
         try {
-            db.deleteUsersFromProject((int) params[0]);
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
+            response = client.newCall(request).execute();
+            responseStr = response.body().string();
+        }catch (Exception e){
             e.printStackTrace();
         }
 
-        return null;
+        return responseStr;
     }
 
     @Override
@@ -53,5 +73,6 @@ public class DeleteUsersFromProject extends AsyncTask<Object, Object, String> {
     @Override
     protected void onPostExecute(String s) {
         this.dialog.dismiss();
+        activity.finish();
     }
 }
