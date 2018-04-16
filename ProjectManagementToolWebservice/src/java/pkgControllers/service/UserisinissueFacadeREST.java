@@ -81,6 +81,7 @@ public class UserisinissueFacadeREST extends AbstractFacade<Userisinissue> {
         }
     }
     
+    //Nocht nit getestet
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     public String getUsersOfIssue(String issueStr) {
