@@ -100,8 +100,7 @@ public class UserFacadeREST extends AbstractFacade<User> {
         } else {
             response = Response.status(400).entity("User with given Username does not exist").build();
         }
-        
-        
+                
         return response;
     }
     
@@ -158,6 +157,8 @@ public class UserFacadeREST extends AbstractFacade<User> {
         System.out.println("--id: " +entity.getUserid());
         System.out.println("--name: "+entity.getUsername());
         System.out.println("--email: "+entity.getEmail());
+        System.out.println("--pp: "+entity.getProfilepicture());
+
                     
         for (User u : users) {  
             if (u.getUsername().equals(entity.getUsername())) {

@@ -11,7 +11,7 @@ import java.util.Date;
  */
 
 public class Sprint implements Serializable{
-    private int sprintID;
+    private int sprintid;
     private Project project;
     private Date startdate;
     private Date enddate;
@@ -30,11 +30,11 @@ public class Sprint implements Serializable{
     }
 
     public int getSprintID() {
-        return sprintID;
+        return sprintid;
     }
 
     public void setSprintID(int sprintID) {
-        this.sprintID = sprintID;
+        this.sprintid = sprintID;
     }
 
     public Project getProject() {

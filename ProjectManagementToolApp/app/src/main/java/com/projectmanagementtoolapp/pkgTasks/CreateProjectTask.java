@@ -6,6 +6,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.google.gson.Gson;
+import com.projectmanagementtoolapp.pkgActivities.AddProjectActivity;
 import com.projectmanagementtoolapp.pkgActivities.StartUpActivity;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
@@ -60,7 +61,7 @@ public class CreateProjectTask extends AsyncTask<Object, Object, String> {
         try {
             response = client.newCall(request).execute();
             responseStr = response.body().string();
-        }catch (Exception e){
+        }catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -78,5 +79,11 @@ public class CreateProjectTask extends AsyncTask<Object, Object, String> {
     @Override
     protected void onPostExecute(String s) {
         this.dialog.dismiss();
+
+        if (response.code() == 200) {
+            ((AddProjectActivity) activity).createProject(responseStr);
+        } else {
+            ((AddProjectActivity) activity).makeSnackbar(responseStr);
+        }
     }
 }

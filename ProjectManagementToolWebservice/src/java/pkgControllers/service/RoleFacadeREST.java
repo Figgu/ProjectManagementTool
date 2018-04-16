@@ -92,26 +92,30 @@ public class RoleFacadeREST extends AbstractFacade<Role> {
         Response response = Response.ok().entity("Role deleted successfully").build();
         boolean canDelete = true;
         
-        for (Role r : roles) { 
-            if (r.getUserisinprojectwithroleCollection() != null) {
-                Collection<Userisinprojectwithrole> uprs = r.getUserisinprojectwithroleCollection();
-            
-                for (Userisinprojectwithrole u : uprs) {
-                    if(u.getRoleid() != null) {
-                        if(u.getRoleid().equals(r)) {
-                            response = Response.status(400).entity("You cant delete this role as it is in use right now").build();
-                                                        canDelete = false;
-
+        try {
+            for (Role r : roles) {                
+                if (r.getUserisinprojectwithroleCollection() != null) {
+                    Collection<Userisinprojectwithrole> uprs = r.getUserisinprojectwithroleCollection();
+                    
+                    for (Userisinprojectwithrole u : uprs) {
+                        if (u.getRoleid() != null) {
+                            if (u.getRoleid().getName().equals(r.getName())) {
+                                response = Response.status(400).entity("You cant delete this role as it is in use right now").build();
+                                canDelete = false;                             
+                            }
                         }
-                    }
-                } 
-                canDelete = false;
+                    }                    
+                    canDelete = false;
+                }
             }
+            
+            if (canDelete) {
+                super.remove(super.find(id));
+            }            
+        } catch (Exception e) {
+            response = Response.status(400).entity("cant delete role: probably in use").build();
         }
 
-        if (canDelete)
-            super.remove(super.find(id));                             
-        
         return response;
     }
 

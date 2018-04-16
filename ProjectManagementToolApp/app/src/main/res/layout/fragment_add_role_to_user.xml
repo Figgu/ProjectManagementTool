@@ -40,39 +40,11 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/addRolesToUserTitle" />
 
-                <ImageView
-                    android:id="@+id/imgAddRoleToUser"
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/addRolesToUserTitle"
-                    android:layout_marginLeft="5dp"
-                    android:src="@android:drawable/ic_input_add"
-                    android:layout_toRightOf="@id/spRoles"/>
-
-                <LinearLayout
-                    android:id="@+id/linearLayoutAddRolesToUser"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/spRoles"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:orientation="vertical" />
-
-                <Button
-                    android:id="@+id/btnSaveRoles"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/linearLayoutAddRolesToUser"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:text="Save" />
-
                 <Button
                     android:id="@+id/btnCancelRoles"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/linearLayoutAddRolesToUser"
-                    android:layout_toRightOf="@+id/btnSaveRoles"
+                    android:layout_below="@+id/spRoles"
                     android:text="Cancel"/>
             </RelativeLayout>
         </ScrollView>

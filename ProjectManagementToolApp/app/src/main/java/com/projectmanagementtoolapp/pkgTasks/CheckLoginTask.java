@@ -85,11 +85,11 @@ public class CheckLoginTask extends AsyncTask<Object, Object, String> {
 
         if (response.code() == 200) {
             User newUser = gson.fromJson(responseStr, User.class);
+            System.out.println(newUser.getProfilepicture());
             System.out.println(newUser.getUserid() + " " + newUser);
             db.setCurrentUser(newUser);
             ((StartUpActivity) activity).loginResult(true, null);
         } else {
-
             ((StartUpActivity) activity).loginResult(false, responseStr);
         }
     }

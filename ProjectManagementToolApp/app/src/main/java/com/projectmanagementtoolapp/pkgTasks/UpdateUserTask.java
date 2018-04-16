@@ -84,6 +84,7 @@ public class UpdateUserTask extends AsyncTask<Object, Object, String> {
             db.getCurrentUser().setUsername(user.getUsername());
             db.getCurrentUser().setEmail(user.getEmail());
             db.getCurrentUser().setPassword(user.getPassword());
+            db.getCurrentUser().setProfilepicture(user.getProfilepicture());
         }
 
         ((ShowProfileActivity) activity).fillGUI();

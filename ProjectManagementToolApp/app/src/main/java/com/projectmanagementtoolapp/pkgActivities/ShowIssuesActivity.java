@@ -17,6 +17,12 @@ import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Issue;
 import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.Sprint;
+import com.projectmanagementtoolapp.pkgFragments.ShowIssueFragment;
+import com.projectmanagementtoolapp.pkgTasks.GetAllIssuesTask;
+import com.projectmanagementtoolapp.pkgTasks.GetAllRolesTask;
+
+import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class ShowIssuesActivity extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
 
@@ -29,6 +35,7 @@ public class ShowIssuesActivity extends AppCompatActivity implements AdapterView
     //Non gui elements
     private Database db;
     private Sprint currentSprint;
+    private Project currentProject;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,9 +45,31 @@ public class ShowIssuesActivity extends AppCompatActivity implements AdapterView
 
         db = Database.getInstance();
         currentSprint = (Sprint) getIntent().getSerializableExtra("sprint");
+        currentProject = (Project) getIntent().getSerializableExtra("project");
         setTitle("Issues of " + currentSprint);
         getAllViews();
         initEventHandlers();
+
+        GetAllIssuesTask getAllIssuesTask = new GetAllIssuesTask(this);
+        getAllIssuesTask.execute("sprints/allIssues/"+currentSprint.getSprintID());
+        try {
+            getAllIssuesTask.get();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        getAllIssuesTask = new GetAllIssuesTask(this);
+        getAllIssuesTask.execute("sprints/allIssues/"+currentSprint.getSprintID());
+    }
+
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        finish();
+        startActivity(getIntent());
     }
 
     /*
@@ -69,10 +98,12 @@ public class ShowIssuesActivity extends AppCompatActivity implements AdapterView
         fab.setOnClickListener(this);
     }
 
-    private void initList() {
-        if (currentSprint.getIssues().size() > 1) {
-            ArrayAdapter<Issue> adapter = new ArrayAdapter<>(this, R.layout.activity_show_issues, currentSprint.getIssues());
+    public void initList(ArrayList<Issue> issues) {
+        if (issues.size() != 0) {
+            ArrayAdapter<Issue> adapter = new ArrayAdapter<>(this, R.layout.list_view_issues, issues);
             listIssues.setAdapter(adapter);
+            txtNoIssuesFound.setVisibility(View.INVISIBLE);
+
         } else {
             txtNoIssuesFound.setVisibility(View.VISIBLE);
         }
@@ -80,7 +111,15 @@ public class ShowIssuesActivity extends AppCompatActivity implements AdapterView
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        Issue issue = (Issue) listIssues.getItemAtPosition(position);
+        listIssues.setVisibility(View.INVISIBLE);
+        ShowIssueFragment showIssueFragment = new ShowIssueFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("issue", issue);
+        showIssueFragment.setArguments(bundle);
+        android.support.v4.app.FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.layoutShowIssues, showIssueFragment);
+        transaction.commit();
     }
 
     @Override
@@ -88,6 +127,7 @@ public class ShowIssuesActivity extends AppCompatActivity implements AdapterView
         if (v == fab) {
             Intent intent = new Intent(this, AddIssueActivity.class);
             intent.putExtra("currentSprint", currentSprint);
+            intent.putExtra("currentProject", currentProject);
             startActivity(intent);
         }
     }
