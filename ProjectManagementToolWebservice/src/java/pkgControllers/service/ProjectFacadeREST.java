@@ -149,6 +149,7 @@ public class ProjectFacadeREST extends AbstractFacade<Project>{
                 
                 for (Sprint sprint : sprintsOfProject) {
                     sprint.setProject(null);
+                    sprint.setIssueCollection(null);
                     retValue.add(sprint);                  
                 }
             }

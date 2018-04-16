@@ -5,6 +5,7 @@
  */
 package pkgEntities;
 
+import com.google.gson.annotations.Expose;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -42,18 +43,23 @@ public class Issue implements Serializable {
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
     @Basic(optional = false)
+    @Expose
     @Column(name = "ISSUEID")
     private BigDecimal issueid;
+    @Expose
     @Column(name = "NAME")
     private String name;
+    @Expose
     @Column(name = "DESCRIPTION")
     private String description;
+    @Expose
     @Column(name = "STATUS")
     private String status;
     @JoinTable(name = "USERISINISSUE03", joinColumns = {
         @JoinColumn(name = "ISSUEID", referencedColumnName = "ISSUEID")}, inverseJoinColumns = {
         @JoinColumn(name = "USERID", referencedColumnName = "USERID")})
     @ManyToMany
+    @Expose
     private Collection<User> userCollection;
     @JoinColumns({
         @JoinColumn(name = "SPRINTID", referencedColumnName = "SPRINTID")

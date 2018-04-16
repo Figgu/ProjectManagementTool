@@ -6,12 +6,15 @@
 package pkgEntities;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Date;
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -39,6 +42,8 @@ import javax.xml.bind.annotation.XmlTransient;
 public class Sprint implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    private BigDecimal sprintid;
     @EmbeddedId
     protected SprintPK sprintPK;
     @Column(name = "STARTDATE")
@@ -100,6 +105,15 @@ public class Sprint implements Serializable {
     public Collection<Issue> getIssueCollection() {
         return issueCollection;
     }
+   
+    public BigDecimal getSprintid() {
+        return sprintid;
+    }
+
+    public void setSprintid(BigDecimal sprintid) {
+        this.sprintid = sprintid;
+    }
+    
 
     public void setIssueCollection(Collection<Issue> issueCollection) {
         this.issueCollection = issueCollection;

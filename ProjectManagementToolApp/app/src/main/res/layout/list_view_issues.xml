@@ -4,7 +4,7 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/label"
     android:layout_width="match_parent"
-    android:textSize="25dp"
+    android:textSize="30dp"
     android:layout_height="wrap_content"
     android:layout_marginLeft="4dp">
 </TextView>

@@ -1,41 +1,43 @@
 package com.projectmanagementtoolapp.pkgData;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+
 /**
  * Created by alexk on 11.10.2017.
  */
 
-public class Issue {
-    private int IssueID;
-    private Sprint sprint;
+public class Issue implements Serializable{
+    private int issueid;
     private String name;
     private String description;
-    private IssueStatus status;
-
-    public Issue(Sprint sprint, String name, String description, IssueStatus status) {
-        this.sprint = sprint;
-        this.name = name;
-        this.description = description;
-        this.status = status;
-    }
+    private ArrayList<Userisinissue> userCollection;
+    private String status;
+    private Sprint sprint;
 
     public Issue() {
 
     }
 
+    public Issue(String name, String description, String status) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
+    public Issue(String name, String description, String status, Sprint sprint) {
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.sprint = sprint;
+    }
+
     public int getIssueID() {
-        return IssueID;
+        return issueid;
     }
 
     public void setIssueID(int issueID) {
-        IssueID = issueID;
-    }
-
-    public Sprint getSprint() {
-        return sprint;
-    }
-
-    public void setSprint(Sprint sprint) {
-        this.sprint = sprint;
+        this.issueid = issueID;
     }
 
     public String getName() {
@@ -54,16 +56,32 @@ public class Issue {
         this.description = description;
     }
 
-    public IssueStatus getStatus() {
+    public ArrayList<Userisinissue> getUserCollection() {
+        return userCollection;
+    }
+
+    public void setUserCollection(ArrayList<Userisinissue> userCollection) {
+        this.userCollection = userCollection;
+    }
+
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(IssueStatus status) {
+    public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Sprint getSprint() {
+        return sprint;
+    }
+
+    public void setSprint(Sprint sprint) {
+        this.sprint = sprint;
     }
 
     @Override
     public String toString() {
-        return name;
+        return status + ": " + name;
     }
 }

@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception ex) {
             Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override
@@ -198,7 +197,6 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception ex) {
             Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override
@@ -211,7 +209,6 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception ex) {
             Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override

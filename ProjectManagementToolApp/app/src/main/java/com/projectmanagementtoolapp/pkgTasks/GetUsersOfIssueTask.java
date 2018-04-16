@@ -6,11 +6,15 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.google.gson.Gson;
-import com.projectmanagementtoolapp.pkgActivities.AddRoleActivity;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
+import com.projectmanagementtoolapp.pkgActivities.MainActivity;
 import com.projectmanagementtoolapp.pkgData.Database;
 import com.projectmanagementtoolapp.pkgData.Project;
-import com.projectmanagementtoolapp.pkgData.Role;
+import com.projectmanagementtoolapp.pkgData.User;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
@@ -20,21 +24,20 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by alexk on 23.02.2018.
+ * Created by alexk on 17.04.2018.
  */
 
-public class UpdateProjectTask extends AsyncTask<Object, Object, String> {
+public class GetUsersOfIssueTask extends AsyncTask<Object, Object, String> {
+
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    private Project project = null;
     private Database db = Database.getInstance();
 
     private String responseStr = null;
-    private Response response = null;
 
-    public UpdateProjectTask(Activity activity) {
+    public GetUsersOfIssueTask(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -48,18 +51,21 @@ public class UpdateProjectTask extends AsyncTask<Object, Object, String> {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
         Gson gson = new Gson();
-        project = (Project) params[1];
-        String requestStr = gson.toJson(project);
+        String requestStr = gson.toJson((Integer) params[1]);
+        System.out.println(requestStr);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", String.valueOf((Integer) params[1]));
+        System.out.println(jsonObject.toString());
 
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), requestStr);
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), jsonObject.toString());
 
         Request request = new Request.Builder()
                 .url(db.url + (String) params[0])
-                .put(body)
+                .post(body)
                 .build();
 
         try {
-            response = client.newCall(request).execute();
+            Response response = client.newCall(request).execute();
             responseStr = response.body().string();
         }catch (Exception e){
             e.printStackTrace();
@@ -79,5 +85,10 @@ public class UpdateProjectTask extends AsyncTask<Object, Object, String> {
     @Override
     protected void onPostExecute(String s) {
         this.dialog.dismiss();
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<User>>() {}.getType();
+        System.out.println("json: " + responseStr);
+        ArrayList<User> users = gson.fromJson(responseStr, type);
+        System.out.println(users);
     }
 }

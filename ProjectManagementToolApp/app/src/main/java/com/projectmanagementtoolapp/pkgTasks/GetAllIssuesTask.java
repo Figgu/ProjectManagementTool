@@ -6,35 +6,36 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.projectmanagementtoolapp.pkgActivities.AddRoleActivity;
+import com.projectmanagementtoolapp.pkgActivities.ShowIssuesActivity;
+import com.projectmanagementtoolapp.pkgActivities.ShowSprintsActivity;
 import com.projectmanagementtoolapp.pkgData.Database;
-import com.projectmanagementtoolapp.pkgData.Project;
+import com.projectmanagementtoolapp.pkgData.Issue;
 import com.projectmanagementtoolapp.pkgData.Role;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by alexk on 23.02.2018.
+ * Created by alexk on 16.04.2018.
  */
 
-public class UpdateProjectTask extends AsyncTask<Object, Object, String> {
+public class GetAllIssuesTask extends AsyncTask<Object, Object, String> {
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    private Project project = null;
-    private Database db = Database.getInstance();
-
     private String responseStr = null;
     private Response response = null;
+    private Database db = Database.getInstance();
 
-    public UpdateProjectTask(Activity activity) {
+    public GetAllIssuesTask(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -47,15 +48,9 @@ public class UpdateProjectTask extends AsyncTask<Object, Object, String> {
                 .writeTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
-        Gson gson = new Gson();
-        project = (Project) params[1];
-        String requestStr = gson.toJson(project);
-
-        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), requestStr);
 
         Request request = new Request.Builder()
                 .url(db.url + (String) params[0])
-                .put(body)
                 .build();
 
         try {
@@ -79,5 +74,11 @@ public class UpdateProjectTask extends AsyncTask<Object, Object, String> {
     @Override
     protected void onPostExecute(String s) {
         this.dialog.dismiss();
+        Gson gson = new Gson();
+        Type type = new TypeToken<ArrayList<Issue>>() {}.getType();
+        ArrayList<Issue> issues = gson.fromJson(responseStr, type);
+        System.out.println(issues);
+        ((ShowIssuesActivity) activity).initList(issues);
     }
+
 }

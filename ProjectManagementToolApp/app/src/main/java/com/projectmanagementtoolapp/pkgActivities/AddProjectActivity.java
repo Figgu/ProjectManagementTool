@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.projectmanagementtoolapp.R;
@@ -26,6 +27,7 @@ import com.projectmanagementtoolapp.pkgTasks.CreateProjectTask;
 import com.projectmanagementtoolapp.pkgTasks.GetAllRolesTask;
 import com.projectmanagementtoolapp.pkgTasks.GetAllUsersTask;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,6 +36,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.ExecutionException;
+
+import okhttp3.Response;
 
 public class AddProjectActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -123,7 +127,7 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
 
                 if (db.getUsers().contains(user)) {
                     if (!contributors.contains(user)) {
-                        if(!user.equals(db.getCurrentUser())) {
+                        if(!user.getUsername().equals(db.getCurrentUser().getUsername())) {
                             contributors.add(user);
                             System.out.println(contributors);
                             adapter = new ArrayAdapter<>(this, R.layout.list_view_add_contributors, R.id.contributorNameAdd, contributors);
@@ -155,12 +159,14 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
             }
         } else if (v == btnAddProject) {
             try {
-                createProject();
+                checkInput();
             } catch (ParseException e) {
                 Snackbar.make(mRoot, "Error: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
             } catch (InterruptedException e) {
                 Snackbar.make(mRoot, "Error: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
             } catch (ExecutionException e) {
+                Snackbar.make(mRoot, "Error: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
+            } catch (IOException e) {
                 Snackbar.make(mRoot, "Error: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
             }
         } else if (v == txtProjectStart) {
@@ -173,7 +179,7 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
 
     }
 
-    private void createProject() throws ParseException, InterruptedException, ExecutionException {
+    private void checkInput() throws ParseException, InterruptedException, ExecutionException, IOException {
         boolean everythingOK = true;
 
         if (txtProjectName.getText().length() < 3) {
@@ -197,7 +203,6 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
         }
 
         if (everythingOK) {
-            List<Userisinprojectwithrole> userisinprojectwithroleList = new ArrayList<>();
             Date date = dateFormat.parse(txtProjectStart.getText().toString());
             Project project = new Project(txtProjectName.getText().toString(), txtProjectDescription.getText().toString(), date);
 
@@ -207,19 +212,24 @@ public class AddProjectActivity extends AppCompatActivity implements View.OnClic
 
             CreateProjectTask createProjectTask = new CreateProjectTask(this);
             createProjectTask.execute("projects", project);
-            String projectStr = createProjectTask.get();
-            Project projectWithId = new Gson().fromJson(projectStr, Project.class);
-
-            for (User user : contributors) {
-
-                    userisinprojectwithroleList.add(new Userisinprojectwithrole(projectWithId, user));
-            }
-
-            userisinprojectwithroleList.add(new Userisinprojectwithrole(projectWithId, db.getRoleByName("ProjectManager"), db.getCurrentUser()));
-
-
-            AddUserToProjectTask addUserToProjectTask = new AddUserToProjectTask(this);
-            addUserToProjectTask.execute("upr", userisinprojectwithroleList);
+            String retVal = createProjectTask.get();
         }
+    }
+
+    public void createProject(String projectStr) {
+        List<Userisinprojectwithrole> userisinprojectwithroleList = new ArrayList<>();
+        Project projectWithId = new Gson().fromJson(projectStr, Project.class);
+
+        for (User user : contributors) {
+            userisinprojectwithroleList.add(new Userisinprojectwithrole(projectWithId, user));
+        }
+
+        userisinprojectwithroleList.add(new Userisinprojectwithrole(projectWithId, db.getRoleByName("ProjectManager"), db.getCurrentUser()));
+        AddUserToProjectTask addUserToProjectTask = new AddUserToProjectTask(this);
+        addUserToProjectTask.execute("upr", userisinprojectwithroleList);
+    }
+
+    public void makeSnackbar(String msg) {
+        Snackbar.make(mRoot, msg, Snackbar.LENGTH_LONG).show();
     }
 }

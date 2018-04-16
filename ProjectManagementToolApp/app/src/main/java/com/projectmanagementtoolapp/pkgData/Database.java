@@ -8,10 +8,11 @@ import java.util.ArrayList;
 
 public class Database {
     private static Database db;
-    public static String url = "http://192.168.101.1:64634/ProjectManagementToolWebservice/webresources/";
+    public static String url = "http://10.0.0.128:64634/ProjectManagementToolWebservice/webresources/";
     private User currentUser;
     private ArrayList<User> users = new ArrayList<>();
     private ArrayList<Role> roles = new ArrayList<>();
+    private ArrayList<Issue> issues = new ArrayList<>();
 
     public static Database getInstance() {
         if (db == null) {
@@ -394,6 +395,14 @@ public class Database {
         }
 
         return retValue;
+    }
+
+    public ArrayList<Issue> getIssues() {
+        return issues;
+    }
+
+    public void setIssues(ArrayList<Issue> issues) {
+        this.issues = issues;
     }
 
     public ArrayList<Role> getRoles() {

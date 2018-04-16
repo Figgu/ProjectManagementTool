@@ -28,6 +28,7 @@ import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgTasks.GetAllUsersTask;
 import com.projectmanagementtoolapp.pkgTasks.UpdateUserTask;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
@@ -244,6 +245,12 @@ public class ShowProfileActivity extends AppCompatActivity implements View.OnCli
                 }
                 Bitmap yourSelectedImage = BitmapFactory.decodeStream(imageStream);
                 profilePicture.setImageBitmap(yourSelectedImage);
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                yourSelectedImage.compress(Bitmap.CompressFormat.PNG, 50, stream);
+                User user = db.getCurrentUser();
+                user.setProfilepicture(stream.toByteArray());
+                UpdateUserTask updateUserTask = new UpdateUserTask(this);
+                updateUserTask.execute("users", user);
             }
         } catch (Exception ex) {
             Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();

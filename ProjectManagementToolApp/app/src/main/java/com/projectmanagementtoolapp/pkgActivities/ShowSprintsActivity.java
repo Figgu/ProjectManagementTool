@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -187,6 +188,7 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
             if (showingSprints) {
                 Sprint selectedSprint = (Sprint) listSprints.getItemAtPosition(position);
                 Intent intent = new Intent(this, ShowIssuesActivity.class);
+                intent.putExtra("project", currentProject);
                 intent.putExtra("sprint", selectedSprint);
                 startActivity(intent);
             } else {
@@ -240,5 +242,9 @@ public class ShowSprintsActivity extends AppCompatActivity implements AdapterVie
         } catch (Exception ex) {
             Toast.makeText(this, "Error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
         }
+    }
+
+    public void makeSnackbar(String msg) {
+        Snackbar.make(layoutShowSprints, msg, Snackbar.LENGTH_LONG).show();
     }
 }

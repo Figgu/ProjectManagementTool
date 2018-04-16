@@ -1,7 +1,9 @@
 package com.projectmanagementtoolapp.pkgFragments;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +22,7 @@ import com.projectmanagementtoolapp.pkgData.Project;
 import com.projectmanagementtoolapp.pkgData.Role;
 import com.projectmanagementtoolapp.pkgData.User;
 import com.projectmanagementtoolapp.pkgData.Userisinprojectwithrole;
+import com.projectmanagementtoolapp.pkgTasks.UpdateUPRTask;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -29,8 +32,6 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
     //GUI Attributes
     private TextView title;
     private Spinner spRoles;
-    private LinearLayout llRoles;
-    private Button btnSave;
     private Button btnCancel;
     private RelativeLayout rl;
 
@@ -41,11 +42,9 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
     private Userisinprojectwithrole upr;
     //These are for working with the spinner and the linear layout
     private ArrayList<String> allRoles = new ArrayList<>();
-    private ArrayList<String> myRoles = new ArrayList<>();
+    private String myRole = "";
     private ArrayAdapter<String> adapter;
-    private boolean noRoles = false;
     private int flag = 0;
-
 
     public AddRoleToUserFragment() {
         // Required empty public constructor
@@ -85,27 +84,22 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
     private void getAllViews(View view) {
         title = (TextView) view.findViewById(R.id.addRolesToUserTitle);
         spRoles = (Spinner) view.findViewById(R.id.spRoles);
-        llRoles = (LinearLayout) view.findViewById(R.id.linearLayoutAddRolesToUser);
-        btnSave = (Button) view.findViewById(R.id.btnSaveRoles);
         btnCancel = (Button) view.findViewById(R.id.btnCancelRoles);
         rl = (RelativeLayout) view.findViewById(R.id.rlAddRolesToUser);
     }
 
     private void initEventHandlers() {
-        btnSave.setOnClickListener(this);
         btnCancel.setOnClickListener(this);
         spRoles.setOnItemSelectedListener(this);
     }
 
     public void initSpinner() {
         try {
-            if (db.getRoles().size() > 0) {
-                allRoles.add("Select a role to add...");
-                for (Role role : db.getRoles()) {
+            if (db.getRoles().size() != 0) {
+                for (Role role : db.getRoles() ) {
                     allRoles.add(role.getName());
                 }
             } else {
-                allRoles.add("No roles existing yet...");
                 spRoles.setEnabled(false);
             }
 
@@ -119,9 +113,7 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v == btnSave) {
-
-        } else if (v == btnCancel) {
+        if (v == btnCancel) {
             getActivity().finish();
         }
     }
@@ -129,35 +121,13 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         try {
-            spRoles.getChildAt(0).setEnabled(false);
-
             if (flag != 0) {
-
-                System.out.println("clicked!");
-
                 if (spRoles.getSelectedItem() != null) {
                     String roleName = (String) spRoles.getSelectedItem();
-                    Role selectedRole = db.getRoleByName(roleName);
 
-                    if (!myRoles.contains(roleName)) {
-                        myRoles.add(roleName);
-                        currentUser.getRolesInProject().get(currentProject).add(selectedRole);
-
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(), R.layout.list_view_add_contributors, R.id.contributorNameAdd, myRoles);
-
-                        final View view2 = adapter.getView(adapter.getCount() - 1, null, null);
-                        final View child = view2.findViewById(R.id.imgDeleteCon);
-                        child.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                llRoles.removeView(view2);
-                                TextView textView = (TextView) view2.findViewById(R.id.contributorNameAdd);
-                                Role role = db.getRoleByName(textView.getText().toString());
-                                myRoles.remove(role.getRoleid());
-                            }
-                        });
-
-                        llRoles.addView(view2);
+                    if (!myRole.equals(roleName)) {
+                        myRole = roleName;
+                        makeDialog(myRole);
                     }
                 }
             } else {
@@ -168,8 +138,37 @@ public class AddRoleToUserFragment extends Fragment implements View.OnClickListe
         }
     }
 
+    private void makeDialog(String myRole) {
+        final String myRoleName = myRole;
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+        builder.setTitle("Add role");
+        builder.setMessage("Do you want to add the role '" + myRole + "' to " + currentUser + " ?");
+
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Userisinprojectwithrole upr = new Userisinprojectwithrole(currentProject, db.getRoleByName(myRoleName), currentUser);
+                UpdateUPRTask updateUPRTask = new UpdateUPRTask(getActivity());
+                updateUPRTask.execute("upr", upr);
+            }
+        });
+
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+        //Do nothing
     }
 }

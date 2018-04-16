@@ -5,7 +5,12 @@
  */
 package pkgControllers.service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -20,6 +25,9 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import pkgEntities.Issue;
+import javax.ws.rs.core.Response;
+import pkgEntities.SprintPK;
+
 
 /**
  *
@@ -36,11 +44,45 @@ public class IssueFacadeREST extends AbstractFacade<Issue> {
         super(Issue.class);
     }
 
+    //ID of sprint has to be delivered via path param to work around stackoverflow exception
     @POST
-    @Override
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public void create(Issue entity) {
-        super.create(entity);
+    @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response createIssue(@PathParam("id") String id, String entity) {
+        Issue issue = new Gson().fromJson(entity, Issue.class);
+        System.out.println("--name: " + issue.getName());
+        System.out.println("--descrption: " + issue.getDescription());
+        System.out.println("--status: " + issue.getStatus());
+        issue.getSprint().setSprintPK(new SprintPK(issue.getSprint().getSprintid().toBigInteger(), new BigInteger(id)));
+        Response response = null;
+        Collection<Issue> issues = super.findAll();
+        boolean ok = true;
+        
+        for (Issue is : issues) {
+            if (issue.getName().equals(is.getName())) {
+                response = Response.status(400).entity("Issue with given name already exists").build();
+                ok = false;
+            }
+        }
+        
+        if (ok) {
+            super.create(issue);
+            issues = super.findAll();
+            Issue myIssue = null;
+            
+            for(Issue is : issues) {
+                if (is.getName().equals(issue.getName())) {
+                    myIssue = is;
+                }
+            }
+            
+            System.out.println("--"+myIssue.getIssueid());
+            Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+            System.out.println("--"+gson.toJson(myIssue));
+            response = Response.ok(gson.toJson(myIssue)).build();
+        }
+                
+        return response;
     }
 
     @PUT
@@ -59,13 +101,6 @@ public class IssueFacadeREST extends AbstractFacade<Issue> {
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public Issue find(@PathParam("id") BigDecimal id) {
         return super.find(id);
-    }
-
-    @GET
-    @Override
-    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
-    public List<Issue> findAll() {
-        return super.findAll();
     }
 
     @GET

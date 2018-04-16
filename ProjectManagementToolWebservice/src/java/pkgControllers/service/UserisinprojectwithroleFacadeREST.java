@@ -24,6 +24,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
+import javax.ws.rs.core.Response;
 import pkgEntities.Project;
 import pkgEntities.Userisinprojectwithrole;
 import pkgEntities.UserisinprojectwithrolePK;
@@ -82,6 +83,7 @@ public class UserisinprojectwithroleFacadeREST extends AbstractFacade<Userisinpr
         
         for (Userisinprojectwithrole user : users) {
             System.out.println("--user: " + user.getUser());
+            System.out.println("--role: " + user.getRoleid());
             System.out.println("--project: " + user.getProject());
             user.setUserisinprojectwithrolePK(new UserisinprojectwithrolePK(user.getUser().getUserid().toBigInteger(), user.getProject().getProjectid().toBigInteger()));
             super.create(user);
@@ -103,13 +105,40 @@ public class UserisinprojectwithroleFacadeREST extends AbstractFacade<Userisinpr
         }
     }
     
-
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response editUPR(Userisinprojectwithrole upr) {
+        Collection<Userisinprojectwithrole> users = super.findAll();
+        Response response = Response.ok().build();
+        boolean ok = true;
+        
+        for (Userisinprojectwithrole user : users) {
+            if (user.getRoleid() != null) {
+                if (user.getRoleid().getIsunique().equals("true")) {
+                    if (user.getProject().getProjectid().toPlainString().equals(upr.getProject().getProjectid().toPlainString())) {
+                        if (user.getRoleid().getRoleid().toPlainString().equals(upr.getRoleid().getRoleid().toPlainString())) {
+                            response = Response.status(400).entity("This role is unique in this project").build();
+                            ok = false;
+                        }
+                    }
+                } 
+            }
+        }
+        
+        if (ok) {
+            upr.setUserisinprojectwithrolePK(new UserisinprojectwithrolePK(upr.getUser().getUserid().toBigInteger(), upr.getProject().getProjectid().toBigInteger()));
+            super.edit(upr);  
+        } 
+        
+        return response;
+    }
+    /*
     @PUT
     @Path("{id}")
     @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public void edit(@PathParam("id") PathSegment id, Userisinprojectwithrole entity) {
         super.edit(entity);
-    }
+    }*/
 
     @GET
     @Path("{id}")

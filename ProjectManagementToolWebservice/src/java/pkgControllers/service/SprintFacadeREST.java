@@ -6,8 +6,10 @@
 package pkgControllers.service;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -23,6 +25,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.PathSegment;
 import javax.ws.rs.core.Response;
+import pkgEntities.Issue;
 import pkgEntities.Project;
 import pkgEntities.Sprint;
 import pkgEntities.SprintPK;
@@ -74,6 +77,34 @@ public class SprintFacadeREST extends AbstractFacade<Sprint> {
 
         return Response.ok().build();
     }
+    
+    @GET
+    @Path("allIssues/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public String getAllIssues(@PathParam("id") String id) {
+        Collection<Sprint> sprints = super.findAll();
+        Sprint mySprint = null;
+        
+        for (Sprint sprint : sprints) {
+            super.refresh(sprint);
+        }
+        
+        for (Sprint sprint : sprints) {
+            if (sprint.getSprintid().toPlainString().equals(id)) {
+                mySprint = sprint;               
+            }
+        }
+                
+        ArrayList<Issue> issues = new ArrayList<>();
+        for (Issue issue : mySprint.getIssueCollection()) {
+            issues.add(issue);
+        }
+        
+        Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+        return gson.toJson(issues);
+    }
+    
+
 
     @DELETE
     @Path("remove")

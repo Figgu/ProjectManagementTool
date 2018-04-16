@@ -6,10 +6,11 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import com.google.gson.Gson;
-import com.projectmanagementtoolapp.pkgActivities.AddRoleActivity;
+import com.projectmanagementtoolapp.pkgActivities.ShowProfileActivity;
+import com.projectmanagementtoolapp.pkgActivities.ShowSprintsActivity;
 import com.projectmanagementtoolapp.pkgData.Database;
-import com.projectmanagementtoolapp.pkgData.Project;
-import com.projectmanagementtoolapp.pkgData.Role;
+import com.projectmanagementtoolapp.pkgData.User;
+import com.projectmanagementtoolapp.pkgData.Userisinprojectwithrole;
 
 import java.util.concurrent.TimeUnit;
 
@@ -20,21 +21,21 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Created by alexk on 23.02.2018.
+ * Created by alexk on 16.04.2018.
  */
 
-public class UpdateProjectTask extends AsyncTask<Object, Object, String> {
+public class UpdateUPRTask extends AsyncTask<Object, Object, String> {
     private ProgressDialog dialog;
     private Activity activity;
     private Context context;
 
-    private Project project = null;
+    private Userisinprojectwithrole upr = null;
     private Database db = Database.getInstance();
 
     private String responseStr = null;
     private Response response = null;
 
-    public UpdateProjectTask(Activity activity) {
+    public UpdateUPRTask(Activity activity) {
         this.activity = activity;
         context = activity;
         dialog = new ProgressDialog(context);
@@ -48,8 +49,8 @@ public class UpdateProjectTask extends AsyncTask<Object, Object, String> {
                 .readTimeout(30, TimeUnit.SECONDS)
                 .build();
         Gson gson = new Gson();
-        project = (Project) params[1];
-        String requestStr = gson.toJson(project);
+        upr = (Userisinprojectwithrole) params[1];
+        String requestStr = gson.toJson(upr);
 
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), requestStr);
 
@@ -79,5 +80,11 @@ public class UpdateProjectTask extends AsyncTask<Object, Object, String> {
     @Override
     protected void onPostExecute(String s) {
         this.dialog.dismiss();
+
+        if (response.code() == 200) {
+            activity.finish();
+        } else {
+            ((ShowSprintsActivity) activity).makeSnackbar(responseStr);
+        }
     }
 }
